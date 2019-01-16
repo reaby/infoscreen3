@@ -1,0 +1,62 @@
+{% extends 'layout/view.twig' %}
+
+{% block header %}
+    <script src="/socket.io/socket.io.js"></script>
+{% endblock %}
+
+{% block body %}
+    <div class="ui container">
+        <div class="ui basic segment">
+            <h1 class="ui center aligned inverted header">
+                InfoScreen<sup>3</sup>
+            </h1>
+            <h2 class="ui center aligned inverted dividing header">Available displays</h2>
+
+            <div class="ui three stackable cards" id="displayList">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var socket = io.connect("{{ config.serverUrl }}:{{ config.serverListenPort }}/lobby");
+        var intervalId = null;
+
+        /** when connected **/
+        socket.on('connect', function () {
+            socket.emit("displays");
+            clearInterval(intervalId);
+            intervalId = setInterval(function () {
+                socket.emit("displays");
+            }, 15000);
+        });
+
+        socket.on("callback.displays", function (data) {
+            var index = 0;
+            var output = "";
+            for (var i in data.displays) {
+                var display = data.displays[i];
+                var html = '<div class="ui card">' +
+                    '<div class="image" style="background: black;">' +
+                    '<img src="' + data.previewImages[i] + '" />' +
+                    '</div>' +
+                    '<div class="content">' +
+                    '<h3 class="ui center aligned header">' + display.name + '</h3>' +
+                    '<div class="ui attached buttons">' +
+                    '<a href="display/' + index.toString() + '" class="ui positive button">Normal</a>' +
+                    '<div class="or"></div>' +
+                    '<a href="display/' + index.toString() + '/lite" class="ui button">Lite view</a>' +
+                    '</div>' +
+                    '</div>' +
+                    '</div>';
+                output += html;
+                index += 1;
+            }
+
+            $('#displayList').html(output);
+        });
+
+        window.onError = function (e) {
+            console.log(e);
+        };
+    </script>
+{% endblock %}

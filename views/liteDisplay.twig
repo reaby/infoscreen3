@@ -1,0 +1,35 @@
+{% extends 'layout/view.twig' %}
+
+{% block header %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flv.js/1.5.0/flv.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <title>InfoScreen3 - {{ display.name }}</title>
+{% endblock %}
+
+{% block body %}
+
+    <div id="blackoutLayer" class="gpu"></div>
+
+    <div id="layer0" class="fsimage gpu" style="z-index: 10;">
+        <img id="img0" style="width: 100%;"/>
+    </div>
+    <div id="layer1" class="fsimage gpu" style="z-index: 10;">
+        <img id="img1" style="width: 100%;"/>
+    </div>
+
+    <div id="time" class="noselect delay animated">00:00</div>
+    <div id="networkstatus" class="noselect animated"><i class="spinner loading icon"></i></div>
+
+    <div id="bg">
+        <img id="bgimg" class="fsimage" src=""/>
+    </div>
+    <video muted loop autoplay id="bgvid" poster="">
+        <source src="" type="video/mp4">
+    </video>
+
+    <script>
+        var socket = io.connect("{{ config.serverUrl }}:{{ config.serverListenPort }}/display-{{ displayId }}");
+        var displayId = {{ displayId }};
+    </script>
+    <script src="/js/displayLite.js"></script>
+{% endblock %}

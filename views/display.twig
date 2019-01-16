@@ -1,0 +1,36 @@
+{% extends 'layout/view.twig' %}
+
+{% block header %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flv.js/1.5.0/flv.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/flux.js" type="text/javascript" charset="utf-8"></script>
+    <title>InfoScreen3 - {{ display.name }}</title>
+{% endblock %}
+
+{% block body %}
+    <div id="blackoutLayer" class="animated">
+
+    </div>
+
+    <div id="time" class="noselect animated">00:00</div>
+    <div id="networkstatus" class="noselect animated"><i class="spinner loading icon"></i></div>
+
+
+    <div id="slider" style="overflow: hidden">
+        <img src=""/>
+    </div>
+
+    <div id="bg">
+        <img id="bgimg" class="fsimage" src=""/>
+    </div>
+    <video muted loop autoplay id="bgvid" class="fsimage" poster="">
+        <source src="" type="video/mp4">
+    </video>
+
+    <script>
+        var socket = io.connect("{{ config.serverUrl }}:{{ config.serverListenPort }}/display-{{ displayId }}");
+    </script>
+
+    <script src="/js/display.js"></script>
+{% endblock %}
+

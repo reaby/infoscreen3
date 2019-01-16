@@ -1,0 +1,34 @@
+{% extends 'layout/admin.twig' %}
+
+{% block header %}
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
+{% endblock %}
+
+{% block body %}
+
+    <canvas id="c" width="1280" height="720" style="position: fixed; z-index: 3;"></canvas>
+
+    <div id="bg" style="display: none;">
+        <img id="bgimg" class="fsimage" src="" />
+    </div>
+    <video muted loop autoplay id="bgvid" poster="" style="display: none;">
+        <source src="" type="video/mp4">
+    </video>
+
+    <script>
+        let socket = io.connect("{{ config.serverUrl }}:{{ config.serverListenPort }}/admin");
+        let socketId = encodeURIComponent("{{ socketId }}");
+    </script>
+    <script src="/js/preview.js"></script>
+{% endblock %}
+
+{% block afterbody %}
+    <div class="ui basic modal">
+        <div class="content">
+            <div class="ui basic center aligned segment">
+                <button class="ui button" onclick="override()">Override</button>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,109 @@
+{% extends 'layout/edit.twig' %}
+
+{% block header %}
+    <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        let bundle = "{{ bundle }}";
+        let file = "{{ file }}";
+        let displayId = {{ displayId }};
+    </script>
+    <style>
+
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div id="imageLayer" class="ui modal">
+        <div class="header">Insert Image</div>
+        <div id="dropzone" class="scrolling content">
+            <div id="imageList" class="ui three stackable cards">
+
+            </div>
+        </div>
+        <div class="actions">
+            <div class="ui cancel button">Cancel</div>
+        </div>
+    </div>
+
+    <div class="ui inverted secondary menu">
+        <div class="item">
+            <div class="ui inverted buttons">
+                <a href="#" onclick="addHeader('header')" class="ui basic inverted icon button"><i
+                            class="ui heading icon"></i></a>
+                <a href="#" onclick="addText('paragraph text')" class="ui basic inverted  icon button"><i
+                            class="ui paragraph icon"></i></a>
+                <a href="#" onclick="openImageBrowser()" class="ui basic inverted  icon button"><i
+                            class="ui image icon"></i></a>
+            </div>
+        </div>
+        <div class="item">
+            <a href="#" onclick="removeSelectedObjects()" class="ui basic inverted icon button"><i
+                        class="ui remove icon"></i></a>
+        </div>
+        <div class="item">
+            <div id="order" class="ui dropdown basic inverted button">
+                <div class="default text">Change order <i class="dropdown icon"></i></div>
+                <div class="menu">
+                    <div class="item" data-value="bringToFront">Send to front</div>
+                    <div class="item" data-value="bringForward">Move forward</div>
+                    <div class="item" data-value="sendBackwards">Move backward</div>
+                    <div class="item" data-value="sendToBack">Send to back</div>
+                </div>
+            </div>
+        </div>
+        <div class="item">
+            <a href="#" onclick="cueSlide()" class="ui basic teal button">Fast Announce</a>
+        </div>
+        <div class="right menu">
+            <div class="item">
+                <div class="ui buttons">
+                    <a href="#" onclick="save()" class="ui green button">Save</a>
+                    <a href="#" onclick="window.close()" class="ui red button">Cancel</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="segment">
+        <div id="matchsize">
+            <canvas id="edit" width="1280" height="720" style="position: fixed; z-index:10;"></canvas>
+            <div id="bg">
+                <img id="bgimg" class="fsimage" src=""/>
+            </div>
+            <video muted loop autoplay id="bgvid2" poster="">
+                <source src="" type="video/mp4">
+            </video>
+            <div id="time2" class="noselect delay animated">00:00</div>
+        </div>
+    </div>
+
+    <div id="contextmenu" class="ui small vertical menu" style="display: none; position: absolute; z-index: 1000;">
+        <a class="item" data-action="copy">
+            Copy
+        </a>
+        <a class="item" data-action="paste">
+            Paste
+        </a>
+        <div class="ui dropdown item">
+            <i class="dropdown icon"></i>
+            Order
+            <div class="menu">
+                <div class="item" data-action="bringToFront">Send to Front</div>
+                <div class="item" data-action="bringForward">Move forward</div>
+                <div class="item" data-action="sendBackwards">Move backward</div>
+                <div class="item" data-action="sendToBack">Send to Back</div>
+            </div>
+        </div>
+        <a class="item" data-action="delete">
+            Delete
+        </a>
+    </div>
+    <canvas id="tempCanvas" width="1280" height="720" style="display: none"></canvas>
+
+    <script>
+        var socket = io.connect("{{ config.serverUrl }}:{{ config.serverListenPort }}/admin");
+    </script>
+    <script src="/js/edit.js"></script>
+{% endblock %}
+

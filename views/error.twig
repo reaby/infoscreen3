@@ -1,0 +1,12 @@
+{% extends 'layout/admin.twig' %}
+
+{% block body %}
+<style>
+	h1,h2,h3,pre {
+	color: white; 
+	}
+</style>
+    <h1>{{ message }}</h1>
+    <h2>{{ error.status }}</h2>
+    <pre>{{ error.stack }}</pre>
+{% endblock %}

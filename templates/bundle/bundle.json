@@ -1,0 +1,18 @@
+{
+  "bundleName": "bundle",
+  "background": "bg.jpg",
+  "duration": 20,
+  "useWebFonts": false,
+  "styleHeader": {
+    "fill": "#f90",
+    "fontSize": 56,
+    "fontWeight": 900,
+    "fontFamily": "Arial Black"
+  },
+  "styleText": {
+    "fill": "#fff",
+    "fontFamily": "Arial Black",
+    "fontSize": 42,
+    "fontWeight": 900
+  }
+}

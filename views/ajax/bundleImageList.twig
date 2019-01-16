@@ -1,0 +1,15 @@
+{% for image in bundleImages %}
+    <div class="card">
+        <div class="image">
+            <img src="{{ image.url }}" alt="image">
+        </div>
+        <div class="content">
+            <div class="center aligned header">{{ image.name }}</div>
+        </div>
+        <div class="extra content">
+            <div class="ui tiny basic button" onclick="addImage('{{ image.url }}', false);">Insert</div>
+            <div class="ui tiny basic button" onclick="addImage('{{ image.url }}', true);">Fill</div>
+            <div class="ui tiny basic negative button" onclick="deleteImage('{{ image.name }}')">Delete</div>
+        </div>
+    </div>
+{% endfor %}
