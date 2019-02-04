@@ -194,10 +194,17 @@ class display {
 
         if (this.serverOptions.loop) {
             let that = this;
+
+            // override slide timeout if set by slide
+            var slideTimeout = this.serverOptions.slideDuration * 1000;
+            if (this.serverOptions.currentMeta.duration !== null) {
+                slideTimeout = parseFloat(this.serverOptions.currentMeta.duration) * 1000;
+            }
+
             this.timeoutId.push(
                 setTimeout(function () {
                     that.mainLoop();
-                }, this.serverOptions.slideDuration * 1000));
+                }, slideTimeout));
         }
     }
 

@@ -5,6 +5,7 @@
 		"duration": null,
 		"enabled": true,
 		"displayTime": true,
+		"transition": null,
 		"type": "slide",
 		"index": 0
 	},
@@ -13,26 +14,29 @@
 		"name": "header 3",
 		"duration": null,
 		"enabled": true,
-		"displayTime": true,
+		"displayTime": false,
+		"transition": "zip",
 		"type": "slide",
 		"index": 1
 	},
 	{
 		"uuid": "03191688-bb93-4376-a3ab-53ed790b2155",
 		"name": "2 header",
-		"duration": null,
+		"duration": 10,
 		"enabled": true,
 		"displayTime": true,
 		"type": "slide",
+		"transition": null,
 		"index": 2
 	},
 	{
 		"uuid": "xx91688-bb93-4376-a3ab-57ef755b4f0rd",
 		"name": "link: localhost",
 		"webUrl": "http://localhost",
-		"duration": 20,
+		"duration": 10,
 		"enabled": true,
-		"displayTime": true,
+		"displayTime": false,
+		"transition": null,
 		"type": "webpage",
 		"index": 3,
 		"zoom": 1

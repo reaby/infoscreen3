@@ -9,7 +9,9 @@
         let displayId = {{ displayId }};
     </script>
     <style>
-
+        label {
+            color: white;
+        }
     </style>
 {% endblock %}
 
@@ -17,6 +19,7 @@
     <div id="imageLayer" class="ui modal">
         <div class="header">Insert Image</div>
         <div id="dropzone" class="scrolling content">
+            <div class="ui info message">Drop images to upload</div>
             <div id="imageList" class="ui three stackable cards">
 
             </div>
@@ -26,23 +29,23 @@
         </div>
     </div>
 
-    <div class="ui inverted secondary menu">
+    <div class="ui menu">
         <div class="item">
             <div class="ui inverted buttons">
-                <a href="#" onclick="addHeader('header')" class="ui basic inverted icon button"><i
+                <a href="#" onclick="addHeader('header')" class="ui basic icon button"><i
                             class="ui heading icon"></i></a>
-                <a href="#" onclick="addText('paragraph text')" class="ui basic inverted  icon button"><i
+                <a href="#" onclick="addText('paragraph text')" class="ui basic icon button"><i
                             class="ui paragraph icon"></i></a>
-                <a href="#" onclick="openImageBrowser()" class="ui basic inverted  icon button"><i
+                <a href="#" onclick="openImageBrowser()" class="ui basic icon button"><i
                             class="ui image icon"></i></a>
             </div>
         </div>
         <div class="item">
-            <a href="#" onclick="removeSelectedObjects()" class="ui basic inverted icon button"><i
+            <a href="#" onclick="removeSelectedObjects()" class="ui basic  icon button"><i
                         class="ui remove icon"></i></a>
         </div>
         <div class="item">
-            <div id="order" class="ui dropdown basic inverted button">
+            <div id="order" class="ui dropdown basic button">
                 <div class="default text">Change order <i class="dropdown icon"></i></div>
                 <div class="menu">
                     <div class="item" data-value="bringToFront">Send to front</div>
@@ -53,19 +56,36 @@
             </div>
         </div>
         <div class="item">
-            <a href="#" onclick="cueSlide()" class="ui basic teal button">Fast Announce</a>
+            <div class="ui input">
+                <input type="number" id="duration" placeholder="duration" min="5"/>
+            </div>
+        </div>
+        <div class="item">
+            <div id="displaytime" class="ui toggle checkbox">
+                <input id="lbl" type="checkbox"/>
+                <label for="lbl">Time</label>
+            </div>
+        </div>
+        <div id="transitions" class="ui dropdown item">
+            <div class="ui small breadcrumb">
+                <span class="section">Transition</span>
+                <i class="right chevron icon divider"></i>
+                <span id="currentTransition" class="section"></span>
+            </div>
+            <i class="dropdown icon"></i>
         </div>
         <div class="right menu">
             <div class="item">
                 <div class="ui buttons">
                     <a href="#" onclick="save()" class="ui green button">Save</a>
+                    <a href="#" onclick="cueSlide()" class="ui basic teal button">Fast Announce</a>
                     <a href="#" onclick="window.close()" class="ui red button">Cancel</a>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="segment">
+    <div class="ui basic segment">
         <div id="matchsize">
             <canvas id="edit" width="1280" height="720" style="position: fixed; z-index:10;"></canvas>
             <div id="bg">

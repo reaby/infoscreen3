@@ -276,11 +276,12 @@ class admin {
                 if (filename === "") {
                     filename = uuidv4();
                 }
-                var duration = null;
 
+                var duration = null;
                 if (data.duration === "") {
                     data.duration = null;
                 }
+
                 try {
                     let bundle = self.bundleManager.getBundle(data.bundleName);
 
@@ -289,11 +290,12 @@ class admin {
                         name: data.name,
                         duration: data.duration || null,
                         enabled: true,
-                        displayTime: data.displayTime || true,
+                        displayTime: data.displayTime,
                         type: "webpage",
                         webUrl: data.webUrl,
-                        zoom: 1.0,
-                        index: bundle.allSlides.length
+                        zoom: parseFloat(data.zoom) || 1.0,
+                        index: bundle.allSlides.length,
+                        transition: null,
                     };
 
                     let obj = bundle.findSlideByUuid(filename);
@@ -303,8 +305,9 @@ class admin {
                         obj.webUrl = data.webUrl;
                         obj.name = data.name;
                         obj.duration = data.duration || null;
-                        obj.displayTime = data.displayTime || true;
+                        obj.displayTime = data.displayTime;
                         obj.zoom = parseFloat(data.zoom) || 1.0;
+                        obj.transition = null;
                     }
 
                     bundle.save();
@@ -325,10 +328,12 @@ class admin {
                 let bundle = self.bundleManager.getBundle(data.bundleName);
                 let bundleData = bundle.getBundleData();
                 let json = "{}";
+                let slide = {};
                 if (data.fileName) {
                     json = bundle.getSlideJsonFile(data.fileName);
+                    slide = bundle.findSlideByUuid(data.fileName);
                 }
-                socket.emit("callbackEdit", {bundleData: bundleData, json: json});
+                socket.emit("callback.edit", {bundleData: bundleData, slideData: slide, json: json});
             });
 
             /** rename **/
@@ -354,20 +359,29 @@ class admin {
                     fs.writeFileSync("./data/" + data.bundleName + "/slides/" + filename, JSON.stringify(data.json));
 
                     let bundle = self.bundleManager.getBundle(data.bundleName);
+                    var dur = data.duration;
+                    if (dur < 5) {
+                        dur = 5;
+                    }
 
                     let template = {
-                        file: filename,
+                        uuid: filename,
                         name: data.name,
-                        duration: null,
+                        duration: dur,
                         enabled: true,
-                        displayTime: true,
+                        displayTime: data.displayTime,
                         type: "slide",
                         index: bundle.allSlides.length,
+                        transition: data.transition,
                     };
 
                     let obj = bundle.findSlideByUuid(filename);
                     if (Object.keys(obj).length === 0 && obj.constructor === Object) {
                         bundle.allSlides.push(template);
+                    } else {
+                        obj.duration = data.duration;
+                        obj.displayTime = data.displayTime;
+                        obj.transition = data.transition;
                     }
 
                     bundle.save();
@@ -376,7 +390,7 @@ class admin {
                     socket.emit("callback.save", {});
                     announce([parseInt(data.displayId)], "callback.reloadImage", {
                         bundle: data.bundleName,
-                        file: filename
+                        uuid: filename
                     });
                     updateSlides(io, data.bundleName, bundle);
 

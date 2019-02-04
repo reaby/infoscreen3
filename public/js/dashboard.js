@@ -75,6 +75,7 @@ socket.on("callback.dashboard.sync", function (data) {
     var transitionArray = [];
     var values = ["bars", "blinds", "blinds3d", "zip", "blocks", "blocks2", "concentric", "warp", "cube", "tiles3d", "tiles3dprev", "slide", "swipe", "dissolve"];
 
+    transitionArray.push({name: "random", value: null});
     for (var i in values) {
         transitionArray.push({name: values[i], value: values[i]});
     }

@@ -35,6 +35,8 @@ $(function () {
         on: 'hover',
     });
 
+    $("#displaytime").checkbox();
+
     displayTime();
     setInterval(displayTime, 1000);
 });
@@ -171,8 +173,39 @@ socket.on('callback.edit.updateFileList', function (data) {
     }
 });
 
-socket.on('callbackEdit', function (data) {
+socket.on('callback.edit', function (data) {
     canvas.clear();
+
+    $("#duration").val(data.slideData.duration + "");
+    if (data.slideData.displayTime) {
+        $("#displaytime").checkbox('set checked');
+    } else {
+        $("#displaytime").checkbox('set unchecked');
+    }
+
+    var transitionArray = [];
+    var values = ["bars", "blinds", "blinds3d", "zip", "blocks", "blocks2", "concentric", "warp", "cube", "tiles3d", "tiles3dprev", "slide", "swipe", "dissolve"];
+
+    transitionArray.push({name: "default", value: null});
+    for (var i in values) {
+        transitionArray.push({name: values[i], value: values[i]});
+    }
+
+    $('#transitions')
+        .dropdown({
+            direction: "downward",
+            values: transitionArray,
+            action: function (text, value) {
+                $('#transitions').dropdown("hide");
+                $('#transitions').dropdown("set selected", value)
+                $('#currentTransition').text(text);
+
+            }
+        }).dropdown("set selected", data.slideData.transition);
+
+    $('#currentTransition').text(data.slideData.transition || "default");
+
+
     if (data.bundleData.useWebFonts) {
         if (data.bundleData.styleHeader.fontFamily !== bundleData.styleHeader.fontFamily || data.bundleData.styleText.fontFamily !== bundleData.styleText.fontFamily) {
             WebFont.load({
@@ -396,14 +429,36 @@ function save() {
             break;
         }
     }
-    socket.emit("edit.save", {
+
+    var duration = null;
+    if ($.isNumeric($("#duration").val())) {
+        duration = parseFloat($("#duration").val());
+    }
+
+    var checked = false;
+    if ($("#displaytime").checkbox('is checked')) {
+        checked = null;
+    }
+
+    var transition = $("#transitions").dropdown("get value");
+    if (transition === "null") transition = null;
+
+
+    var obj = {
         bundleName: bundle,
         name: name,
         fileName: file,
+        duration: duration,
         json: canvas.toJSON(['id']),
         png: canvas.toDataURL('png'),
-        displayId: displayId
-    });
+        displayId: displayId,
+        displayTime: checked,
+        transition: transition,
+    };
+
+    console.log(obj);
+
+    socket.emit("edit.save", obj);
 }
 
 

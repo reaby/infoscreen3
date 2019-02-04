@@ -3,6 +3,7 @@
 		"uuid": "cfc55645-fd10-4f4d-b6f0-3dd34b68192e",
 		"name": "bundle2",
 		"duration": null,
+		"transition": null,
 		"enabled": true,
 		"displayTime": true,
 		"type": "slide",
@@ -13,6 +14,7 @@
 		"name": "dia 3",
 		"duration": null,
 		"enabled": true,
+		"transition": null,
 		"displayTime": true,
 		"type": "slide",
 		"index": 1

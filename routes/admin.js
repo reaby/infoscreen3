@@ -58,7 +58,9 @@ module.exports = function (displays) {
 
         let output = [];
         for (let file of bundleImages) {
-            output.push({url: "/images/" + bundle + "/" + file, name: file});
+            if (file.match(/(.*\.png)|(.*\.jpg)/i)) {
+                output.push({url: "/images/" + bundle + "/" + file, name: file});
+            }
         }
 
         res.render('ajax/bundleImageList', {bundleImages: output});

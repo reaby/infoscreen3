@@ -26,7 +26,7 @@
             </div>
             <div class="field">
                 <label>Display duration (seconds), leave blank for default</label>
-                <input type="number" id="duration"/>
+                <input type="number" id="duration" min="5"/>
             </div>
             <div class="field">
                 <div id="displaytime" class="ui toggle checkbox">
@@ -78,8 +78,8 @@
 
             $("#name").val(json.name);
             $("#weburl").val(json.webUrl);
-            $("#duration").val(json.duration+"");
             $("#zoom").val(json.zoom+"");
+            $("#duration").val(json.duration+"");
             if (json.displayTime) {
                 $("#displaytime").checkbox('set checked', true);
             } else {

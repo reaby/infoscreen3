@@ -104,13 +104,7 @@ socket.on('pong', function () {
 });
 
 socket.on('callback.time', function (data) {
-
-    if ($('#time').hasClass('flipOutX')) {
-        $('#time').removeClass('flipOutX').addClass("flipInX");
-    } else {
-        $('#time').addClass('flipOutX').removeClass("flipInX");
-    }
-
+    toggleTime();
 });
 
 /** callback Load **/
@@ -174,6 +168,22 @@ function fixImageSizes() {
         height = Math.floor(width * aspect);
 }
 
+function toggleTime(bool = null) {
+    if (bool === null) {
+        if ($('#time').hasClass('flipOutX')) {
+            toggleTime(true);
+            return;
+        } else {
+            toggleTime(false);
+            return;
+        }
+    }
+    if (bool) {
+        $('#time').removeClass('flipOutX').addClass("flipInX");
+    } else {
+        $('#time').addClass('flipOutX').removeClass("flipInX");
+    }
+}
 
 function checkBlackout() {
     updateTimeout();
@@ -188,6 +198,12 @@ function nextSlide(data) {
     serverOptions = data.serverOptions;
     bundleData = data.bundleData;
     checkImages(data.slides);
+
+    if (serverOptions.currentMeta.displayTime !== null) {
+        toggleTime(serverOptions.currentMeta.displayTime);
+    } else {
+        toggleTime(serverOptions.diplayTime);
+    }
 
     if (serverOptions.isAnnounce) {
         $("#" + getWebLayer()).addClass("fadeOut").removeClass("fadeIn");
@@ -215,10 +231,15 @@ function nextSlide(data) {
                 displayWebPage(serverOptions.currentMeta.webUrl);
                 break;
             default:
+                var transition = serverOptions.transition;
+                if (serverOptions.currentMeta.transition !== null ) {
+                    transition = serverOptions.currentMeta.transition;
+                }
+
                 $("#" + getWebLayer()).addClass("fadeOut").removeClass("fadeIn");
                 $("#" + getWebLayer(1)).addClass("fadeOut").removeClass("fadeIn");
                 $("#slider").show();
-                window.f.showImageById(serverOptions.currentFile, serverOptions.transition);
+                window.f.showImageById(serverOptions.currentFile, transition);
                 break;
         }
     }
