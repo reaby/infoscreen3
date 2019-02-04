@@ -148,3 +148,14 @@ iframe {
     position: fixed;
     z-index: 1;
 }
+
+.web {
+    transform: scale(1.0);
+    transform-origin: 50% 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: 2;
+    background: none;
+    opacity: 0;
+}
+

@@ -1,0 +1,103 @@
+{% extends 'layout/edit.twig' %}
+
+{% block header %}
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        let bundle = "{{ bundle }}";
+        let file = "{{ file }}";
+        let displayId = {{ displayId }};
+    </script>
+{% endblock %}
+
+{% block body %}
+    <div class="ui segment">
+        <form class="ui form">
+            <div class="field">
+                <label>Name</label>
+                <input type="text" id="name" placeholder="weblink 1" required>
+            </div>
+            <div class="field">
+                <label>Url</label>
+                <input type="text" id="weburl" placeholder="http://user:pass@localhost.lan/path" required>
+            </div>
+            <div class="field">
+                <label>Zoom Page by</label>
+                <input type="number" id="zoom" step="0.1" min="0.5"/>
+            </div>
+            <div class="field">
+                <label>Display duration (seconds), leave blank for default</label>
+                <input type="number" id="duration"/>
+            </div>
+            <div class="field">
+                <div id="displaytime" class="ui toggle checkbox">
+                    <input type="checkbox"/>
+                    <label>Display time</label>
+                </div>
+            </div>
+            <div class="ui basic button" onclick="save();">Save</div>
+            <div class="ui basic button" onclick="window.close()">Cancel</div>
+        </form>
+    </div>
+    <script>
+        var socket = io.connect("{{ config.serverUrl }}:{{ config.serverListenPort }}/admin");
+
+        $(function () {
+            $("#time").checkbox();
+
+        });
+
+        function save() {
+            var duration = null;
+            var zoom = 1.0;
+            if ($.isNumeric($("#duration").val())) {
+                duration = parseInt($("#duration").val());
+
+            }if ($.isNumeric($("#zoom").val())) {
+                zoom = parseFloat($("#zoom").val());
+            }
+
+            var obj = {
+                filename: file,
+                bundleName: bundle,
+                name: $("#name").val(),
+                webUrl: $("#weburl").val(),
+                duration: duration,
+                zoom: zoom,
+                displayTime: $("#displaytime").checkbox('is checked')
+            };
+            socket.emit("edit.saveLink", obj);
+        }
+
+        socket.on("connect", function () {
+            socket.emit("admin.editLink", {bundleName: bundle, fileName: file});
+        });
+
+
+        socket.on("callback.webpage", function (data) {
+            var json = data.json;
+
+            $("#name").val(json.name);
+            $("#weburl").val(json.webUrl);
+            $("#duration").val(json.duration+"");
+            $("#zoom").val(json.zoom+"");
+            if (json.displayTime) {
+                $("#displaytime").checkbox('set checked', true);
+            } else {
+                $("#displaytime").checkbox('set unchecked', false);
+            }
+
+        });
+
+        socket.on("callback.saveLink", function (data) {
+            if (!data.err) {
+                window.close();
+            } else {
+                alert(data.err);
+            }
+        });
+
+
+    </script>
+
+{% endblock %}
+

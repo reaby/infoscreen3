@@ -1,18 +1,20 @@
 [
 	{
-		"file": "cfc55645-fd10-4f4d-b6f0-3dd34b68192e",
+		"uuid": "cfc55645-fd10-4f4d-b6f0-3dd34b68192e",
 		"name": "bundle2",
 		"duration": null,
 		"enabled": true,
 		"displayTime": true,
+		"type": "slide",
 		"index": 0
 	},
 	{
-		"file": "21f0451b-52ca-4da2-bdbb-dce3b8092c3e",
+		"uuid": "21f0451b-52ca-4da2-bdbb-dce3b8092c3e",
 		"name": "dia 3",
 		"duration": null,
 		"enabled": true,
 		"displayTime": true,
+		"type": "slide",
 		"index": 1
 	}
 ]

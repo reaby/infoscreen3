@@ -123,11 +123,9 @@ socket.on("callback.dashboard.updateSlides", function (data) {
     console.log("update");
     if (serverOptions.currentBundle === data.bundleName) {
         bundleSettings = data.bundleSettings;
-        console.log("slides");
         updateSlides(data.bundleSettings);
     }
 });
-
 
 
 socket.on("callback.dashboard.update", function (data) {
@@ -185,11 +183,22 @@ $(window).bind("resize", function () {
 });
 
 function createNew() {
-    editSlide("");
+    editSlide("", "slide");
 }
 
-function editSlide(name) {
-    window.open("/admin/edit/slide?bundle=" + serverOptions.currentBundle + "&file=" + name + "&displayId=" + displayId, '_blank', 'location=no,height=800,width=1304,scrollbars=no,status=no');
+function addLink() {
+    editSlide("", "webpage");
+}
+
+function editSlide(name, type) {
+    switch (type) {
+        case "slide":
+            window.open("/admin/edit/slide?bundle=" + serverOptions.currentBundle + "&file=" + name + "&displayId=" + displayId, '_blank', 'location=no,height=800,width=1304,scrollbars=no,status=no');
+            break;
+        case "webpage":
+            window.open("/admin/edit/link?bundle=" + serverOptions.currentBundle + "&file=" + name + "&displayId=" + displayId, '_blank', 'location=no,height=400,width=600,scrollbars=no,status=no');
+            break;
+    }
 }
 
 function emit(callback, data) {
@@ -241,20 +250,22 @@ function updateSlides(settings) {
             color = "red";
         }
         var iconStatus = "play";
-        if (serverOptions.currentFile === slide.file) {
+        if (serverOptions.currentFile === slide.uuid) {
             iconStatus = "play";
             currentIndex = index;
         }
 
-        output += '<div class="ui ' + color + ' message item" id="' + slide.file + '">' +
+        var slideType = "'" + slide.type + "'";
+
+        output += '<div class="ui ' + color + ' message item" id="' + slide.uuid + '">' +
             '<div class="right floated content">' +
-            '<button class="ui small basic inverted icon button" onclick="emit(\'controls.preview\', {fileName: \'' + slide.file + '\', bundle: \'' + serverOptions.currentBundle + '\' });"><i class="search icon"></i></button>' +
-            '<button class="ui small basic inverted icon button" onclick="emit(\'controls.skipTo\',{fileName: \'' + slide.file + '\'});"><i class="step forward icon"></i></button>' +
-            '<button class="ui small basic inverted icon button" onclick="editSlide(\'' + slide.file + '\')"><i class="edit outline icon"></i></button>' +
-            '<button class="ui small basic inverted icon button" onclick="remove({uuid: \'' + slide.file + '\'});"><i class="delete icon"></i></button>' +
+            '<button class="ui small basic inverted icon button" onclick="emit(\'controls.preview\', {fileName: \'' + slide.uuid + '\', bundle: \'' + serverOptions.currentBundle + '\' });"><i class="search icon"></i></button>' +
+            '<button class="ui small basic inverted icon button" onclick="emit(\'controls.skipTo\',{fileName: \'' + slide.uuid + '\'});"><i class="step forward icon"></i></button>' +
+            '<button class="ui small basic inverted icon button" onclick="editSlide(\'' + slide.uuid + '\', ' + slideType + ')"><i class="edit outline icon"></i></button>' +
+            '<button class="ui small basic inverted icon button" onclick="remove({uuid: \'' + slide.uuid + '\'});"><i class="delete icon"></i></button>' +
             '</div>' +
             '<div class="content">' +
-            '<i class="large toggle ' + status + ' icon" onclick="emit(\'controls.toggle\', {fileName: \'' + slide.file + '\'});"></i>' +
+            '<i class="large toggle ' + status + ' icon" onclick="emit(\'controls.toggle\', {fileName: \'' + slide.uuid + '\'});"></i>' +
             '<div class="editable">' + slide.name.replace(".json", "") + '</div>' +
             '</div>' +
             '</div>';
@@ -273,6 +284,7 @@ function remove(obj) {
         emit('admin.removeSlide', obj);
     }
 }
+
 function forceReload() {
     if (confirm("Really reload all connected display clients ?")) {
         emit('admin.reload');

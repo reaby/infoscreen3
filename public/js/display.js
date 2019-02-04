@@ -172,10 +172,6 @@ function fixImageSizes() {
         aspect = (0.9 / 1.6),
         width = con.innerWidth(),
         height = Math.floor(width * aspect);
-
-
-    $("#layer0").css("width", width + "px").css("height", height + "px");
-    $("#layer1").css("width", width + "px").css("height", height + "px");
 }
 
 
@@ -194,6 +190,9 @@ function nextSlide(data) {
     checkImages(data.slides);
 
     if (serverOptions.isAnnounce) {
+        $("#" + getWebLayer()).addClass("fadeOut").removeClass("fadeIn");
+        $("#" + getWebLayer(1)).addClass("fadeOut").removeClass("fadeIn");
+
         try {
             var randomId = uuidv4();
             var image = new Image();
@@ -206,8 +205,24 @@ function nextSlide(data) {
             console.log(err);
         }
     } else {
-        window.f.showImageById(serverOptions.currentFile, serverOptions.transition);
+
+        switch (serverOptions.currentMeta.type) {
+            case "webpage":
+                $("#slider").hide();
+                $("#" + getWebLayer()).css("transform", "scale(" + serverOptions.currentMeta.zoom + ")");
+                $("#" + getWebLayer()).addClass("fadeIn").removeClass("fadeOut");
+
+                displayWebPage(serverOptions.currentMeta.webUrl);
+                break;
+            default:
+                $("#" + getWebLayer()).addClass("fadeOut").removeClass("fadeIn");
+                $("#" + getWebLayer(1)).addClass("fadeOut").removeClass("fadeIn");
+                $("#slider").show();
+                window.f.showImageById(serverOptions.currentFile, serverOptions.transition);
+                break;
+        }
     }
+
     setBackground(bundleData.background);
 }
 
@@ -292,13 +307,16 @@ function checkStream(serverOptions) {
  */
 function preloadImages(allSlides) {
     window.f.clearImages();
+    console.log(allSlides);
 
     for (var i in allSlides) {
         try {
-            var image = new Image();
-            image.src = "/render/" + serverOptions.currentBundle + "/" + allSlides[i].file + ".png";
-            image.id = allSlides[i].file;
-            window.f.images.push(image);
+            if (allSlides[i].type === "slide") {
+                var image = new Image();
+                image.src = "/render/" + serverOptions.currentBundle + "/" + allSlides[i].uuid + ".png";
+                image.id = allSlides[i].uuid;
+                window.f.images.push(image);
+            }
         } catch (err) {
             console.log(err);
         }
@@ -310,32 +328,36 @@ function reloadImage(data) {
     console.log("reloadImage");
     console.log(data);
 
-    window.f.clearImageById(data.file);
+    window.f.clearImageById(data.uuid);
     window.f.setupImages();
 
     var image = new Image();
-    image.src = "/render/" + data.bundle + "/" + data.file + ".png?" + uuidv4();
-    image.id = data.file;
+    image.src = "/render/" + data.bundle + "/" + data.uuid + ".png?" + uuidv4();
+    image.id = data.uuid;
     window.f.images.push(image);
-
 
 }
 
+var fluxIds;
+var allIds;
+
 function checkImages(allSlides) {
-    var fluxIds = [];
-    var allIds = [];
+    fluxIds = [];
+    allIds = [];
 
     var fImages = window.f.images;
     for (var j in fImages) {
         fluxIds.push(fImages[j].id);
     }
     for (var k in allSlides) {
-        allIds.push(allSlides[k].file);
+        if (allSlides[k].type == "slide") {
+            allIds.push(allSlides[k].uuid);
+        }
     }
 
     // new slides count is less than slides in rotation
     // remove slides
-    if (allSlides.length < fluxIds.length) {
+    if (allIds.length < fluxIds.length) {
         console.log("less");
         var diffIds = symmetricDifference(fluxIds, allIds);
         for (var l in diffIds) {
@@ -344,13 +366,13 @@ function checkImages(allSlides) {
     } else
     // else count is greater, so add slides
     {
-        for (var i in allSlides) {
+        for (var i in allIds) {
             try {
-                if (fluxIds.indexOf(allSlides[i].file) < 0) {
-                    console.log("adding");
+                if (fluxIds.indexOf(allIds[i]) < 0) {
+                    console.log("adding", "/render/" + serverOptions.currentBundle + "/" + allIds[i] + ".png");
                     var image = new Image();
-                    image.src = "/render/" + serverOptions.currentBundle + "/" + allSlides[i].file + ".png";
-                    image.id = allSlides[i].file;
+                    image.src = "/render/" + serverOptions.currentBundle + "/" + allIds[i] + ".png";
+                    image.id = allIds[i];
                     window.f.images.push(image);
                 }
             } catch (err) {
@@ -377,6 +399,23 @@ function updateTimeout() {
     connectionTimeoutId = setTimeout(function () {
         $("#networkstatus").css("opacity", 1);
     }, 30000)
+}
+
+
+function displayWebPage(url) {
+    var ifr = document.getElementById(getWebLayer());
+    ifr.contentWindow.location.href = url;
+    $("#" + getWebLayer()).addClass("fadeIn").removeClass("fadeOut");
+
+    layer++;
+    if (layer > 1) {
+        layer = 0;
+    }
+}
+
+function getWebLayer(offset) {
+    if (offset === undefined) offset = 0;
+    return "webLayer" + (layer + offset) % 2;
 }
 
 

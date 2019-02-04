@@ -26,7 +26,7 @@ class bundleClass {
 
     findSlideByUuid(uuid) {
         for (let slide of this.allSlides) {
-            if (slide.file === uuid) {
+            if (slide.uuid === uuid) {
                 return slide;
             }
         }
@@ -38,26 +38,27 @@ class bundleClass {
         let newList = [];
         let x = 0;
         for (let slide of this.allSlides) {
-            if (slide.file !== uuid) {
+            if (slide.uuid !== uuid) {
                 let ent = slide;
                 ent.index = x;
                 newList.push(ent);
                 x++;
             }
-            if (slide.file === uuid) {
-                let path = "./data/" + this.name;
-
-                try {
-                    if (fs.existsSync(path + "/render/" + uuid + ".png")) {
-                        fs.unlinkSync(path + "/render/" + uuid + ".png");
-                        cli.success("removing file:" + path + "/render/" + uuid + ".png");
+            if (slide.uuid === uuid) {
+                if (slide.type === "slide") {
+                    let path = "./data/" + this.name;
+                    try {
+                        if (fs.existsSync(path + "/render/" + uuid + ".png")) {
+                            fs.unlinkSync(path + "/render/" + uuid + ".png");
+                            cli.success("removing file:" + path + "/render/" + uuid + ".png");
+                        }
+                        if (fs.existsSync(path + "/slides/" + uuid)) {
+                            fs.unlinkSync(path + "/slides/" + uuid);
+                            cli.success("removing file:" + path + "/slides/" + uuid);
+                        }
+                    } catch (err) {
+                        cli.error("error while deleting file:" + uuid, err);
                     }
-                    if (fs.existsSync(path + "/slides/" + uuid)) {
-                        fs.unlinkSync(path + "/slides/" + uuid);
-                        cli.success("removing file:" + path + "/slides/" + uuid);
-                    }
-                } catch (err) {
-                    cli.error("error while deleting file:" + uuid, err);
                 }
             }
         }
@@ -67,7 +68,7 @@ class bundleClass {
 
     setSlideStatus(uuid, status) {
         for (let i in this.allSlides) {
-            if (this.allSlides[i].file === uuid) {
+            if (this.allSlides[i].uuid === uuid) {
                 this.allSlides[i].enabled = status;
                 this.sync();
                 break;
@@ -77,7 +78,7 @@ class bundleClass {
 
     setIndex(uuid, index) {
         for (let i in this.allSlides) {
-            if (this.allSlides[i].file === uuid) {
+            if (this.allSlides[i].uuid === uuid) {
                 this.allSlides[i].index = index;
                 this.sync();
                 return;
@@ -87,7 +88,7 @@ class bundleClass {
 
     setName(uuid, name) {
         for (let i in this.allSlides) {
-            if (this.allSlides[i].file === uuid) {
+            if (this.allSlides[i].uuid === uuid) {
                 this.allSlides[i].name = name;
                 this.save();
                 return;
@@ -101,9 +102,9 @@ class bundleClass {
         this.allSlides.sort(sortByProperty('index'));
         for (let slide of this.allSlides) {
             if (slide.enabled) {
-                this.enabledSlides.push(slide.file.replace(".json", ""));
+                this.enabledSlides.push(slide.uuid.replace(".json", ""));
             } else {
-                this.disabledSlides.push(slide.file.replace(".json", ""));
+                this.disabledSlides.push(slide.uuid.replace(".json", ""));
             }
         }
     }

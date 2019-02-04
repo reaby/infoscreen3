@@ -61,10 +61,12 @@
             <button id="toggleTime" class="ui teal basic button" onclick="emit('controls.time.toggle');">
                 Toggle Time
             </button>
+            {% if config.mediaServer %}
             <button id="stream" class="ui blue basic button"
                     onclick="emit('controls.startStream', {streamName: 'STREAM_NAME' });">
                 Start Stream
             </button>
+            {% endif %}
             <button class="ui red basic button"
                     onclick="forceReload()">
                 Force Reload
@@ -95,6 +97,7 @@
                     </h1>
 
                     <button class="ui basic inverted button" onclick="createNew();">Create new</button>
+                    <button class="ui basic inverted button" onclick="addLink();">Add Web page</button>
 
                     <div id="bundleSlides" class="ui sortable list">
 

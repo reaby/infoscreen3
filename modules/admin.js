@@ -240,7 +240,7 @@ class admin {
 
                 for (let slide of bundle.allSlides) {
                     // calculate new index for next slide;
-                    if (slide.file === serverOptions.currentFile) {
+                    if (slide.uuid === serverOptions.currentFile) {
                         serverOptions.loopIndex = slide.index + 1;
                     }
                 }
@@ -256,6 +256,69 @@ class admin {
                 bundle.removeUuid(data.uuid);
                 updateSlides(io, bundle.getBundleData().bundleName, bundle);
             });
+
+            /** edit web links **/
+
+            socket.on('admin.editLink', function (data) {
+                let bundle = self.bundleManager.getBundle(data.bundleName);
+                let bundleData = bundle.getBundleData();
+                let json = "{}";
+                if (data.fileName) {
+                    json = bundle.findSlideByUuid(data.fileName);
+                }
+                socket.emit("callback.webpage", {bundleData: bundleData, json: json});
+
+            });
+
+            socket.on('edit.saveLink', function (data) {
+
+                let filename = data.filename;
+                if (filename === "") {
+                    filename = uuidv4();
+                }
+                var duration = null;
+
+                if (data.duration === "") {
+                    data.duration = null;
+                }
+                try {
+                    let bundle = self.bundleManager.getBundle(data.bundleName);
+
+                    let template = {
+                        uuid: filename,
+                        name: data.name,
+                        duration: data.duration || null,
+                        enabled: true,
+                        displayTime: data.displayTime || true,
+                        type: "webpage",
+                        webUrl: data.webUrl,
+                        zoom: 1.0,
+                        index: bundle.allSlides.length
+                    };
+
+                    let obj = bundle.findSlideByUuid(filename);
+                    if (Object.keys(obj).length === 0 && obj.constructor === Object) {
+                        bundle.allSlides.push(template);
+                    } else {
+                        obj.webUrl = data.webUrl;
+                        obj.name = data.name;
+                        obj.duration = data.duration || null;
+                        obj.displayTime = data.displayTime || true;
+                        obj.zoom = parseFloat(data.zoom) || 1.0;
+                    }
+
+                    bundle.save();
+
+                    cli.success("save web link");
+                    socket.emit("callback.saveLink", {});
+                    updateSlides(io, data.bundleName, bundle);
+
+                } catch (err) {
+                    cli.error(err, "save web link");
+                    socket.emit("callback.saveLink", {error: err});
+                }
+            });
+
 
             /** edit **/
             socket.on('admin.editSlide', function (data) {
@@ -298,6 +361,7 @@ class admin {
                         duration: null,
                         enabled: true,
                         displayTime: true,
+                        type: "slide",
                         index: bundle.allSlides.length,
                     };
 

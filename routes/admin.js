@@ -28,6 +28,14 @@ module.exports = function (displays) {
         res.render('admin/edit', {config: config, bundle: bundle, displayId: displayId, file: file});
     });
 
+    router.get('/edit/link', function (req, res, next) {
+        let bundle = req.query['bundle'];
+        let file = req.query['file'];
+        let displayId = req.query['displayId'] || 0;
+        res.render('admin/link', {config: config, bundle: bundle, displayId: displayId, file: file});
+    });
+
+
     router.get('/bundle', function (req, res, next) {
         let bundles = getDirectories("./data");
         res.render('admin/listBundle', {config: config, bundles: bundles});

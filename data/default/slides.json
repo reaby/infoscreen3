@@ -1,26 +1,40 @@
 [
 	{
-		"file": "39e5205f-9ace-4597-9873-f9ea5846dff0",
+		"uuid": "39e5205f-9ace-4597-9873-f9ea5846dff0",
 		"name": "header",
 		"duration": null,
 		"enabled": true,
 		"displayTime": true,
+		"type": "slide",
 		"index": 0
 	},
 	{
-		"file": "6a298b8c-9246-411f-b364-2d73c7e292d0",
+		"uuid": "6a298b8c-9246-411f-b364-2d73c7e292d0",
 		"name": "header 3",
 		"duration": null,
 		"enabled": true,
 		"displayTime": true,
+		"type": "slide",
 		"index": 1
 	},
 	{
-		"file": "03191688-bb93-4376-a3ab-53ed790b2155",
+		"uuid": "03191688-bb93-4376-a3ab-53ed790b2155",
 		"name": "2 header",
 		"duration": null,
 		"enabled": true,
 		"displayTime": true,
+		"type": "slide",
 		"index": 2
+	},
+	{
+		"uuid": "xx91688-bb93-4376-a3ab-57ef755b4f0rd",
+		"name": "link: localhost",
+		"webUrl": "http://localhost",
+		"duration": 20,
+		"enabled": true,
+		"displayTime": true,
+		"type": "webpage",
+		"index": 3,
+		"zoom": 1
 	}
 ]

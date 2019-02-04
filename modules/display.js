@@ -41,6 +41,7 @@ class display {
             displayId: displayId,
             currentId: -1,
             currentBundle: "default",
+            currentMeta: {},
             currentFile: null,
             slideDuration: 10,
             loop: true,
@@ -183,6 +184,7 @@ class display {
             this.serverOptions.currentFile = slides[idx];
             this.serverOptions.slideDuration = bundle.findSlideByUuid(slides[idx]).duration || bundle.getBundleData().duration;
             this.serverOptions.currentId = bundle.enabledSlides.indexOf(this.serverOptions.currentFile);
+            this.serverOptions.currentMeta = bundle.findSlideByUuid(slides[idx]);
         }
 
         this.displayCurrentSlide();
