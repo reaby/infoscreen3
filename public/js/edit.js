@@ -197,7 +197,7 @@ socket.on('callback.edit', function (data) {
             values: transitionArray,
             action: function (text, value) {
                 $('#transitions').dropdown("hide");
-                $('#transitions').dropdown("set selected", value)
+                $('#transitions').dropdown("set selected", value);
                 $('#currentTransition').text(text);
 
             }

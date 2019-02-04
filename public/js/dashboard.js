@@ -85,16 +85,16 @@ socket.on("callback.dashboard.sync", function (data) {
             direction: "upward",
             values: transitionArray,
             action: function (text, value) {
-                $('#displays')
-                    .dropdown("hide");
+                $('#transitions').dropdown("hide");
+                $('#transitions').dropdown("set selected", value);
 
                 emit("admin.setTransition", {transition: value});
-                $('.currentTransition').text(value);
+                $('#currentTransition').text(text);
 
             }
         }).dropdown("set selected", serverOptions.transition);
 
-    $('#currentTransition').text(serverOptions.transition);
+    $('#currentTransition').text(serverOptions.transition || "random");
 
     var preview = document.getElementById('preview');
     preview.src = "/admin/preview?displayId=" + displayId + "&socket=" + encodeURIComponent(socket.id);
@@ -144,7 +144,7 @@ socket.on("callback.dashboard.update", function (data) {
     $('#currentBundle').text(serverOptions.currentBundle);
     $('#currentDisplay').text(displayList[displayId].name);
     $('#transitions').dropdown("set selected", serverOptions.transition);
-    $('#currentTransition').text(serverOptions.transition);
+    $('#currentTransition').text(serverOptions.transition || "random");
 
     $('.editable').editable(function (value, settings) {
         var uuid = $(this).parent().parent().attr("id");

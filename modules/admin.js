@@ -343,7 +343,12 @@ class admin {
             });
             /** change transition **/
             socket.on('admin.setTransition', function (data) {
-                getServerOptions(data.displayId).transition = data.transition;
+                var transition = data.transition;
+                if (data.transition === "null") {
+                    transition = null;
+                }
+
+                getServerOptions(data.displayId).transition = transition;
                 updateDashboard(io, data.displayId);
             });
 
