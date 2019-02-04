@@ -74,7 +74,11 @@ module.exports = function (server, app, io, dispatcher) {
         socket.on('displays', function () {
             let previewImages = [];
             for (let display of screenView) {
-                previewImages.push("/render/" + display.serverOptions.currentBundle + "/" + display.serverOptions.currentFile + ".png");
+                if (display.serverOptions.currentMeta.type === "slide") {
+                    previewImages.push("/render/" + display.serverOptions.currentBundle + "/" + display.serverOptions.currentFile + ".png");
+                } else {
+                    previewImages.push("/img/nopreview.png");
+                }
             }
             socket.emit("callback.displays", {displays: meta.displays, previewImages: previewImages});
         });
