@@ -208,7 +208,8 @@ function nextSlide(data) {
     if (serverOptions.isAnnounce) {
         $("#" + getWebLayer()).addClass("fadeOut").removeClass("fadeIn");
         $("#" + getWebLayer(1)).addClass("fadeOut").removeClass("fadeIn");
-
+        $("#slider").show();
+        
         try {
             var randomId = uuidv4();
             var image = new Image();
