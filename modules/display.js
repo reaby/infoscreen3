@@ -217,7 +217,7 @@ class display {
         // save temporarily png data...
         fs.writeFileSync("./tmp/display_" + this.serverOptions.displayId + ".png", pngData.replace(/^data:image\/png;base64,/, ""), "base64");
         let that = this;
-        if (duration) {
+        if (duration && duration >= 5) {
             this.serverOptions.loop = true;
             this.timeoutId.push(
                 setTimeout(function () {
