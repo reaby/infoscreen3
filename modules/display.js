@@ -210,12 +210,20 @@ class display {
         }
     }
 
-    overrideSlide(json, pngData) {
+    overrideSlide(json, pngData, duration) {
         this.clearTimers();
         this.serverOptions.loop = false;
         this.serverOptions.isAnnounce = true;
         // save temporarily png data...
         fs.writeFileSync("./tmp/display_" + this.serverOptions.displayId + ".png", pngData.replace(/^data:image\/png;base64,/, ""), "base64");
+        let that = this;
+        if (duration) {
+            this.serverOptions.loop = true;
+            this.timeoutId.push(
+                setTimeout(function () {
+                    that.mainLoop();
+                }, duration * 1000));
+        }
     }
 
     displayCurrentSlide() {

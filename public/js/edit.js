@@ -420,7 +420,12 @@ function removeSelectedObjects() {
 
 function cueSlide() {
     if (confirm('Pause show and force display of the current slide?')) {
-        let obj = {json: canvas.toJSON(['id']), png: canvas.toDataURL('png'), displayId: displayId};
+        var duration = null;
+        if ($.isNumeric($("#duration").val())) {
+            duration = parseFloat($("#duration").val());
+        }
+
+        let obj = {json: canvas.toJSON(['id']), png: canvas.toDataURL('png'), displayId: displayId, duration: duration};
         socket.emit("admin.override", obj);
     }
 }

@@ -199,7 +199,9 @@ class admin {
             // override
             socket.on('admin.override', function (data) {
                 let view = getView(parseInt(data.displayId));
-                view.overrideSlide(data.json, data.png);
+                console.log(data.duration);
+
+                view.overrideSlide(data.json, data.png, data.duration);
                 view.displayCurrentSlide();
             });
 
