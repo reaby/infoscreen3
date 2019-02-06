@@ -2,7 +2,11 @@
 
 {% block header %}
     <script src="/socket.io/socket.io.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jeditable.js/2.0.6/jquery.jeditable.min.js"></script>
+    {% if config.useLocalAssets %}
+        <script src="/assets/jquery.jeditable.min.js"></script>
+    {% else %}
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jeditable.js/2.0.6/jquery.jeditable.min.js"></script>
+    {% endif %}
 {% endblock %}
 
 {% block body %}

@@ -6,8 +6,6 @@ var displayList;
 
 
 socket.on('connect', function () {
-    canvas = new fabric.Canvas('edit');
-    canvas.includeDefaultValues = false;
     emit('admin.dashboard.sync');
 });
 
