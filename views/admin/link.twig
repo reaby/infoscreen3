@@ -22,7 +22,7 @@
             </div>
             <div class="field">
                 <label>Zoom Page by</label>
-                <input type="number" id="zoom" step="0.1" min="0.5"/>
+                <input type="number" id="zoom" step="0.1" min="0.5" value="1.0"/>
             </div>
             <div class="field">
                 <label>Display duration (seconds), leave blank for default</label>
@@ -52,7 +52,8 @@
             if ($.isNumeric($("#duration").val())) {
                 duration = parseInt($("#duration").val());
 
-            }if ($.isNumeric($("#zoom").val())) {
+            }
+            if ($.isNumeric($("#zoom").val())) {
                 zoom = parseFloat($("#zoom").val());
             }
 
@@ -75,6 +76,8 @@
 
         socket.on("callback.webpage", function (data) {
             var json = data.json;
+
+            var zoom = json.zoom || 1;
 
             $("#name").val(json.name);
             $("#weburl").val(json.webUrl);

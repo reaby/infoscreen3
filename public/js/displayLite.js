@@ -289,7 +289,7 @@ function displayWebPage(url) {
     var ifr = document.getElementById(getWebLayer());
     ifr.contentWindow.location.href = url;
     $("#" + getWebLayer()).addClass("fadeIn").removeClass("fadeOut");
-
+    $("#" + getWebLayer(1)).addClass("fadeOut").removeClass("fadeIn");
     weblayer++;
     if (weblayer > 1) {
         weblayer = 0;
