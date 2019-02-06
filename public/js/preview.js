@@ -1,7 +1,7 @@
 /** fabric **/
 var canvas;
 var displayId = 0;
-
+var slide = {};
 /** bundleData
  * @see data/default/bundle.json
  *
@@ -20,6 +20,10 @@ bundleData = {
 var displayGroup;
 displayGroup = [];
 
+var background = "";
+
+var serverOptions = {};
+
 /** background image **/
 var bgImage;
 
@@ -37,19 +41,6 @@ $(function () {
     }
     fixCanvas();
 
-    /* $(document).mouseenter(function () {
-         $('.ui.basic.modal')
-             .modal('show')
-         ;
-     });
-
-     $(document).mouseleave(function () {
-         $('.ui.basic.modal')
-             .modal('hide')
-         ;
-     });
- */
-
 });
 
 $(window).bind("resize", function () {
@@ -57,6 +48,7 @@ $(window).bind("resize", function () {
 });
 
 // socketio callbacks
+
 /** when connected **/
 socket.on('connect', function () {
     socket.emit("sync.preview", socketId);
@@ -66,59 +58,67 @@ socket.on('connect', function () {
 socket.on('callback.preview', function (data) {
     canvas.clear();
     displayId = data.displayId;
-
-    if (data.bundleData.useWebFonts) {
-        if (bundleData.styleHeader.fontFamily != data.bundleData.styleHeader.fontFamily || bundleData.styleText.fontFamily != data.bundleData.styleText.fontFamily) {
-            WebFont.load({
-                google: {
-                    families: [data.bundleData.styleHeader.fontFamily, data.bundleData.styleText.fontFamily]
-                },
-                timeout: 2000,
-                active: function () {
-
-                    nextSlide(data);
-                },
-                inactive: function () {
-
-                    nextSlide(data);
-                }
-            });
-        } else {
-            nextSlide(data);
-        }
-    } else {
-        nextSlide(data);
-    }
-
+    slide = data.slide;
     bundleData = data.bundleData;
     serverOptions = data.serverOptions;
 
-    displayGroup = new fabric.Group();
+    if (slide.type === "slide") {
+        if (data.bundleData.useWebFonts) {
+            if (bundleData.styleHeader.fontFamily != data.bundleData.styleHeader.fontFamily || bundleData.styleText.fontFamily != data.bundleData.styleText.fontFamily) {
+                WebFont.load({
+                    google: {
+                        families: [data.bundleData.styleHeader.fontFamily, data.bundleData.styleText.fontFamily]
+                    },
+                    timeout: 2000,
+                    active: function () {
 
-    setBackground(bundleData.background);
+                        nextSlide(data);
+                    },
+                    inactive: function () {
+
+                        nextSlide(data);
+                    }
+                });
+            } else {
+                nextSlide(data);
+            }
+        } else {
+            nextSlide(data);
+        }
+    }
+
+    displayGroup = new fabric.Group();
+    setBackground();
 });
 
 
-function setBackground(background) {
-    background = "/background/" + bundleData.bundleName + "/" + background;
+function setBackground() {
+    background = "/background/" + bundleData.bundleName + "/" + bundleData.background;
 
     var video = document.getElementById("bgvid");
     var bg = $("#bg");
     var bgImage = document.getElementById("bgimg");
-    if (background.indexOf(".mp4") !== -1) {
-        if (parseUrl(video.src) !== background) {
-            bg.hide();
-            $(video).show();
-            video.src = background;
-            video.play();
-        }
+    if (slide.type === "webpage") {
+        bg.show();
+        $(video).hide();
+        bgImage.src = "/img/nopreview.png";
     } else {
-        if (parseUrl(bgImage.src) !== background) {
-            bgImage.src = background;
-            bg.show();
-            $(video).hide();
-            video.pause();
-            video.src = "";
+        if (background.indexOf(".mp4") !== -1) {
+
+            if (parseUrl(video.src) !== background) {
+                bg.hide();
+                $(video).show();
+                video.src = background;
+                video.play();
+            }
+        } else {
+            if (parseUrl(bgImage.src) !== background) {
+                bgImage.src = background;
+                bg.show();
+                $(video).hide();
+                video.src = null;
+                video.pause();
+            }
         }
     }
 }
@@ -126,7 +126,6 @@ function setBackground(background) {
 function parseUrl(url) {
     return '/background' + url.split('background')[1]
 }
-
 
 /** resize canvas to max width keeping aspect ratio 16:9**/
 function fixCanvas() {
@@ -162,7 +161,7 @@ function nextSlide(data, updateOptions) {
     setBackground(data.bundleData.background);
 
     canvas.loadFromJSON(data.json, function () {
-
+        canvas.renderAll();
     }, function (o, object) {
         object.set(data.bundleData.styleText);
         if (object.id === "header") {

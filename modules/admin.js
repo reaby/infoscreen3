@@ -162,6 +162,7 @@ class admin {
                         {
                             bundleData: bundle.getBundleData(),
                             json: json,
+                            slide: bundle.findSlideByUuid(data.fileName),
                             displayId: data.displayId
                         }
                     );
