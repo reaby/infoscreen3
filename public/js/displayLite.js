@@ -22,7 +22,6 @@ bundleData = {
  * **************************/
 
 $(function () {
-
     fixImageSizes();
     displayTime();
     setInterval(displayTime, 1000);
@@ -64,14 +63,10 @@ socket.on('callback.blackout', function (data) {
 });
 
 socket.on('callback.time', function (data) {
-
-    if ($('#time').hasClass('flipOutX')) {
-        $('#time').removeClass('flipOutX').addClass("flipInX");
-    } else {
-        $('#time').addClass('flipOutX').removeClass("flipInX");
-    }
-
+    serverOptions.displayTime = data;
+    checkTimeDisplay();
 });
+
 
 /** callback Load **/
 socket.on('callbackLoad', function (data) {
@@ -130,6 +125,22 @@ function fixImageSizes() {
 }
 
 
+function checkTimeDisplay() {
+    var bool = serverOptions.displayTime;
+
+    if (serverOptions.currentMeta.displayTime !== null) {
+        bool = serverOptions.currentMeta.displayTime;
+    }
+
+    if (bool) {
+        $('#time').removeClass('flipOutX').addClass("flipInX");
+    } else {
+        $('#time').addClass('flipOutX').removeClass("flipInX");
+    }
+
+}
+
+
 function checkBlackout() {
     updateTimeout();
     if (serverOptions.blackout) {
@@ -142,6 +153,7 @@ function checkBlackout() {
 function nextSlide(data) {
     serverOptions = data.serverOptions;
     bundleData = data.bundleData;
+    checkTimeDisplay();
 
     var elem = document.getElementById("img" + layer);
     if (serverOptions.isAnnounce) {
