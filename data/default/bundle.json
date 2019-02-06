@@ -1,18 +1,21 @@
 {
-  "bundleName": "default",
-  "background": "bg.jpg",
-  "duration": 20,
-  "useWebFonts": false,
-  "styleHeader": {
-    "fill": "#f90",
-    "fontSize": 56,
-    "fontWeight": 900,
-    "fontFamily": "Arial Black"
-  },
-  "styleText": {
-    "fill": "#fff",
-    "fontSize": 32,
-    "fontWeight": 900,
-    "fontFamily": "Arial Black"
-  }
+	"bundleName": "default",
+	"background": "bg.jpg",
+	"duration": 40,
+	"transition": "blocks2",
+	"useWebFonts": false,
+	"styleHeader": {
+		"stroke": "",
+		"fill": "#f90",
+		"fontSize": "56",
+		"fontWeight": 900,
+		"fontFamily": "Arial Black"
+	},
+	"styleText": {
+		"stroke": "",
+		"fill": "#fff",
+		"fontSize": "32",
+		"fontWeight": 900,
+		"fontFamily": "Arial Black"
+	}
 }

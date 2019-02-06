@@ -202,6 +202,10 @@ function editSlide(name, type) {
     }
 }
 
+function editBundle(bundleName) {
+    window.open("/admin/edit/bundle?bundle=" + bundleName, '_blank', 'location=no,height=500,width=700,scrollbars=yes,status=no');
+}
+
 function emit(callback, data) {
     if (data === undefined || data === null) {
         data = {};

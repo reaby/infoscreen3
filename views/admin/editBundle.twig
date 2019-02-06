@@ -5,5 +5,159 @@
 {% endblock %}
 
 {% block body %}
+    <div class="ui segment">
+        <h1>Edit Bundle</h1>
+        <form action="/admin/edit/bundle" method="post" class="ui form">
+            <input name="bundle" value="{{ bundle }}" hidden/>
 
+            <div class="field">
+                <label>Bundle Name</label>
+                <input type="text" value="{{ bundleData.bundleName }}" name="bundleName"/>
+            </div>
+            <div class="field">
+
+                <label>Background</label>
+                <input type="text" value="{{ bundleData.background }}" name="background"/>
+
+            </div>
+            <div class="field">
+                <label>Default Transition</label>
+                <div id="transitions" class="ui selection dropdown">
+                    <input id="inputTransition" name="transition" value="{{ bundleData.transition }}" hidden/>
+                    <div class="ui small breadcrumb">
+                        <span id="currentTransition" class="section"></span>
+                    </div>
+                    <i class="dropdown icon"></i>
+                </div>
+            </div>
+            <div class="field">
+                <label>Default Duration</label>
+                <input type="number" value="{{ bundleData.duration }}" name="duration"/>
+            </div>
+            <div class="ui info icon message">
+                <i class="warning icon"></i>
+                <div class="content">
+                    <div class="header">
+                        Notice for Web Fonts
+                    </div>
+                    <p>When checked, fonts with according names will be loaded from http://fonts.google.com,
+                        Both of the fonts has to be then web fonts, you can't mix system and web fonts.</p>
+                </div>
+            </div>
+            <div class="field">
+                <div id="webfonts" class="ui toggle {% if bundleData.useWebFonts %} checked {% endif %} checkbox">
+                    <input type="checkbox" {% if bundleData.useWebFonts %} checked {% endif %} name="useWebFonts"/>
+                    <label>Use WebFonts</label>
+                </div>
+
+            </div>
+
+
+            <h1>Style</h1>
+            <div class="ui negative icon message">
+                <i class="warning icon"></i>
+                <div class="content">
+                    <div class="header">
+                        Notice for Style
+                    </div>
+                    <p>Due backend doesn't have rendering possible, the changed values here will affect only new saved slides.
+                        If you're about to change existing bundle slides, be sure to re-save every created slide again!
+                    </p>
+                </div>
+            </div>
+
+            <h2>Header</h2>
+
+            <div class="field">
+                <label>Font name</label>
+                <input type="text" value="{{ bundleData.styleHeader.fontFamily }}" name="headerFontFamily"/>
+            </div>
+
+            <div class="field">
+                <label>Font size</label>
+                <input type="number" value="{{ bundleData.styleHeader.fontSize }}" name="headerFontSize"/>
+            </div>
+            <div class="field">
+                <label>Font Color</label>
+                <input id="headerFill" type="text" value="{{ bundleData.styleHeader.fill }}" name="headerFill"
+                       onchange="previewColor(this)"/>
+            </div>
+            <div class="field">
+                <label>Font Border Color</label>
+                <input id="headerStroke" type="text" value="{{ bundleData.styleHeader.stroke }}" name="headerStroke"
+                       onchange="previewColor(this)"/>
+            </div>
+
+            <h2>Normal Text</h2>
+
+            <div class="field">
+                <label>Font name</label>
+                <input type="text" value="{{ bundleData.styleText.fontFamily }}" name="textFontFamily"/>
+            </div>
+
+            <div class="field">
+                <label>Font size</label>
+                <input type="number" value="{{ bundleData.styleText.fontSize }}" name="textFontSize"/>
+            </div>
+            <div class="field">
+                <label>Font Color</label>
+                <input id="textFill" type="text" value="{{ bundleData.styleText.fill }}" name="textFill"
+                       onchange="previewColor(this)"/>
+            </div>
+            <div class="field">
+                <label>Font Border Color</label>
+                <input id="textStroke" type="text" value="{{ bundleData.styleText.stroke }}" name="textStroke"
+                       onchange="previewColor(this)"/>
+            </div>
+
+
+            <div class="field">
+                <button type="submit" class="ui basic button">Save</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+
+
+        var transitionArray = [];
+        var values = ["bars", "blinds", "blinds3d", "zip", "blocks", "blocks2", "concentric", "warp", "cube", "tiles3d", "tiles3dprev", "slide", "swipe", "dissolve"];
+
+        transitionArray.push({name: "random", value: ""});
+        for (var i in values) {
+            transitionArray.push({name: values[i], value: values[i]});
+        }
+
+        $('#transitions')
+            .dropdown({
+                direction: "downward",
+                values: transitionArray,
+                action: function (text, value) {
+                    $('#transitions').dropdown("hide");
+                    $('#transitions').dropdown("set selected", value);
+
+                    $('#inputTransition').val(value);
+
+                    $('#currentTransition').text(text);
+
+                }
+            }).dropdown("set selected", {{ bundleData.transition }});
+
+        $('#currentTransition').text( {{  bundleData.transition }} );
+
+        $("#webfonts").checkbox();
+
+
+        $(function () {
+            previewColor($("#headerFill"));
+            previewColor($("#headerStroke"));
+            previewColor($("#textFill"));
+            previewColor($("#textStroke"));
+        });
+
+        function previewColor(element) {
+            $(element).css("background", $(element).val());
+        }
+
+    </script>
 {% endblock %}

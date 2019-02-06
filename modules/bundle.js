@@ -117,6 +117,7 @@ class bundleClass {
     save() {
         try {
             fs.writeFileSync("./data/" + this.name + "/slides.json", this.toJson());
+            fs.writeFileSync("./data/" + this.name + "/bundle.json", JSON.stringify(this.bundleData, null, "\t"));
         } catch (e) {
             cli.error("error while saving file:", e);
         }

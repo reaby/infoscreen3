@@ -2,7 +2,7 @@ let meta = require("../data/meta.json");
 let display = require("./display.js");
 let admin = require("./admin.js");
 let cli = require('./cli.js');
-let bundleManager = require('./bundleManager.js');
+let _bundleManager = require('./bundleManager.js');
 let chalk = require('chalk');
 let fs = require('fs');
 
@@ -48,17 +48,17 @@ module.exports = function (server, app, io, dispatcher) {
 
     cli.info("Starting bundle manager...");
 
-    let bundler = new bundleManager();
+    let bundleManager = new _bundleManager();
 
     cli.info("Starting websocket backends...");
 
     let screenId = 0;
     for (let metadata of meta.displays) {
-        screenView.push(new display(io, dispatcher, metadata, screenId, bundler));
+        screenView.push(new display(io, dispatcher, metadata, screenId, bundleManager));
         screenId += 1;
     }
 
-    let adminView = new admin(io, dispatcher, screenView, bundler);
+    let adminView = new admin(io, dispatcher, screenView, bundleManager);
 
     io.of("/lobby").on("connection", function (socket) {
         cli.info("WS/" + socket.conn.remoteAddress + " connect");
@@ -84,5 +84,5 @@ module.exports = function (server, app, io, dispatcher) {
         });
     });
 
-    return screenView;
+    return {displays: screenView, bundleManager: bundleManager};
 };

@@ -1,14 +1,16 @@
 let express = require('express');
 let authMiddleWare = require('../modules/auth.js');
 let router = express.Router();
-
+let cli = require("../modules/cli.js");
 let fs = require('fs');
 let path = require('path');
 let config = require("../config.js");
+let busboy = require("connect-busboy");
 
-module.exports = function (displays) {
+module.exports = function (displays, bundleManager) {
 
     router.use(authMiddleWare);
+    router.use(busboy({immediate: true}));
 
     router.get('/', function (req, res, next) {
         res.render('admin/dashboard', {config: config});
@@ -26,6 +28,59 @@ module.exports = function (displays) {
         let file = req.query['file'];
         let displayId = req.query['displayId'] || 0;
         res.render('admin/edit', {config: config, bundle: bundle, displayId: displayId, file: file});
+    });
+
+    router.post('/edit/bundle', function (req, res, next) {
+        let bundleData = {};
+
+        var transition = null;
+        if (req.body.transition !== "") {
+            transition = req.body.transition;
+        }
+
+        var useWebFonts = false;
+        if (req.body.useWebFonts) {
+            useWebFonts = true;
+        }
+
+        try {
+
+            bundleData = bundleManager.getBundle(req.body.bundle).getBundleData();
+            bundleData.bundleName = req.body.bundleName;
+            bundleData.background = req.body.background;
+            bundleData.duration = parseInt(req.body.duration);
+            bundleData.transition = transition;
+            bundleData.useWebFonts = useWebFonts;
+            bundleData.styleHeader.fontFamily = req.body.headerFontFamily;
+            bundleData.styleHeader.fontSize = req.body.headerFontSize;
+            bundleData.styleHeader.fill = req.body.headerFill;
+            bundleData.styleHeader.stroke = req.body.headerStroke;
+            bundleData.styleText.fontFamily = req.body.textFontFamily;
+            bundleData.styleText.fontSize = req.body.textFontSize;
+            bundleData.styleText.fill = req.body.textFill;
+            bundleData.styleText.stroke = req.body.textStroke;
+
+            bundleManager.getBundle(req.body.bundle).save();
+
+        } catch (err) {
+            cli.error("error loading bundle", err);
+
+        }
+
+        res.send("<!doctype HTML><html><head><script>window.close();</script></head><body></body></html>");
+    });
+
+    router.get('/edit/bundle', function (req, res, next) {
+        let bundle = req.query['bundle'];
+        let bundleData = {};
+        try {
+            bundleData = bundleManager.getBundle(bundle).getBundleData();
+        } catch (err) {
+            cli.error("error loading bundle", err);
+        }
+
+        // console.log(bundleData);
+        res.render('admin/editBundle', {config: config, bundle: bundle, bundleData: bundleData});
     });
 
     router.get('/edit/link', function (req, res, next) {
