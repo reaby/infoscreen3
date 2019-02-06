@@ -50,8 +50,8 @@ app.use(lessMiddleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
 
 let websocket = require("./modules/websocket")(server, app, io, eventDispatcher);
-let indexRouter = require('./routes/index.js')(websocket.displays, websocket.bundleManager);
-let adminRouter = require('./routes/admin.js')(websocket.displays, websocket.bundleManager);
+let indexRouter = require('./routes/index.js')(websocket);
+let adminRouter = require('./routes/admin.js')(websocket);
 
 app.use('/', indexRouter);
 app.use('/admin', adminRouter);

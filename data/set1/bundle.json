@@ -1,6 +1,7 @@
 {
 	"bundleName": "set1",
 	"background": "bg.jpg",
+	"displayTime": true,
 	"useWebFonts": false,
 	"duration": 20,
 	"styleHeader": {

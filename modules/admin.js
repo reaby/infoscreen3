@@ -89,8 +89,12 @@ class admin {
             // toggle time
             socket.on('controls.time.toggle', function (data) {
                 let view = getView(data.displayId);
-                view.serverOptions.timeDisplay = !view.serverOptions.timeDisplay;
-                view.io.emit("callback.time", view.serverOptions.timeDisplay);
+                let bool = !view.serverOptions.displayTime;
+
+                view.getBundle().bundleData.displayTime = bool;
+                view.serverOptions.displayTime = bool;
+
+                view.io.emit("callback.time", bool);
                 updateDashboard(io, data.displayId);
             });
 
@@ -359,20 +363,22 @@ class admin {
                     filename = uuidv4();
                 }
 
+                var duration = data.duration;
+                if (data.duration === "") {
+                    data.duration = null;
+                }
+
                 try {
                     fs.writeFileSync("./data/" + data.bundleName + "/render/" + filename + ".png", data.png.replace(/^data:image\/png;base64,/, ""), "base64");
                     fs.writeFileSync("./data/" + data.bundleName + "/slides/" + filename, JSON.stringify(data.json));
 
                     let bundle = self.bundleManager.getBundle(data.bundleName);
-                    var dur = data.duration;
-                    if (dur < 5) {
-                        dur = 5;
-                    }
+
 
                     let template = {
                         uuid: filename,
                         name: data.name,
-                        duration: dur,
+                        duration: duration,
                         enabled: true,
                         displayTime: data.displayTime,
                         type: "slide",
@@ -384,7 +390,8 @@ class admin {
                     if (Object.keys(obj).length === 0 && obj.constructor === Object) {
                         bundle.allSlides.push(template);
                     } else {
-                        obj.duration = data.duration;
+                        obj.name = data.name;
+                        obj.duration = duration;
                         obj.displayTime = data.displayTime;
                         obj.transition = data.transition;
                     }
@@ -444,9 +451,11 @@ class admin {
 
         /**
          * @param {object} socket
-         * @param {number} displayId
+         * @param {number|string} displayId
          */
         function updateDashboard(socket, displayId) {
+            displayId = parseInt(displayId);
+
             let view = getView(displayId);
             let serverOptions = view.serverOptions;
             let bundleSettings = view.getBundle();
@@ -467,6 +476,7 @@ class admin {
         }
 
         function syncDashboard(socket, displayId) {
+            displayId = parseInt(displayId);
 
             previewInstances.push({adminId: socket.id, preview: {}, currentView: {}});
             let serverOptions = getView(displayId).serverOptions;

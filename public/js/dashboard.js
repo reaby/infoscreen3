@@ -17,8 +17,8 @@ socket.on("callback.update", function (data) {
         serverOptions = data.serverOptions;
         $('#bundleSlides').children().css("border", "1px solid black");
         $('#' + serverOptions.currentFile).css("border", "1px solid #1ebc30");
+        updateControls(data.serverOptions);
     }
-    updateControls(data.serverOptions);
 });
 
 
@@ -120,8 +120,6 @@ socket.on("callback.dashboard.sync", function (data) {
 });
 
 socket.on("callback.dashboard.updateSlides", function (data) {
-
-    console.log("update");
     if (serverOptions.currentBundle === data.bundleName) {
         bundleSettings = data.bundleSettings;
         updateSlides(data.bundleSettings);
@@ -218,12 +216,20 @@ function emit(callback, data) {
  *
  * @param {display~serverOptions} serverOptions
  */
-function updateControls() {
+function updateControls(serverOptions) {
+
     if (serverOptions.blackout) {
         $('#blackout').removeClass('basic');
     } else {
         $('#blackout').addClass('basic');
     }
+
+    if (serverOptions.displayTime) {
+        $('#toggleTime').removeClass('basic');
+    } else {
+        $('#toggleTime').addClass('basic');
+    }
+
     if (serverOptions.isStreaming) {
         $('#stream').removeClass('basic');
     } else {

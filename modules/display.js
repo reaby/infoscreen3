@@ -119,12 +119,13 @@ class display {
      * @param {string} bundleName
      */
     changeBundle(bundleName) {
-        let bundle = this.getBundle();
         this.serverOptions.currentBundle = bundleName;
+        let bundle = this.getBundle();
         this.serverOptions.loopIndex = 0;
         this.serverOptions.currentFile = bundle.enabledSlides[0] || "";
         this.serverOptions.slideDuration = bundle.findSlideByUuid(bundle.enabledSlides[0]).duration || bundle.getBundleData().duration;
         this.serverOptions.currentId = bundle.enabledSlides.indexOf(this.serverOptions.currentFile);
+        this.serverOptions.transition = bundle.getBundleData().transition;
     }
 
     getSlideData() {
@@ -185,6 +186,7 @@ class display {
             this.serverOptions.slideDuration = bundle.findSlideByUuid(slides[idx]).duration || bundle.getBundleData().duration;
             this.serverOptions.currentId = bundle.enabledSlides.indexOf(this.serverOptions.currentFile);
             this.serverOptions.currentMeta = bundle.findSlideByUuid(slides[idx]);
+            this.serverOptions.displayTime = bundle.bundleData.displayTime;
         }
 
         this.displayCurrentSlide();

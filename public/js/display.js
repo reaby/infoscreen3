@@ -48,16 +48,16 @@ var layer = 0;
  * @see data/default/bundle.json
  *
  **/
-var bundleData;
-var serverOptions;
-var streamStarted = false;
-bundleData = {
+var bundleData = {
     background: "",
     duration: 10,
     styleHeader: {},
     styleText: {},
     useWebFonts: false
 };
+var serverOptions = {};
+var streamStarted = false;
+
 
 /***************************
  *  window load, init
@@ -104,7 +104,8 @@ socket.on('pong', function () {
 });
 
 socket.on('callback.time', function (data) {
-    toggleTime();
+    serverOptions.displayTime = data;
+    checkTimeDisplay();
 });
 
 /** callback Load **/
@@ -168,21 +169,19 @@ function fixImageSizes() {
         height = Math.floor(width * aspect);
 }
 
-function toggleTime(bool = null) {
-    if (bool === null) {
-        if ($('#time').hasClass('flipOutX')) {
-            toggleTime(true);
-            return;
-        } else {
-            toggleTime(false);
-            return;
-        }
+function checkTimeDisplay() {
+    var bool = serverOptions.displayTime;
+
+    if (serverOptions.currentMeta.displayTime !== null) {
+        bool = serverOptions.currentMeta.displayTime;
     }
+
     if (bool) {
         $('#time').removeClass('flipOutX').addClass("flipInX");
     } else {
         $('#time').addClass('flipOutX').removeClass("flipInX");
     }
+
 }
 
 function checkBlackout() {
@@ -198,18 +197,13 @@ function nextSlide(data) {
     serverOptions = data.serverOptions;
     bundleData = data.bundleData;
     checkImages(data.slides);
-
-    if (serverOptions.currentMeta.displayTime !== null) {
-        toggleTime(serverOptions.currentMeta.displayTime);
-    } else {
-        toggleTime(serverOptions.diplayTime);
-    }
+    checkTimeDisplay();
 
     if (serverOptions.isAnnounce) {
         $("#" + getWebLayer()).addClass("fadeOut").removeClass("fadeIn");
         $("#" + getWebLayer(1)).addClass("fadeOut").removeClass("fadeIn");
         $("#slider").show();
-        
+
         try {
             var randomId = uuidv4();
             var image = new Image();
@@ -233,7 +227,7 @@ function nextSlide(data) {
                 break;
             default:
                 var transition = serverOptions.transition;
-                if (serverOptions.currentMeta.transition !== null ) {
+                if (serverOptions.currentMeta.transition !== null) {
                     transition = serverOptions.currentMeta.transition;
                 }
 
@@ -329,7 +323,6 @@ function checkStream(serverOptions) {
  */
 function preloadImages(allSlides) {
     window.f.clearImages();
-    console.log(allSlides);
 
     for (var i in allSlides) {
         try {
@@ -347,9 +340,6 @@ function preloadImages(allSlides) {
 }
 
 function reloadImage(data) {
-    console.log("reloadImage");
-    console.log(data);
-
     window.f.clearImageById(data.uuid);
     window.f.setupImages();
 

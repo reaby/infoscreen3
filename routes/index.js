@@ -5,8 +5,7 @@ let config = require("../config.js");
 let displayMeta = require("../data/meta.json");
 const cli = require('../modules/cli.js');
 
-module.exports = function (displays, bundleManager) {
-
+module.exports = function (websocket) {
 
     router.get('/', function (req, res, next) {
         res.header('Access-Control-Allow-Origin', '*');

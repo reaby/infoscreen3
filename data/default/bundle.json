@@ -2,8 +2,9 @@
 	"bundleName": "default",
 	"background": "bg.jpg",
 	"duration": 40,
-	"transition": "blocks2",
+	"transition": "tiles3d",
 	"useWebFonts": false,
+	"displayTime": true,
 	"styleHeader": {
 		"stroke": "",
 		"fill": "#f90",

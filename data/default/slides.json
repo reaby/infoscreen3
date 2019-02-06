@@ -4,8 +4,8 @@
 		"name": "header",
 		"duration": null,
 		"enabled": true,
-		"displayTime": true,
-		"transition": null,
+		"displayTime": null,
+		"transition": "",
 		"type": "slide",
 		"index": 0
 	},
@@ -14,8 +14,8 @@
 		"name": "header 3",
 		"duration": null,
 		"enabled": true,
-		"displayTime": false,
-		"transition": "zip",
+		"displayTime": null,
+		"transition": null,
 		"type": "slide",
 		"index": 1
 	},
@@ -24,7 +24,7 @@
 		"name": "2 header",
 		"duration": 10,
 		"enabled": true,
-		"displayTime": true,
+		"displayTime": false,
 		"type": "slide",
 		"transition": null,
 		"index": 2

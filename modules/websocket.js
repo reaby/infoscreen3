@@ -84,5 +84,5 @@ module.exports = function (server, app, io, dispatcher) {
         });
     });
 
-    return {displays: screenView, bundleManager: bundleManager};
+    return {screenView: screenView, adminView: adminView, bundleManager: bundleManager};
 };

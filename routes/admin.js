@@ -7,7 +7,8 @@ let path = require('path');
 let config = require("../config.js");
 let busboy = require("connect-busboy");
 
-module.exports = function (displays, bundleManager) {
+module.exports = function (websocket) {
+    var bundleManager = websocket.bundleManager;
 
     router.use(authMiddleWare);
     router.use(busboy({immediate: true}));
@@ -43,6 +44,11 @@ module.exports = function (displays, bundleManager) {
             useWebFonts = true;
         }
 
+        var displayTime = false;
+        if (req.body.displayTime) {
+            displayTime = true;
+        }
+
         try {
 
             bundleData = bundleManager.getBundle(req.body.bundle).getBundleData();
@@ -51,6 +57,7 @@ module.exports = function (displays, bundleManager) {
             bundleData.duration = parseInt(req.body.duration);
             bundleData.transition = transition;
             bundleData.useWebFonts = useWebFonts;
+            bundleData.displayTime = displayTime;
             bundleData.styleHeader.fontFamily = req.body.headerFontFamily;
             bundleData.styleHeader.fontSize = req.body.headerFontSize;
             bundleData.styleHeader.fill = req.body.headerFill;
@@ -59,7 +66,6 @@ module.exports = function (displays, bundleManager) {
             bundleData.styleText.fontSize = req.body.textFontSize;
             bundleData.styleText.fill = req.body.textFill;
             bundleData.styleText.stroke = req.body.textStroke;
-
             bundleManager.getBundle(req.body.bundle).save();
 
         } catch (err) {

@@ -177,10 +177,17 @@ socket.on('callback.edit', function (data) {
     canvas.clear();
 
     $("#duration").val(data.slideData.duration + "");
-    if (data.slideData.displayTime) {
-        $("#displaytime").checkbox('set checked');
-    } else {
-        $("#displaytime").checkbox('set unchecked');
+
+    console.log(data.slideData.displayTime);
+
+    $("#override").checkbox('set unchecked');
+    if (data.slideData.displayTime !== null) {
+        $("#override").checkbox('set checked');
+        if (data.slideData.displayTime) {
+            $("#displaytime").checkbox('set checked');
+        } else {
+            $("#displaytime").checkbox('set unchecked');
+        }
     }
 
     var transitionArray = [];
@@ -435,10 +442,15 @@ function save() {
         duration = parseFloat($("#duration").val());
     }
 
-    var checked = false;
-    if ($("#displaytime").checkbox('is checked')) {
-        checked = null;
+    var checked = null;
+
+    if ($("#override").checkbox('is checked')) {
+        checked = false;
+        if ($("#displaytime").checkbox('is checked')) {
+            checked = true;
+        }
     }
+
 
     var transition = $("#transitions").dropdown("get value");
     if (transition === "null") transition = null;
