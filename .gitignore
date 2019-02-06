@@ -64,3 +64,4 @@ typings/
 .idea
 config.js
 tmp/*.png
+public/assets/

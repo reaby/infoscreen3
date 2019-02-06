@@ -1,7 +1,14 @@
 {% extends 'layout/view.twig' %}
 
 {% block header %}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/flv.js/1.5.0/flv.min.js"></script>
+    {% if config.mediaServer %}
+        {% if config.useLocalAssets %}
+            <script src="/assets/flv.min.js"></script>
+        {% else %}
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/flv.js/1.5.0/flv.min.js"></script>
+        {% endif %}
+    {% endif %}
+
     <script src="/socket.io/socket.io.js"></script>
     <title>InfoScreen3 - {{ display.name }}</title>
 {% endblock %}
@@ -10,8 +17,8 @@
 
     <div id="blackoutLayer" class="gpu"></div>
 
-    <iframe id="webLayer0" class="web fsimage gpu animated"></iframe>
-    <iframe id="webLayer1" class="web fsimage gpu animated"></iframe>
+    <iframe id="webLayer0" class="web fsimage animated"></iframe>
+    <iframe id="webLayer1" class="web fsimage animated"></iframe>
 
     <div id="layer0" class="fsimage gpu" style="z-index: 10;">
         <img id="img0" style="width: 100%;"/>

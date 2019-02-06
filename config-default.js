@@ -8,5 +8,6 @@ module.exports = {
             "pass": process.env.ADMIN_PASS || "admin"
         }
     ],
-    "mediaServer": false
+    "mediaServer": false,
+    "useLocalAssets": false,
 };
