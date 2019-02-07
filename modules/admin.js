@@ -254,7 +254,7 @@ class admin {
                 }
 
                 bundle.save();
-                updateSlides(io, data.bundleName, bundle);
+                updateSlides(io, bundle.name, bundle);
             });
 
             /** remove slide **/
@@ -262,7 +262,7 @@ class admin {
                 try {
                     let bundle = bundleManager.getBundle(data.bundleName);
                     bundle.removeUuid(data.uuid);
-                    updateSlides(io, bundle.getBundleData().bundleName, bundle);
+                    updateSlides(io, bundle.name, bundle);
                 } catch (err) {
                     cli.error("error while removing slide", err);
                 }

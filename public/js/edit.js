@@ -141,6 +141,7 @@ function setZindex(value) {
 }
 
 // socketio
+
 fabric.Image.prototype.toObject = (function (toObject) {
     return function () {
         return fabric.util.object.extend(toObject.call(this), {
@@ -148,7 +149,6 @@ fabric.Image.prototype.toObject = (function (toObject) {
         });
     }
 })(fabric.Image.prototype.toObject);
-
 
 socket.on('connect', function () {
     canvas = new fabric.Canvas('edit');
@@ -161,7 +161,8 @@ socket.on('callback.save', function (data) {
     if (data.error) {
         alert(data.error);
     } else {
-        window.close();
+        alert("slide saved successfully.");
+        //window.close();
     }
 });
 
@@ -474,9 +475,87 @@ function save() {
         transition: transition,
     };
 
-    console.log(obj);
-
     socket.emit("edit.save", obj);
+}
+
+function saveAsFullScreenImage(name = "untitled", imageData) {
+    canvas.clear();
+    canvas.setBackgroundImage(null, null, null);
+
+    console.log(imageData);
+
+    fabric.Image.fromURL(imageData, function (bgImage) {
+
+        var canvasAspect = canvas.width / canvas.height;
+        var imgAspect = bgImage.width / bgImage.height;
+        var left, top, scaleFactor;
+
+        if (canvasAspect >= imgAspect) {
+            scaleFactor = canvas.width / bgImage.width;
+            left = 0;
+            top = -((bgImage.height * scaleFactor) - canvas.height) / 2;
+        } else {
+            scaleFactor = canvas.height / bgImage.height;
+            top = 0;
+            left = -((bgImage.width * scaleFactor) - canvas.width) / 2;
+        }
+
+        bgImage.set({
+            top: top,
+            left: left,
+            originX: 'left',
+            originY: 'top',
+            scaleX: scaleFactor,
+            scaleY: scaleFactor
+        });
+
+        canvas.add(bgImage);
+        canvas.renderAll();
+
+        var duration = null;
+        if ($.isNumeric($("#duration").val())) {
+            duration = parseFloat($("#duration").val());
+        }
+
+        var checked = null;
+
+        if ($("#override").checkbox('is checked')) {
+            checked = $("#displaytime").checkbox('is checked');
+        }
+
+
+        var transition = $("#transitions").dropdown("get value");
+        if (transition === "null") transition = null;
+
+        var dataurl = canvas.toDataURL('png');
+
+        var json =
+            {
+                version: "2.6.0",
+                objects: [{
+                    type: "image",
+                    version: "2.6.0",
+                    width: 1280,
+                    height: 720,
+                    crossOrigin: "",
+                    src: dataurl,
+                    filters: []
+                }]
+            };
+
+        var obj = {
+            bundleName: bundle,
+            name: name,
+            fileName: file,
+            duration: duration,
+            json: json,
+            png: dataurl,
+            displayTime: checked,
+            transition: transition,
+        };
+
+        socket.emit("edit.save", obj);
+    });
 }
 
 

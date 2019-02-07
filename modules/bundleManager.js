@@ -2,6 +2,7 @@
 
 const bundle = require('./bundle.js');
 let fs = require("fs");
+let cli = require("./cli.js");
 
 /**
  * @module infoscreen3/bundleManager
@@ -26,7 +27,20 @@ class bundleManager {
      * @returns {bundle}
      */
     getBundle(name) {
-        return this.bundles[name];
+        if (this.bundles.hasOwnProperty(name)) {
+            return this.bundles[name];
+        } else {
+            try {
+                cli.info(name + " not in bundles, trygin to load from fs...");
+                let data = getJson("./data/" + name + "/bundle.json");
+                let slides = getJson("./data/" + name + "/slides.json");
+                this.bundles[name] = new bundle(name, data, slides);
+                cli.success(name + " load");
+                return this.bundles[name];
+            } catch (err) {
+                cli.error("bundle by name "+ name +" not found on filesystem", err);
+            }
+        }
     }
 
 }

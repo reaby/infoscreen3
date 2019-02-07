@@ -76,8 +76,9 @@ function createBox(e, file) {
             <div class="center aligned header">${imgName}</div>
         </div>
         <div class="extra content">
-            <div class="ui tiny basic button" onclick="upload('${uid}', true);">Upload Original</div>
-            <div class="ui tiny basic button" onclick="upload('${uid}', false);">Upload & Scale to 16:9</div>
+            <div class="ui tiny basic button" onclick="upload('${uid}', 'original');">Upload Original</div>
+            <div class="ui tiny basic button" onclick="upload('${uid}', 'scale');">Upload & Scale to 16:9</div>
+            <div class="ui tiny basic button" onclick="upload('${uid}', 'createSlide');">Create new slide</div>
             <div class="ui tiny basic button" onclick="cancelUpload('${uid}');">Cancel</div>
         </div>
     </div>`;
@@ -87,7 +88,7 @@ function createBox(e, file) {
 }
 
 
-function upload(uid, useOriginal) {
+function upload(uid, type) {
 
     if (images[uid] !== null) {
         var busyTemplate = `<div class="card">                                
@@ -96,26 +97,35 @@ function upload(uid, useOriginal) {
                                     </div>                                  
                             </div>`;
 
-        $("#" + uid).html(busyTemplate);
         let filename = images[uid].name.replace(/\.[^/.]+$/, "");
 
-        if (useOriginal) {
-            socket.emit("edit.uploadImage", {
-                bundleName: bundle,
-                name: filename,
-                imageData: images[uid].data,
-                type: images[uid].type,
-            });
-        } else {
-            socket.emit("edit.uploadImage", {
-                bundleName: bundle,
-                name: filename + "_crop",
-                imageData: images[uid].crop,
-                type: "image/png",
-            });
+        switch (type) {
+            case "original":
+                $("#" + uid).html(busyTemplate);
+                socket.emit("edit.uploadImage", {
+                    bundleName: bundle,
+                    name: filename,
+                    imageData: images[uid].data,
+                    type: images[uid].type,
+                });
+                delete (images[uid]);
+                break;
+            case "scale":
+                $("#" + uid).html(busyTemplate);
+                socket.emit("edit.uploadImage", {
+                    bundleName: bundle,
+                    name: filename + "_crop",
+                    imageData: images[uid].crop,
+                    type: "image/png",
+                });
+                delete (images[uid]);
+                break;
+            case "createSlide":
+                saveAsFullScreenImage(filename, images[uid].data);
+                $("#" + uid).remove();
+                delete (images[uid]);
+                break;
         }
-
-        delete (images[uid]);
 
     }
 }
@@ -133,8 +143,9 @@ function addImagesFromUploadQueue() {
             <div class="center aligned header">${image.name}</div>
         </div>
         <div class="extra content">
-            <div class="ui tiny basic button" onclick="upload('${uid}', true);">Upload Original</div>
-            <div class="ui tiny basic button" onclick="upload('${uid}', false);">Upload & Scale to 16:9</div>
+            <div class="ui tiny basic button" onclick="upload('${uid}', 'original');">Upload Original</div>            
+            <div class="ui tiny basic button" onclick="upload('${uid}', 'scale');">Upload & Scale to 16:9</div>
+            <div class="ui tiny basic button" onclick="upload('${uid}', 'createSlide');">Create new slide</div>
             <div class="ui tiny basic button" onclick="cancelUpload('${uid}');">Cancel</div>
         </div>
     </div>`;
