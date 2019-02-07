@@ -104,8 +104,8 @@ socket.on("callback.dashboard.sync", function (data) {
         output += '<div class="ui green message item" id="bundle_' + bundle + '">' +
             '<div class="right floated content">' +
             // '<button class="ui small basic inverted icon button" onclick="emit(\'admin.setBundle\', {bundle:\'' + bundle + '\'});"><i class="step forward icon"></i></button>' +
-            '<button class="ui small basic inverted icon button" onclick="editBundleSlides(\'' + bundle + '\')"><i class="search icon"></i></button>' +
-            '<button class="ui small basic inverted icon button" onclick="editBundle(\'' + bundle + '\')"><i class="edit outline icon"></i></button>' +
+            '<button class="ui small basic inverted icon button" onclick="editBundle(\'' + bundle + '\')"><i class="list icon"></i></button>' +
+            '<button class="ui small basic inverted icon button" onclick="editBundleSlides(\'' + bundle + '\')"><i class="edit icon"></i></button>' +
             '</div>' +
             '<div class="content">' +
             '<div>' + bundle + '</div>' +
