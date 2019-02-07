@@ -200,10 +200,6 @@ iframe {
 }
 
 .announce {
-    -moz-transition: opacity 3s !important;
-    -webkit-transition: opacity 3s !important;
-    -o-transition: opacity 3s !important;
-    transition: opacity 3s !important;
     -webkit-animation-name: announce;
     animation-name: announce;
 }
