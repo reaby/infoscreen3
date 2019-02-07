@@ -159,7 +159,7 @@ function nextSlide(data) {
     if (serverOptions.isAnnounce) {
         $("#" + getWebLayer()).addClass("fadeOut").removeClass("fadeIn");
         $("#" + getWebLayer(1)).addClass("fadeOut").removeClass("fadeIn");
-
+        $("#helperLayer").addClass("announce");
         try {
             var randomId = uuidv4();
             elem.src = "/tmp/" + serverOptions.displayId + "/?randomId=" + randomId;
@@ -167,6 +167,7 @@ function nextSlide(data) {
             console.log(err);
         }
     } else {
+        $("#helperLayer").removeClass("announce");
         switch (serverOptions.currentMeta.type) {
             case "webpage":
                 $(elem).hide();
