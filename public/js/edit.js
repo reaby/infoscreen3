@@ -153,6 +153,7 @@ fabric.Image.prototype.toObject = (function (toObject) {
 socket.on('connect', function () {
     canvas = new fabric.Canvas('edit');
     canvas.includeDefaultValues = false;
+    canvas.preserveObjectStacking = true;
     socket.emit('admin.editSlide', {bundleName: bundle, fileName: file});
 });
 
