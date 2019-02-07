@@ -1,0 +1,106 @@
+{% extends 'layout/admin.twig' %}
+
+{% block header %}
+    <script src="/socket.io/socket.io.js"></script>
+    {% if config.useLocalAssets %}
+        <script src="/assets/jquery.jeditable.min.js"></script>
+    {% else %}
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jeditable.js/2.0.6/jquery.jeditable.min.js"></script>
+    {% endif %}
+{% endblock %}
+
+{% block body %}
+    <!-- Grids -->
+    <div class="column">
+        <div class="ui one column very padded grid">
+            <div class=" column">
+                <h1 class="ui inverted header">Bundle: {{ bundle.name }}</h1>
+                <button class="ui basic inverted button" onclick="createNew();">Create new slide</button>
+                <button class="ui basic inverted button" onclick="addLink();">Add Web page</button>
+
+                <div id="bundleSlides" class="ui sortable list">
+                    {% for slide in bundle.allSlides %}
+                        <div class="ui green message item" id="{{ slide.uuid }}" style="border: 1px solid black;">
+                            <div class="right floated content">
+                                <button class="ui small basic inverted icon button"
+                                        onclick="editSlide('{{ slide.uuid }}', '{{ slide.type }}');"><i
+                                            class="edit outline icon"></i></button>
+                                <button class="ui small basic inverted icon button"
+                                        onclick="remove('{{ slide.uuid }}');"><i class="delete icon"></i>
+                                </button>
+                            </div>
+                            <div class="content">
+                                <div class="editable">{{ slide.name }} </div>
+                            </div>
+                        </div>
+
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        var socket = io.connect("{{ config.serverUrl }}:{{ config.serverListenPort }}/admin");
+        var bundleName = "{{ bundle.name }}";
+    </script>
+
+    <script>
+        function createNew() {
+            editSlide("", "slide");
+        }
+
+        function addLink() {
+            editSlide("", "webpage");
+        }
+
+        function editSlide(name, type) {
+            switch (type) {
+                case "slide":
+                    window.open("/admin/edit/slide?bundle=" + bundleName + "&file=" + name, '_blank', 'location=no,height=800,width=1304,scrollbars=no,status=no');
+                    break;
+                case "webpage":
+                    window.open("/admin/edit/link?bundle=" + bundleName + "&file=" + name, '_blank', 'location=no,height=400,width=600,scrollbars=no,status=no');
+                    break;
+            }
+        }
+
+        function emit(eventName, data) {
+            socket.emit(eventName, data);
+        }
+
+        $(".sortable").sortable({
+            beforeStop: function (event, element) {
+                var sortedIDs = $(".sortable").sortable("toArray");
+                emit("admin.reorderSlides", {bundleName: bundleName, sortedIDs: sortedIDs});
+            }
+        }).disableSelection();
+
+        $('.editable').editable(function (value, settings) {
+            var uuid = $(this).parent().parent().attr("id");
+            emit("admin.renameSlide", {uuid: uuid, name: value, bundleName: bundleName});
+            return (value);
+        }, {
+            submit: 'rename',
+            tooltip: "Doubleclick to edit...",
+            event: "dblclick",
+            cssclass: 'ui mini nopadded form',
+            cancelcssclass: 'ui tiny basic negative button',
+            submitcssclass: 'ui tiny basic positive button',
+        });
+
+        function remove(uuid) {
+            var obj = {uuid: uuid, bundleName: bundleName};
+            if (confirm("Really delete slide?")) {
+                emit('admin.removeSlide', obj);
+            }
+        }
+
+        socket.on("callback.dashboard.updateSlides", function (data) {
+            if (bundleName === data.bundleName) {
+                bundleSettings = data.bundleSettings;
+                document.location.reload(true);
+            }
+        });
+
+    </script>
+{% endblock %}

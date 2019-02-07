@@ -18,5 +18,15 @@
 		"displayTime": true,
 		"type": "slide",
 		"index": 1
+	},
+	{
+		"uuid": "5bad8eb1-b377-43b8-82c3-c7f16043f8f1",
+		"name": "header",
+		"duration": null,
+		"enabled": true,
+		"displayTime": false,
+		"type": "slide",
+		"index": 2,
+		"transition": ""
 	}
 ]

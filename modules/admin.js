@@ -233,35 +233,39 @@ class admin {
 
 
             socket.on('admin.reorderSlides', function (data) {
-                let view = getView(data.displayId);
-                let serverOptions = view.serverOptions;
-                let bundle = view.getBundle();
+                let bundle = bundleManager.getBundle(data.bundleName);
 
                 let i = 0;
-                console.log(data.sortedIDs);
-
                 for (let uuid of data.sortedIDs) {
                     bundle.setIndex(uuid, i);
                     i += 1;
                 }
 
-                for (let slide of bundle.allSlides) {
-                    // calculate new index for next slide;
-                    if (slide.uuid === serverOptions.currentFile) {
-                        serverOptions.loopIndex = slide.index + 1;
+                // calculate next slide order for all displays which has the bundle selected
+                for (let display of screenViews) {
+                    if (display.serverOptions.currentBundle === data.bundleName) {
+                        for (let slide of bundle.allSlides) {
+                            // calculate new index for next slide;
+                            if (slide.uuid === display.serverOptions.currentFile) {
+                                display.serverOptions.loopIndex = slide.index + 1;
+                            }
+                        }
                     }
                 }
 
                 bundle.save();
-                updateDashboard(io, data.displayId);
+                updateSlides(io, data.bundleName, bundle);
             });
 
             /** remove slide **/
             socket.on('admin.removeSlide', function (data) {
-                let view = getView(data.displayId);
-                let bundle = view.getBundle();
-                bundle.removeUuid(data.uuid);
-                updateSlides(io, bundle.getBundleData().bundleName, bundle);
+                try {
+                    let bundle = bundleManager.getBundle(data.bundleName);
+                    bundle.removeUuid(data.uuid);
+                    updateSlides(io, bundle.getBundleData().bundleName, bundle);
+                } catch (err) {
+                    cli.error("error while removing slide", err);
+                }
             });
 
             /** edit web links **/
@@ -345,9 +349,15 @@ class admin {
 
             /** rename **/
             socket.on('admin.renameSlide', function (data) {
-                getView(data.displayId).getBundle().setName(data.uuid, data.name);
-                updateDashboard(io, data.displayId);
+                try {
+                    let bundle = bundleManager.getBundle(data.bundleName);
+                    bundle.setName(data.uuid, data.name);
+                    updateSlides(io, data.bundleName, bundle);
+                } catch (err) {
+                    cli.error("error while renaming slide", err);
+                }
             });
+
             /** change transition **/
             socket.on('admin.setTransition', function (data) {
                 var transition = data.transition;
@@ -403,8 +413,9 @@ class admin {
 
                     cli.success("save new slide data");
                     socket.emit("callback.save", {});
-                    announce([parseInt(data.displayId)], "callback.reloadImage", {
-                        bundle: data.bundleName,
+
+                    announce(null, "callback.reloadImage", {
+                        bundleName: data.bundleName,
                         uuid: filename
                     });
                     updateSlides(io, data.bundleName, bundle);

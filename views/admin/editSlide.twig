@@ -4,9 +4,13 @@
     <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        let bundle = "{{ bundle }}";
-        let file = "{{ file }}";
-        let displayId = {{ displayId }};
+        var bundle = "{{ bundle }}";
+        var file = "{{ file }}";
+        {% if displayId %}
+        var displayId = {{ displayId }};
+        {% else %}
+        var displayId = null;
+        {% endif %}
     </script>
     <style>
         label {
@@ -83,7 +87,9 @@
             <div class="item">
                 <div class="ui buttons">
                     <a href="#" onclick="save()" class="ui green button">Save</a>
+                    {% if displayId != null %}
                     <a href="#" onclick="cueSlide()" class="ui basic teal button">Fast Announce</a>
+                    {% endif %}
                     <a href="#" onclick="window.close()" class="ui red button">Cancel</a>
                 </div>
             </div>

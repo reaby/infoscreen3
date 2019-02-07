@@ -256,7 +256,7 @@ function setBackground(background) {
             bgImage.src = background;
             bg.show();
             $(video).hide();
-            video.src = null;
+            video.src = "";
             video.pause();
         }
     }
@@ -419,7 +419,8 @@ function removeSelectedObjects() {
 }
 
 function cueSlide() {
-    if (confirm('Pause show and force display of the current slide?')) {
+
+    if (confirm('Force display of the current slide?')) {
         var duration = null;
         if ($.isNumeric($("#duration").val())) {
             duration = parseFloat($("#duration").val());
@@ -468,7 +469,6 @@ function save() {
         duration: duration,
         json: canvas.toJSON(['id']),
         png: canvas.toDataURL('png'),
-        displayId: displayId,
         displayTime: checked,
         transition: transition,
     };

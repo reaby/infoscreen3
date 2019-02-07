@@ -103,7 +103,8 @@ socket.on("callback.dashboard.sync", function (data) {
         let bundle = data.bundleDirs[i];
         output += '<div class="ui green message item" id="bundle_' + bundle + '">' +
             '<div class="right floated content">' +
-            '<button class="ui small basic inverted icon button" onclick="emit(\'admin.setBundle\', {bundle:\'' + bundle + '\'});"><i class="step forward icon"></i></button>' +
+            // '<button class="ui small basic inverted icon button" onclick="emit(\'admin.setBundle\', {bundle:\'' + bundle + '\'});"><i class="step forward icon"></i></button>' +
+            '<button class="ui small basic inverted icon button" onclick="editBundleSlides(\'' + bundle + '\')"><i class="search icon"></i></button>' +
             '<button class="ui small basic inverted icon button" onclick="editBundle(\'' + bundle + '\')"><i class="edit outline icon"></i></button>' +
             '</div>' +
             '<div class="content">' +
@@ -161,7 +162,7 @@ $(function () {
     $(".sortable").sortable({
         beforeStop: function (event, element) {
             var sortedIDs = $(".sortable").sortable("toArray");
-            emit("admin.reorderSlides", {sortedIDs: sortedIDs});
+            emit("admin.reorderSlides", {bundleName: serverOptions.currentBundle, sortedIDs: sortedIDs});
         }
     }).disableSelection();
 });
@@ -187,6 +188,11 @@ function addLink() {
     editSlide("", "webpage");
 }
 
+
+function editBundleSlides(name) {
+    window.open("/admin/edit/bundleSlides?bundle=" + name, '_blank', 'location=no,height=800,width=400,scrollbars=yes,status=no');
+}
+
 function editSlide(name, type) {
     switch (type) {
         case "slide":
@@ -199,15 +205,15 @@ function editSlide(name, type) {
 }
 
 function editBundle(bundleName) {
-    window.open("/admin/edit/bundle?bundle=" + bundleName, '_blank', 'location=no,height=500,width=700,scrollbars=yes,status=no');
+    window.open("/admin/edit/bundleProperties?bundle=" + bundleName, '_blank', 'location=no,height=500,width=700,scrollbars=yes,status=no');
 }
 
-function emit(callback, data) {
+function emit(eventName, data) {
     if (data === undefined || data === null) {
         data = {};
     }
     Object.assign(data, {displayId: parseInt(displayId)});
-    socket.emit(callback, data);
+    socket.emit(eventName, data);
 }
 
 /**
@@ -271,7 +277,7 @@ function updateSlides(settings) {
             '<button class="ui small basic inverted icon button" onclick="emit(\'controls.preview\', {fileName: \'' + slide.uuid + '\', bundle: \'' + serverOptions.currentBundle + '\' });"><i class="search icon"></i></button>' +
             '<button class="ui small basic inverted icon button" onclick="emit(\'controls.skipTo\',{fileName: \'' + slide.uuid + '\'});"><i class="step forward icon"></i></button>' +
             '<button class="ui small basic inverted icon button" onclick="editSlide(\'' + slide.uuid + '\', ' + slideType + ')"><i class="edit outline icon"></i></button>' +
-            '<button class="ui small basic inverted icon button" onclick="remove({uuid: \'' + slide.uuid + '\'});"><i class="delete icon"></i></button>' +
+            '<button class="ui small basic inverted icon button" onclick="remove(\'' + slide.uuid + '\');"><i class="delete icon"></i></button>' +
             '</div>' +
             '<div class="content">' +
             '<i class="large toggle ' + status + ' icon" onclick="emit(\'controls.toggle\', {fileName: \'' + slide.uuid + '\'});"></i>' +
@@ -288,7 +294,9 @@ function updateSlides(settings) {
 }
 
 
-function remove(obj) {
+function remove(uuid) {
+    var obj = {bundleName: serverOptions.currentBundle, uuid: uuid};
+
     if (confirm("Really delete slide?")) {
         emit('admin.removeSlide', obj);
     }

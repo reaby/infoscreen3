@@ -27,11 +27,11 @@ module.exports = function (websocket) {
     router.get('/edit/slide', function (req, res, next) {
         let bundle = req.query['bundle'];
         let file = req.query['file'];
-        let displayId = req.query['displayId'] || 0;
-        res.render('admin/edit', {config: config, bundle: bundle, displayId: displayId, file: file});
+        let displayId = req.query['displayId'] || null;
+        res.render('admin/editSlide', {config: config, bundle: bundle, displayId: displayId, file: file});
     });
 
-    router.post('/edit/bundle', function (req, res, next) {
+    router.post('/edit/bundleProperties', function (req, res, next) {
         let bundleData = {};
 
         var transition = null;
@@ -59,11 +59,11 @@ module.exports = function (websocket) {
             bundleData.useWebFonts = useWebFonts;
             bundleData.displayTime = displayTime;
             bundleData.styleHeader.fontFamily = req.body.headerFontFamily;
-            bundleData.styleHeader.fontSize = req.body.headerFontSize;
+            bundleData.styleHeader.fontSize = parseInt(req.body.headerFontSize);
             bundleData.styleHeader.fill = req.body.headerFill;
             bundleData.styleHeader.stroke = req.body.headerStroke;
             bundleData.styleText.fontFamily = req.body.textFontFamily;
-            bundleData.styleText.fontSize = req.body.textFontSize;
+            bundleData.styleText.fontSize = parseInt(req.body.textFontSize);
             bundleData.styleText.fill = req.body.textFill;
             bundleData.styleText.stroke = req.body.textStroke;
             bundleManager.getBundle(req.body.bundle).save();
@@ -76,7 +76,7 @@ module.exports = function (websocket) {
         res.send("<!doctype HTML><html><head><script>window.close();</script></head><body></body></html>");
     });
 
-    router.get('/edit/bundle', function (req, res, next) {
+    router.get('/edit/bundleProperties', function (req, res, next) {
         let bundle = req.query['bundle'];
         let bundleData = {};
         try {
@@ -85,8 +85,7 @@ module.exports = function (websocket) {
             cli.error("error loading bundle", err);
         }
 
-        // console.log(bundleData);
-        res.render('admin/editBundle', {config: config, bundle: bundle, bundleData: bundleData});
+        res.render('admin/editBundleProperties', {config: config, bundle: bundle, bundleData: bundleData});
     });
 
     router.get('/edit/link', function (req, res, next) {
@@ -97,18 +96,18 @@ module.exports = function (websocket) {
     });
 
 
-    router.get('/bundle', function (req, res, next) {
-        let bundles = getDirectories("./data");
-        res.render('admin/listBundle', {config: config, bundles: bundles});
+    router.get('/edit/bundleSlides', function (req, res, next) {
+        // let bundles = getDirectories("./data");
+        var bundle = {};
+        try {
+            bundle = bundleManager.getBundle(req.query['bundle']);
+        } catch (err) {
+
+        }
+        console.log(bundle);
+        res.render('admin/editBundleSlides', {config: config, bundle: bundle});
     });
 
-
-    router.get('/edit/bundle', function (req, res, next) {
-        let bundle = req.query['bundle'];
-        let file = req.query['file'];
-        let displayId = req.query['displayId'] || 0;
-        res.render('admin/editBundle', {config: config, bundle: bundle, displayId: displayId, file: file});
-    });
 
     router.get('/ajax/imagelist', function (req, res, next) {
         let bundle = req.query['bundle'];

@@ -340,14 +340,15 @@ function preloadImages(allSlides) {
 }
 
 function reloadImage(data) {
-    window.f.clearImageById(data.uuid);
-    window.f.setupImages();
+    if (serverOptions.currentBundle === data.bundleName) {
+        window.f.clearImageById(data.uuid);
+        window.f.setupImages();
 
-    var image = new Image();
-    image.src = "/render/" + data.bundle + "/" + data.uuid + ".png?" + uuidv4();
-    image.id = data.uuid;
-    window.f.images.push(image);
-
+        var image = new Image();
+        image.src = "/render/" + data.bundleName + "/" + data.uuid + ".png?" + uuidv4();
+        image.id = data.uuid;
+        window.f.images.push(image);
+    }
 }
 
 var fluxIds;

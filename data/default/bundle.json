@@ -8,14 +8,14 @@
 	"styleHeader": {
 		"stroke": "",
 		"fill": "#f90",
-		"fontSize": "56",
+		"fontSize": 56,
 		"fontWeight": 900,
 		"fontFamily": "Arial Black"
 	},
 	"styleText": {
 		"stroke": "",
 		"fill": "#fff",
-		"fontSize": "32",
+		"fontSize": 32,
 		"fontWeight": 900,
 		"fontFamily": "Arial Black"
 	}

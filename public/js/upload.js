@@ -105,7 +105,6 @@ function upload(uid, useOriginal) {
                 name: filename,
                 imageData: images[uid].data,
                 type: images[uid].type,
-                displayId: displayId
             });
         } else {
             socket.emit("edit.uploadImage", {
@@ -113,7 +112,6 @@ function upload(uid, useOriginal) {
                 name: filename + "_crop",
                 imageData: images[uid].crop,
                 type: "image/png",
-                displayId: displayId
             });
         }
 

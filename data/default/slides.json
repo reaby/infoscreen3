@@ -1,23 +1,13 @@
 [
 	{
-		"uuid": "39e5205f-9ace-4597-9873-f9ea5846dff0",
-		"name": "header",
+		"uuid": "f0411f05-a312-44a7-82fd-778328ba390e",
+		"name": "testing 123",
 		"duration": null,
 		"enabled": true,
-		"displayTime": null,
-		"transition": null,
+		"displayTime": false,
 		"type": "slide",
-		"index": 0
-	},
-	{
-		"uuid": "6a298b8c-9246-411f-b364-2d73c7e292d0",
-		"name": "header 3",
-		"duration": null,
-		"enabled": true,
-		"displayTime": null,
-		"transition": null,
-		"type": "slide",
-		"index": 1
+		"index": 0,
+		"transition": ""
 	},
 	{
 		"uuid": "03191688-bb93-4376-a3ab-53ed790b2155",
@@ -27,30 +17,26 @@
 		"displayTime": false,
 		"type": "slide",
 		"transition": null,
+		"index": 1
+	},
+	{
+		"uuid": "6a298b8c-9246-411f-b364-2d73c7e292d0",
+		"name": "header test  3",
+		"duration": null,
+		"enabled": true,
+		"displayTime": null,
+		"transition": null,
+		"type": "slide",
 		"index": 2
 	},
 	{
-		"uuid": "6a538b9f-cc1b-48bd-b3cd-a9a18fdf0428",
-		"name": "localhost",
+		"uuid": "39e5205f-9ace-4597-9873-f9ea5846dff0",
+		"name": "header",
 		"duration": null,
 		"enabled": true,
-		"displayTime": false,
-		"type": "webpage",
-		"webUrl": "http://localhost",
-		"zoom": 1,
-		"index": 3,
-		"transition": null
-	},
-	{
-		"uuid": "04c227c6-eae8-4eaa-b0df-194fe6af30bc",
-		"name": "test",
-		"duration": null,
-		"enabled": true,
-		"displayTime": true,
-		"type": "webpage",
-		"webUrl": "http://localhost/test",
-		"zoom": 1,
-		"index": 4,
-		"transition": null
+		"displayTime": null,
+		"transition": "",
+		"type": "slide",
+		"index": 3
 	}
 ]
