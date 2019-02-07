@@ -183,6 +183,7 @@ socket.on('callback.edit', function (data) {
     console.log(data.slideData.displayTime);
 
     $("#override").checkbox('set unchecked');
+
     if (data.slideData.displayTime !== null) {
         $("#override").checkbox('set checked');
         if (data.slideData.displayTime) {
@@ -421,15 +422,23 @@ function removeSelectedObjects() {
 }
 
 function cueSlide() {
+    if (displayId !== null) {
+        if (confirm('Force display of the current slide?')) {
+            var duration = null;
+            if ($.isNumeric($("#duration").val())) {
+                duration = parseFloat($("#duration").val());
+            }
 
-    if (confirm('Force display of the current slide?')) {
-        var duration = null;
-        if ($.isNumeric($("#duration").val())) {
-            duration = parseFloat($("#duration").val());
+            let obj = {
+                json: canvas.toJSON(['id']),
+                png: canvas.toDataURL('png'),
+                displayId: displayId,
+                duration: duration
+            };
+            socket.emit("admin.override", obj);
         }
-
-        let obj = {json: canvas.toJSON(['id']), png: canvas.toDataURL('png'), displayId: displayId, duration: duration};
-        socket.emit("admin.override", obj);
+    } else {
+        alert("Can't find display to announce");
     }
 }
 
@@ -481,8 +490,6 @@ function save() {
 function saveAsFullScreenImage(name = "untitled", imageData) {
     canvas.clear();
     canvas.setBackgroundImage(null, null, null);
-
-    console.log(imageData);
 
     fabric.Image.fromURL(imageData, function (bgImage) {
 

@@ -15,15 +15,17 @@
 
 {% block body %}
 
-    <div id="blackoutLayer" class="gpu"></div>
+    <div id="blackoutLayer" class="gpu opacity"></div>
+
+    <div id="helperLayer" class="gpu animated"></div>
 
     <iframe id="webLayer0" class="web fsimage animated"></iframe>
     <iframe id="webLayer1" class="web fsimage animated"></iframe>
 
-    <div id="layer0" class="fsimage gpu" style="z-index: 10;">
+    <div id="layer0" class="fsimage gpu opacity" style="z-index: 10;">
         <img id="img0" style="width: 100%;"/>
     </div>
-    <div id="layer1" class="fsimage gpu" style="z-index: 10;">
+    <div id="layer1" class="fsimage gpu opacity" style="z-index: 10;">
         <img id="img1" style="width: 100%;"/>
     </div>
 

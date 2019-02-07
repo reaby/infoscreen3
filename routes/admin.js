@@ -27,7 +27,8 @@ module.exports = function (websocket) {
     router.get('/edit/slide', function (req, res, next) {
         let bundle = req.query['bundle'];
         let file = req.query['file'];
-        let displayId = req.query['displayId'] || null;
+        let displayId = req.query['displayId'];
+
         res.render('admin/editSlide', {config: config, bundle: bundle, displayId: displayId, file: file});
     });
 

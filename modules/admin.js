@@ -199,11 +199,14 @@ class admin {
 
             // override
             socket.on('admin.override', function (data) {
-                let view = getView(parseInt(data.displayId));
-                console.log(data.duration);
+                try {
+                    let view = getView(parseInt(data.displayId));
+                    view.overrideSlide(data.json, data.png, data.duration);
 
-                view.overrideSlide(data.json, data.png, data.duration);
-                view.displayCurrentSlide();
+                    view.displayCurrentSlide();
+                } catch (err) {
+                    cli.error("error, admin.override", err);
+                }
             });
 
             socket.on('admin.setBundle', function (data) {

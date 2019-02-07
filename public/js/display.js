@@ -142,6 +142,7 @@ socket.on('callback.reloadImage', function (data) {
 socket.on('callback.announce', function (data) {
     checkBlackout();
     nextSlide(data);
+
 });
 
 socket.on('callback.forceSlide', function (data) {
@@ -203,7 +204,8 @@ function nextSlide(data) {
         $("#" + getWebLayer()).addClass("fadeOut").removeClass("fadeIn");
         $("#" + getWebLayer(1)).addClass("fadeOut").removeClass("fadeIn");
         $("#slider").show();
-
+        $("#slider").addClass();
+        $("#helperLayer").addClass("announce");
         try {
             var randomId = uuidv4();
             var image = new Image();
@@ -216,7 +218,7 @@ function nextSlide(data) {
             console.log(err);
         }
     } else {
-
+        $("#helperLayer").removeClass("announce");
         switch (serverOptions.currentMeta.type) {
             case "webpage":
                 $("#slider").hide();

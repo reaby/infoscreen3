@@ -6,7 +6,7 @@
     <script>
         var bundle = "{{ bundle }}";
         var file = "{{ file }}";
-        {% if displayId %}
+        {% if displayId != null %}
         var displayId = {{ displayId }};
         {% else %}
         var displayId = null;
