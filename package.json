@@ -18,6 +18,7 @@
     "morgan": "~1.9.0",
     "node-media-server": "~1.4.9",
     "socket.io": "^2.2.0",
-    "twig": "~0.10.3"
+    "twig": "~0.10.3",
+    "node.extend": ">=2.0.1"
   }
 }
