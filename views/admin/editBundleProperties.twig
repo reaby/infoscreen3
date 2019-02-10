@@ -6,28 +6,28 @@
 
 {% block body %}
     <div class="ui segment">
-        <h1>Edit Bundle</h1>
+        <h1>{{ t("admin.editBundleProperties.editBundle") }}</h1>
         <div class="ui info icon message">
             <i class="info icon"></i>
             <div class="content">
-                <p>Most of the changes are applied for live environment at next slide change.</p>
+                <p>{{ t("admin.editBundleProperties.msg1") }}</p>
             </div>
         </div>
         <form action="/admin/edit/bundleProperties" method="post" class="ui form">
             <input name="bundle" value="{{ bundle }}" hidden/>
 
             <div class="field">
-                <label>Bundle Name</label>
+                <label>{{ t("admin.editBundleProperties.name") }}</label>
                 <input type="text" value="{{ bundleData.bundleName }}" name="bundleName"/>
             </div>
             <div class="field">
 
-                <label>Background</label>
+                <label>{{ t("admin.editBundleProperties.background") }}</label>
                 <input type="text" value="{{ bundleData.background }}" name="background"/>
 
             </div>
             <div class="field">
-                <label>Default Transition (applied on backend restart)</label>
+                <label>{{ t("admin.editBundleProperties.transition") }}</label>
                 <div id="transitions" class="ui selection dropdown">
                     <input id="inputTransition" name="transition" value="{{ bundleData.transition }}" hidden/>
                     <div class="ui small breadcrumb">
@@ -39,93 +39,90 @@
             <div class="field">
                 <div id="displayTime" class="ui toggle {% if bundleData.displayTime %} checked {% endif %} checkbox">
                     <input type="checkbox" {% if bundleData.displayTime %} checked {% endif %} name="displayTime"/>
-                    <label>Display Time</label>
+                    <label>{{ t("admin.editBundleProperties.time") }}</label>
                 </div>
             </div>
 
             <div class="field">
-                <label>Default Duration</label>
+                <label>{{ t("admin.editBundleProperties.duration") }}</label>
                 <input type="number" value="{{ bundleData.duration }}" name="duration"/>
             </div>
             <div class="ui info icon message">
                 <i class="warning icon"></i>
                 <div class="content">
                     <div class="header">
-                        Notice for Web Fonts
+                        {{ t("admin.editBundleProperties.msg2title") }}
                     </div>
-                    <p>When checked, fonts with according names will be loaded from http://fonts.google.com,
-                        Both of the fonts has to be then web fonts, you can't mix system and web fonts.</p>
+                    <p>  {{ t("admin.editBundleProperties.msg2body") }}</p>
                 </div>
             </div>
             <div class="field">
                 <div id="webfonts" class="ui toggle {% if bundleData.useWebFonts %} checked {% endif %} checkbox">
                     <input type="checkbox" {% if bundleData.useWebFonts %} checked {% endif %} name="useWebFonts"/>
-                    <label>Use WebFonts</label>
+                    <label>{{ t("admin.editBundleProperties.webfonts") }}</label>
                 </div>
             </div>
 
 
-            <h1>Style</h1>
+            <h1>{{ t("admin.editBundleProperties.style") }}</h1>
             <div class="ui negative icon message">
                 <i class="warning icon"></i>
                 <div class="content">
                     <div class="header">
-                        Notice for Style
+                        {{ t("admin.editBundleProperties.msg3title") }}
                     </div>
-                    <p>Due backend doesn't have rendering possible, the changed values here will affect only new saved
-                        slides.
-                        If you're about to change existing bundle slides, be sure to re-save every created slide again!
+                    <p>
+                        {{ t("admin.editBundleProperties.msg3body") }}
                     </p>
                 </div>
             </div>
 
-            <h2>Header</h2>
+            <h2>  {{ t("admin.editBundleProperties.header") }}</h2>
 
             <div class="field">
-                <label>Font name</label>
+                <label> {{ t("admin.editBundleProperties.fontName") }}</label>
                 <input type="text" value="{{ bundleData.styleHeader.fontFamily }}" name="headerFontFamily"/>
             </div>
 
             <div class="field">
-                <label>Font size</label>
+                <label>{{ t("admin.editBundleProperties.fontSize") }}</label>
                 <input type="number" value="{{ bundleData.styleHeader.fontSize }}" name="headerFontSize"/>
             </div>
             <div class="field">
-                <label>Font Color</label>
+                <label>{{ t("admin.editBundleProperties.fontColor") }}</label>
                 <input id="headerFill" type="text" value="{{ bundleData.styleHeader.fill }}" name="headerFill"
                        onchange="previewColor(this)"/>
             </div>
             <div class="field">
-                <label>Font Border Color</label>
+                <label>{{ t("admin.editBundleProperties.fontBorder") }}</label>
                 <input id="headerStroke" type="text" value="{{ bundleData.styleHeader.stroke }}" name="headerStroke"
                        onchange="previewColor(this)"/>
             </div>
 
-            <h2>Normal Text</h2>
+            <h2> {{ t("admin.editBundleProperties.text") }}</h2>
 
             <div class="field">
-                <label>Font name</label>
+                <label> {{ t("admin.editBundleProperties.fontName") }}</label>
                 <input type="text" value="{{ bundleData.styleText.fontFamily }}" name="textFontFamily"/>
             </div>
 
             <div class="field">
-                <label>Font size</label>
+                <label>{{ t("admin.editBundleProperties.fontSize") }}</label>
                 <input type="number" value="{{ bundleData.styleText.fontSize }}" name="textFontSize"/>
             </div>
             <div class="field">
-                <label>Font Color</label>
+                <label>{{ t("admin.editBundleProperties.fontColor") }}</label>
                 <input id="textFill" type="text" value="{{ bundleData.styleText.fill }}" name="textFill"
                        onchange="previewColor(this)"/>
             </div>
             <div class="field">
-                <label>Font Border Color</label>
+                <label>{{ t("admin.editBundleProperties.fontBorder") }}</label>
                 <input id="textStroke" type="text" value="{{ bundleData.styleText.stroke }}" name="textStroke"
                        onchange="previewColor(this)"/>
             </div>
 
-
             <div class="field">
-                <button type="submit" class="ui basic button">Save</button>
+                <button type="submit" class="ui basic button">{{ t("actions.save") }}</button>
             </div>
         </form>
     </div>

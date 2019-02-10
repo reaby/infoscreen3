@@ -182,7 +182,6 @@ socket.on('callback.edit', function (data) {
 
     console.log(data.slideData.displayTime);
 
-    $("#override").checkbox('set unchecked');
 
     if (data.slideData.displayTime !== null) {
         $("#override").checkbox('set checked');
@@ -191,6 +190,8 @@ socket.on('callback.edit', function (data) {
         } else {
             $("#displaytime").checkbox('set unchecked');
         }
+    } else {
+        $("#override").checkbox('set unchecked');
     }
 
     var transitionArray = [];

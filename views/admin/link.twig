@@ -13,29 +13,29 @@
     <div class="ui segment">
         <form class="ui form">
             <div class="field">
-                <label>Name</label>
+                <label>{{ t("admin.addLink.name") }}</label>
                 <input type="text" id="name" placeholder="weblink 1" required>
             </div>
             <div class="field">
-                <label>Url</label>
+                <label>{{ t("admin.addLink.url") }}</label>
                 <input type="text" id="weburl" placeholder="http://user:pass@localhost.lan/path" required>
             </div>
             <div class="field">
-                <label>Zoom Page by</label>
+                <label>{{ t("admin.addLink.zoom") }}</label>
                 <input type="number" id="zoom" step="0.1" min="0.5" value="1.0"/>
             </div>
             <div class="field">
-                <label>Display duration (seconds), leave blank for default</label>
+                <label>{{ t("admin.addLink.duration") }}</label>
                 <input type="number" id="duration" min="5"/>
             </div>
             <div class="field">
                 <div id="displaytime" class="ui toggle checkbox">
                     <input type="checkbox"/>
-                    <label>Display time</label>
+                    <label>{{ t("admin.addLink.displayTime") }}</label>
                 </div>
             </div>
-            <div class="ui basic button" onclick="save();">Save</div>
-            <div class="ui basic button" onclick="window.close()">Cancel</div>
+            <div class="ui basic button" onclick="save();">{{ t("actions.save") }}</div>
+            <div class="ui basic button" onclick="window.close()">{{ t("actions.cancel") }}</div>
         </form>
     </div>
     <script>

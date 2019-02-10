@@ -4,7 +4,7 @@
 		"name": "testing 123",
 		"duration": null,
 		"enabled": true,
-		"displayTime": false,
+		"displayTime": null,
 		"type": "slide",
 		"index": 0,
 		"transition": ""
@@ -14,9 +14,9 @@
 		"name": "2 header",
 		"duration": 10,
 		"enabled": true,
-		"displayTime": false,
+		"displayTime": null,
 		"type": "slide",
-		"transition": null,
+		"transition": "",
 		"index": 1
 	},
 	{

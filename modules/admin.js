@@ -342,7 +342,7 @@ class admin {
                 let bundle = self.bundleManager.getBundle(data.bundleName);
                 let bundleData = bundle.getBundleData();
                 let json = "{}";
-                let slide = {};
+                let slide = {displayTime: null};
                 if (data.fileName) {
                     json = bundle.getSlideJsonFile(data.fileName);
                     slide = bundle.findSlideByUuid(data.fileName);

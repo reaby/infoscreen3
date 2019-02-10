@@ -1,0 +1,80 @@
+{
+  "infoscreen": "InfoScreen<sup>3</sup>",
+  "actions": {
+    "save": "Tallenna",
+    "cancel": "Peruuta",
+    "insert": "Lisää",
+    "delete": "Poista",
+    "fill": "Täytä",
+    "copy": "Kopio",
+    "paste": "Liitä",
+    "blackout": "Tummenna",
+    "displayTime": "Näytä aika",
+    "startStream": "Aloita suoratoisto",
+    "forceReload": "Lataa uudelleen",
+    "createNew": "Luo Uusi dia",
+    "addWebPage": "Lisää Web-sivu",
+    "announce": "Ilmoita"
+  },
+  "navs": {
+    "bundle": "DiaPaketti",
+    "transition": "Siirtymä",
+    "time": "Aika",
+    "override": "Pakota",
+    "duration": "Pituus"
+  },
+  "admin": {
+    "dashboard": {
+      "allBundles": "DiaPaketit",
+      "slidesInRotation": "Diakierto",
+      "preview": "Esikatselu",
+      "program": "Ohjelma"
+    },
+    "editBundleSlides": {
+      "bundle": "Diapaketti:"
+    },
+    "editBundleProperties": {
+      "bundle": "Muokkaa diapakettia",
+      "msg1": "Suurin osa asetuksista otetaan käyttöön seuraavan dian vaihtuessa.",
+      "name": "Nimi",
+      "background": "Tausta",
+      "transition": "Oletussiirtymä",
+      "time": "Näytä aika",
+      "duration": "Oletusarvo dian pituudelle",
+      "msg2title": "Huomio Web-fonteille",
+      "msg2body": "Kun aktiivinen, fontit ladataan http://fonts.google.com. Kumpikin sekä otsikko, että tekstin fontti pitää olla nettikirjastosta!",
+      "webfonts": "Käytä web-fontteja",
+      "style": "Tyyli",
+      "msg3title": "Huomio tyyleille",
+      "msg3body": "Palvelin ei tue automaattista kuvantamista! Jos muutat tästä oletustyyliä, huomaa, että joudut avaamaan ja tallentamaan kaikki diat uudestaan",
+      "header": "Otsakkeet",
+      "text": "Teksti",
+      "fontName": "Fontin nimi",
+      "fontSize": "Kirjainten koko",
+      "fontColor": "Kirjainten väri",
+      "fontBorder": "Rajan väri"
+    },
+    "editSlide": {
+      "insertImage": "Lisää kuva",
+      "dropToUpload": "Raahaa kuva tähän ladataksesi...",
+      "order": "Järjestys",
+      "sendToFront": "Tuo päällimmäiseksi",
+      "moveForward": "Siirrä eteenpäin",
+      "moveBackward": "Siirrä taaksepäin",
+      "sendToBack": "Vie Alimmaikseksi"
+    },
+    "addLink": {
+      "name": "Nimi",
+      "url": "Osoite",
+      "zoom": "Suurennus",
+      "duration": "Pituus (sekunneissa), tyhjä on oletusarvo",
+      "displayTime": "Näytä aika"
+    }
+  },
+  "index": {
+    "displays": "Näytöt",
+    "normal": "Normaali",
+    "lite": "Kevyt",
+    "splitter": "tai"
+  }
+}

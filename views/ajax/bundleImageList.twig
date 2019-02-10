@@ -7,9 +7,16 @@
             <div class="center aligned header">{{ image.name }}</div>
         </div>
         <div class="extra content">
-            <div class="ui tiny basic button" onclick="addImage('{{ image.url }}', false);">Insert</div>
-            <div class="ui tiny basic button" onclick="addImage('{{ image.url }}', true);">Fill</div>
-            <div class="ui tiny basic negative button" onclick="deleteImage('{{ image.name }}')">Delete</div>
+            <div class="ui tiny basic button"
+                 onclick="addImage('{{ image.url }}', false);">
+                {{ t("actions.insert") }}
+            </div>
+            <div class="ui tiny basic button" onclick="addImage('{{ image.url }}', true);">
+                {{ t("actions.fill") }}
+            </div>
+            <div class="ui tiny basic negative button"
+                 onclick="deleteImage('{{ image.name }}')">{{ t("actions.delete") }}
+            </div>
         </div>
     </div>
 {% endfor %}

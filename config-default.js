@@ -10,4 +10,5 @@ module.exports = {
     ],
     "mediaServer": false,
     "useLocalAssets": false,
+    "defaultLocale": "en"
 };

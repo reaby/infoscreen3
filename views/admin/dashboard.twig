@@ -12,7 +12,7 @@
 {% block body %}
     <div class="ui primary bottom fixed pointing menu">
         <span class="header item">
-            Info Screen<sup>3</sup>
+          {{ t("infoscreen") }}
         </span>
 
         <div id="displays" class="ui dropdown item">
@@ -24,7 +24,7 @@
 
         <div id="bundles" class="ui dropdown item">
             <div class="ui small breadcrumb">
-                <span class="section">Bundle</span>
+                <span class="section">{{ t("navs.bundle") }}</span>
                 <i class="right chevron icon divider"></i>
                 <span id="currentBundle" class="section"></span>
             </div>
@@ -33,7 +33,7 @@
 
         <div id="transitions" class="ui dropdown item">
             <div class="ui small breadcrumb">
-                <span class="section">Transition</span>
+                <span class="section">{{ t("navs.transition") }}</span>
                 <i class="right chevron icon divider"></i>
                 <span id="currentTransition" class="section"></span>
             </div>
@@ -42,7 +42,7 @@
 
         <div class="right menu">
             <div class="ui inverted buttons">
-                <button  class="ui icon button" onclick="emit('controls.previous');">
+                <button class="ui icon button" onclick="emit('controls.previous');">
                     <i class="step backward icon"></i>
                 </button>
 
@@ -60,20 +60,20 @@
             </div>
 
             <button id="blackout" class="ui black basic button" onclick="emit('controls.blackout');">
-                Blackout
+                {{ t("actions.blackout") }}
             </button>
             <button id="toggleTime" class="ui teal basic button" onclick="emit('controls.time.toggle');">
-                Toggle Time
+                {{ t("actions.displayTime") }}
             </button>
             {% if config.mediaServer %}
-            <button id="stream" class="ui blue basic button"
-                    onclick="emit('controls.startStream', {streamName: 'STREAM_NAME' });">
-                Start Stream
-            </button>
+                <button id="stream" class="ui blue basic button"
+                        onclick="emit('controls.startStream', {streamName: 'STREAM_NAME' });">
+                    {{ t("actions.startStream") }}
+                </button>
             {% endif %}
             <button class="ui red basic button"
                     onclick="forceReload()">
-                Force Reload
+                {{ t("actions.forceReload") }}
             </button>
         </div>
     </div>
@@ -86,7 +86,7 @@
             <div class="ui five wide column">
                 <div class="ui inverted basic segment">
                     <h1 class="ui inverted header">
-                        Available Bundles
+                        {{ t("admin.dashboard.allBundles") }}
                     </h1>
 
                     <div id="allBundles" class="ui list">
@@ -97,11 +97,11 @@
             <div class="ui five wide column">
                 <div class="ui inverted basic segment">
                     <h1 class="ui inverted header">
-                        Slides in rotation
+                        {{ t("admin.dashboard.slidesInRotation") }}
                     </h1>
 
-                    <button class="ui basic inverted button" onclick="createNew();">Create new</button>
-                    <button class="ui basic inverted button" onclick="addLink();">Add Web page</button>
+                    <button class="ui basic inverted button" onclick="createNew();">  {{ t("actions.createNew") }}</button>
+                    <button class="ui basic inverted button" onclick="addLink();">{{ t("actions.addWebPage") }}</button>
 
                     <div id="bundleSlides" class="ui sortable list">
 
@@ -113,7 +113,7 @@
 
                 <div class="row">
                     <div id="previewContainer" class="ui inverted segment">
-                        <h2 class="ui inverted nopadded header">Preview</h2>
+                        <h2 class="ui inverted nopadded header"> {{ t("admin.dashboard.preview") }}</h2>
                         <iframe style="overflow-scrolling: unset; overflow: unset;" class="nopadded" id="preview"
                                 src="/admin/preview?uid={{ uid }}"></iframe>
                     </div>
@@ -121,7 +121,7 @@
 
                 <div class="row">
                     <div id="programContainer" class="ui inverted segment">
-                        <h2 class="ui inverted nopadded header currentDisplay">Program </h2>
+                        <h2 class="ui inverted nopadded header currentDisplay"> {{ t("admin.dashboard.program") }} </h2>
                         <iframe class="nopadded" id="program" src="/display/0"></iframe>
                     </div>
                 </div>

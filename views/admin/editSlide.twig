@@ -21,15 +21,15 @@
 
 {% block body %}
     <div id="imageLayer" class="ui modal">
-        <div class="header">Insert Image</div>
+        <div class="header">{{ t("admin.editSlide.insertImage") }}</div>
         <div id="dropzone" class="scrolling content">
-            <div class="ui info message">Drop images to upload</div>
+            <div class="ui info message">{{ t("admin.editSlide.dropToUpload") }}</div>
             <div id="imageList" class="ui three stackable cards">
 
             </div>
         </div>
         <div class="actions">
-            <div class="ui cancel button">Cancel</div>
+            <div class="ui cancel button">{{ t("actions.cancel") }}</div>
         </div>
     </div>
 
@@ -50,34 +50,34 @@
         </div>
         <div class="item">
             <div id="order" class="ui dropdown basic button">
-                <div class="default text">Change order <i class="dropdown icon"></i></div>
+                <div class="default text">{{ t("admin.editSlide.order") }} <i class="dropdown icon"></i></div>
                 <div class="menu">
-                    <div class="item" data-value="bringToFront">Send to front</div>
-                    <div class="item" data-value="bringForward">Move forward</div>
-                    <div class="item" data-value="sendBackwards">Move backward</div>
-                    <div class="item" data-value="sendToBack">Send to back</div>
+                    <div class="item" data-value="bringToFront">{{ t("admin.editSlide.sendToFront") }}</div>
+                    <div class="item" data-value="bringForward">{{ t("admin.editSlide.moveForward") }}</div>
+                    <div class="item" data-value="sendBackwards">{{ t("admin.editSlide.moveBackward") }}</div>
+                    <div class="item" data-value="sendToBack">{{ t("admin.editSlide.sendToBack") }}</div>
                 </div>
             </div>
         </div>
         <div class="item">
             <div class="ui input">
-                <input type="number" id="duration" placeholder="duration" min="5"/>
+                <input type="number" id="duration" placeholder="{{ t("navs.duration") }}" min="5"/>
             </div>
         </div>
         <div class="item">
             <div id="override" class="ui checkbox">
                 <input id="lbl2" type="checkbox"/>
-                <label for="lbl2">Override </label>
+                <label for="lbl2">{{ t("navs.override") }} </label>
             </div>
 
             <div id="displaytime" class="ui toggle checkbox">
                 <input id="lbl" type="checkbox"/>
-                <label for="lbl">Time</label>
+                <label for="lbl">{{ t("navs.time") }}</label>
             </div>
         </div>
         <div id="transitions" class="ui dropdown item">
             <div class="ui small breadcrumb">
-                <span class="section">Transition</span>
+                <span class="section">{{ t("navs.transition") }}</span>
                 <i class="right chevron icon divider"></i>
                 <span id="currentTransition" class="section"></span>
             </div>
@@ -86,11 +86,11 @@
         <div class="right menu">
             <div class="item">
                 <div class="ui buttons">
-                    <a href="#" onclick="save()" class="ui green button">Save</a>
+                    <a href="#" onclick="save()" class="ui green button">{{ t("actions.save") }}</a>
                     {% if displayId != null %}
-                    <a href="#" onclick="cueSlide()" class="ui basic teal button">Fast Announce</a>
+                        <a href="#" onclick="cueSlide()" class="ui basic teal button">{{ t("actions.announce") }}</a>
                     {% endif %}
-                    <a href="#" onclick="window.close()" class="ui red button">Cancel</a>
+                    <a href="#" onclick="window.close()" class="ui red button">{{ t("actions.cancel") }}</a>
                 </div>
             </div>
         </div>
@@ -111,23 +111,23 @@
 
     <div id="contextmenu" class="ui small vertical menu" style="display: none; position: absolute; z-index: 1000;">
         <a class="item" data-action="copy">
-            Copy
+            {{ t("actions.copy") }}
         </a>
         <a class="item" data-action="paste">
-            Paste
+            {{ t("actions.paste") }}
         </a>
         <div class="ui dropdown item">
             <i class="dropdown icon"></i>
-            Order
+            {{ t("admin.editSlide.order") }}
             <div class="menu">
-                <div class="item" data-action="bringToFront">Send to Front</div>
-                <div class="item" data-action="bringForward">Move forward</div>
-                <div class="item" data-action="sendBackwards">Move backward</div>
-                <div class="item" data-action="sendToBack">Send to Back</div>
+                <div class="item" data-action="bringToFront">{{ t("admin.editSlide.sendToFront") }}</div>
+                <div class="item" data-action="bringForward">{{ t("admin.editSlide.moveForward") }}</div>
+                <div class="item" data-action="sendBackwards">{{ t("admin.editSlide.moveBackward") }}</div>
+                <div class="item" data-action="sendToBack">{{ t("admin.editSlide.sendToBack") }}</div>
             </div>
         </div>
         <a class="item" data-action="delete">
-            Delete
+            {{ t("actions.delete") }}
         </a>
     </div>
     <canvas id="tempCanvas" width="1280" height="720" style="display: none"></canvas>

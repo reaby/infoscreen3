@@ -14,9 +14,9 @@
     <div class="column">
         <div class="ui one column very padded grid">
             <div class=" column">
-                <h1 class="ui inverted header">Bundle: {{ bundle.name }}</h1>
-                <button class="ui basic inverted button" onclick="createNew();">Create new slide</button>
-                <button class="ui basic inverted button" onclick="addLink();">Add Web page</button>
+                <h1 class="ui inverted header">{{ t("admin.editBundleSlides.bundle") }} {{ bundle.name }}</h1>
+                <button class="ui basic inverted button" onclick="createNew();">{{ t("actions.createNew") }}</button>
+                <button class="ui basic inverted button" onclick="addLink();">{{ t("actions.addWebPage") }}</button>
 
                 <div id="bundleSlides" class="ui sortable list">
                     {% for slide in bundle.allSlides %}

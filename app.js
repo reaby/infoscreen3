@@ -15,6 +15,9 @@ const eventDispatcher = new Dispatcher();
 let app = express();
 let server = require('http').Server(app);
 let io = require('socket.io')(server);
+let i18next = require("i18next"),
+    FilesystemBackend = require("i18next-node-fs-backend"),
+    i18nextMiddleware = require("i18next-express-middleware");
 
 if (config.mediaServer) {
     const {NodeMediaServer} = require('node-media-server');
@@ -37,10 +40,24 @@ if (config.mediaServer) {
     nms.run();
 }
 
+i18next
+    .use(FilesystemBackend)
+    .use(i18nextMiddleware.LanguageDetector)
+    .init({
+        backend: {
+            loadPath: './locales/{{lng}}/{{ns}}.json',
+            addPath: './locales/{{lng}}/{{ns}}.missing.json'
+        },
+        fallbackLng: config.defaultLocale,
+        preload: ['en', 'fi'],
+        saveMissing: true
+    });
+
 // view engine setup
 app.set('port', parseInt(config.serverListenPort));
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'twig');
+app.use(i18nextMiddleware.handle(i18next));
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
@@ -52,6 +69,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 let websocket = require("./modules/websocket")(server, app, io, eventDispatcher);
 let indexRouter = require('./routes/index.js')(websocket);
 let adminRouter = require('./routes/admin.js')(websocket);
+
 
 app.use('/', indexRouter);
 app.use('/admin', adminRouter);
