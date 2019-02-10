@@ -34,7 +34,7 @@
       "bundle": "Diapaketti:"
     },
     "editBundleProperties": {
-      "bundle": "Muokkaa diapakettia",
+      "editBundle": "Muokkaa diapakettia",
       "msg1": "Suurin osa asetuksista otetaan käyttöön seuraavan dian vaihtuessa.",
       "name": "Nimi",
       "background": "Tausta",
