@@ -1,6 +1,8 @@
 {
   "infoscreen": "InfoScreen<sup>3</sup>",
   "actions": {
+    "upload": "Lataa",
+    "uploadScale": "Lataa ja skaalaa 16:9",
     "save": "Tallenna",
     "cancel": "Peruuta",
     "insert": "Lisää",
@@ -13,6 +15,7 @@
     "startStream": "Aloita suoratoisto",
     "forceReload": "Lataa uudelleen",
     "createNew": "Luo Uusi dia",
+    "createNewSlide": "Luo uusi dia",
     "addWebPage": "Lisää Web-sivu",
     "announce": "Ilmoita"
   },
@@ -61,7 +64,7 @@
       "sendToFront": "Tuo päällimmäiseksi",
       "moveForward": "Siirrä eteenpäin",
       "moveBackward": "Siirrä taaksepäin",
-      "sendToBack": "Vie Alimmaikseksi"
+      "sendToBack": "Vie alimmaikseksi"
     },
     "addLink": {
       "name": "Nimi",

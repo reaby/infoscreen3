@@ -1,6 +1,8 @@
 {
   "infoscreen": "InfoScreen<sup>3</sup>",
   "actions": {
+    "upload": "Upload",
+    "uploadScale": "Upload and scale 16:9",
     "save": "Save",
     "cancel": "Cancel",
     "insert": "Insert",
@@ -13,6 +15,7 @@
     "startStream": "Start stream",
     "forceReload": "Force reload",
     "createNew": "Create New",
+    "createNewSlide": "Create New Slide",
     "addWebPage": "Add Web page",
     "announce": "Fast Announce"
   },
