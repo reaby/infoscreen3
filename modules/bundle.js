@@ -1,11 +1,15 @@
 let cli = require("./cli.js");
 let fs = require("fs");
 
+/**
+ *
+ */
 class bundleClass {
 
     constructor(name, data, slides) {
         this.name = name;
         this.bundleData = data;
+        this.bundleData['bundleName']= this.name;
         this.allSlides = slides;
         this.enabledSlides = [];
         this.disabledSlides = [];
@@ -13,6 +17,7 @@ class bundleClass {
     }
 
     getBundleData() {
+        this.bundleData['bundleName'] = this.name;  // to ensure backwards compatibility
         return this.bundleData;
     }
 

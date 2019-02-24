@@ -1,5 +1,5 @@
 {
-  "bundleName": "bundle",
+  "displayName": "bundle",
   "background": "bg.jpg",
   "duration": 20,
   "useWebFonts": false,

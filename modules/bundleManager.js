@@ -31,7 +31,7 @@ class bundleManager {
             return this.bundles[name];
         } else {
             try {
-                cli.info(name + " not in bundles, trygin to load from fs...");
+                cli.info(name + " not in bundles, trying to load from fs...");
                 let data = getJson("./data/" + name + "/bundle.json");
                 let slides = getJson("./data/" + name + "/slides.json");
                 this.bundles[name] = new bundle(name, data, slides);
@@ -43,6 +43,20 @@ class bundleManager {
         }
     }
 
+    /**
+     *
+     * @return {Array}
+     */
+    getBundleInfos() {
+        let out = [];
+        for (let key in this.bundles) {
+            out.push({
+                dir: key,
+                name: this.bundles[key].getBundleData().displayName
+            });
+        }
+        return out;
+    }
 }
 
 function getDirectories(path) {

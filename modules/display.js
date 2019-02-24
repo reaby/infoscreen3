@@ -111,7 +111,6 @@ class display {
 
     init(meta) {
         this.changeBundle(meta.bundle);
-        this.mainLoop();
     }
 
     /**
@@ -123,9 +122,12 @@ class display {
         let bundle = this.getBundle();
         this.serverOptions.loopIndex = 0;
         this.serverOptions.currentFile = bundle.enabledSlides[0] || "";
-        this.serverOptions.slideDuration = bundle.findSlideByUuid(bundle.enabledSlides[0]).duration || bundle.getBundleData().duration;
+        this.serverOptions.currentMeta = bundle.findSlideByUuid(bundle.enabledSlides[0]);
+        this.serverOptions.slideDuration = bundle.getBundleData().duration;
         this.serverOptions.currentId = bundle.enabledSlides.indexOf(this.serverOptions.currentFile);
         this.serverOptions.transition = bundle.getBundleData().transition;
+        this.serverOptions.loop = true;
+        this.mainLoop();
     }
 
     getSlideData() {
@@ -189,25 +191,30 @@ class display {
             this.serverOptions.displayTime = bundle.bundleData.displayTime;
         }
 
-        this.displayCurrentSlide();
-
-
-        this.serverOptions.loopIndex += 1;
-
         if (this.serverOptions.loop) {
             let that = this;
 
             // override slide timeout if set by slide
             var slideTimeout = this.serverOptions.slideDuration * 1000;
-            if (this.serverOptions.currentMeta.duration !== null) {
+            if (this.serverOptions.currentMeta.duration > 5) {
                 slideTimeout = parseFloat(this.serverOptions.currentMeta.duration) * 1000;
             }
 
-            this.timeoutId.push(
-                setTimeout(function () {
-                    that.mainLoop();
-                }, slideTimeout));
+            console.log(this.serverOptions.displayId + " timeout:" + slideTimeout);
+
+            if (slideTimeout >= 5000) {
+                this.timeoutId.push(
+                    setTimeout(function () {
+                        that.mainLoop();
+                    }, slideTimeout));
+
+            } else {
+                this.serverOptions.loop = false;
+            }
         }
+
+        this.displayCurrentSlide();
+        this.serverOptions.loopIndex += 1;
     }
 
     overrideSlide(json, pngData, duration) {

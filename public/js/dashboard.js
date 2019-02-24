@@ -30,17 +30,18 @@ socket.on("callback.dashboard.sync", function (data) {
     // update dropdown at menu with bundles
     var valueArray = [];
     for (var dir of bundleDirs) {
-        valueArray.push({name: dir, value: dir});
+        valueArray.push({name: dir.name, value: dir.dir});
     }
 
     $('#bundles')
         .dropdown({
             direction: "upward",
             values: valueArray,
-            action: function (text, value) {
+            action: function (_label, _value) {
                 $('#bundles')
                     .dropdown("hide");
-                emit("admin.setBundle", {bundle: value});
+
+                emit("admin.setBundle", {bundle: _value});
             }
         }).dropdown("set selected", {bundle: serverOptions.currentBundle});
     $('#currentBundle').text(serverOptions.currentBundle);
@@ -101,14 +102,15 @@ socket.on("callback.dashboard.sync", function (data) {
     let output = "";
     for (var i in data.bundleDirs) {
         let bundle = data.bundleDirs[i];
-        output += '<div class="ui green message item" id="bundle_' + bundle + '">' +
+        output += '<div class="ui green message item" id="bundle_' + bundle.dir + '">' +
             '<div class="right floated content">' +
             // '<button class="ui small basic inverted icon button" onclick="emit(\'admin.setBundle\', {bundle:\'' + bundle + '\'});"><i class="step forward icon"></i></button>' +
-            '<button class="ui small basic inverted icon button" onclick="editBundle(\'' + bundle + '\')"><i class="list icon"></i></button>' +
-            '<button class="ui small basic inverted icon button" onclick="editBundleSlides(\'' + bundle + '\')"><i class="edit icon"></i></button>' +
+            '<button class="ui small basic inverted icon button" onclick="editBundle(\'' + bundle.dir + '\')"><i class="list icon"></i></button>' +
+            '<button class="ui small basic inverted icon button" onclick="editBundleSlides(\'' + bundle.dir + '\')"><i class="edit icon"></i></button>' +
+            '<button class="ui small basic inverted icon button" onclick="changeBundle(\'' + bundle.dir + '\')"><i class="play icon"></i></button>' +
             '</div>' +
             '<div class="content">' +
-            '<div>' + bundle + '</div>' +
+            '<div>' + bundle.name + '</div>' +
             '</div>' +
             '</div>';
     }
@@ -188,6 +190,9 @@ function addLink() {
     editSlide("", "webpage");
 }
 
+function changeBundle(name) {
+    emit("admin.setBundle", {bundle: name});
+}
 
 function editBundleSlides(name) {
     window.open("/admin/edit/bundleSlides?bundle=" + name, '_blank', 'location=no,height=800,width=400,scrollbars=yes,status=no');
@@ -291,6 +296,19 @@ function updateSlides(settings) {
     $("#bundleSlides").html(output);
     $('#bundleSlides').children().css("border", "1px solid black");
     $('#' + serverOptions.currentFile).css("border", "1px solid #1ebc30");
+    $('.editable').editable(function (value, settings) {
+        var uuid = $(this).parent().parent().attr("id");
+        emit("admin.renameSlide", {uuid: uuid, name: value, bundleName: serverOptions.currentBundle});
+        return (value);
+    }, {
+        submit: 'rename',
+        tooltip: "Doubleclick to edit...",
+        event: "dblclick",
+        cssclass: 'ui mini nopadded form',
+        cancelcssclass: 'ui tiny basic negative button',
+        submitcssclass: 'ui tiny basic positive button',
+    });
+
 }
 
 

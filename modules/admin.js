@@ -380,9 +380,15 @@ class admin {
                 }
 
                 var duration = data.duration;
-                if (data.duration === "") {
-                    data.duration = null;
+                if (data.duration == "") {
+                    duration = null;
                 }
+
+                var transition = data.transition;
+                if (data.transition == "") {
+                    transition = null;
+                }
+
 
                 try {
                     fs.writeFileSync("./data/" + data.bundleName + "/render/" + filename + ".png", data.png.replace(/^data:image\/png;base64,/, ""), "base64");
@@ -399,7 +405,7 @@ class admin {
                         displayTime: data.displayTime,
                         type: "slide",
                         index: bundle.allSlides.length,
-                        transition: data.transition,
+                        transition: transition,
                     };
 
                     let obj = bundle.findSlideByUuid(filename);
@@ -409,7 +415,7 @@ class admin {
                         obj.name = data.name;
                         obj.duration = duration;
                         obj.displayTime = data.displayTime;
-                        obj.transition = data.transition;
+                        obj.transition = transition;
                     }
 
                     bundle.save();
@@ -497,7 +503,7 @@ class admin {
 
             previewInstances.push({adminId: socket.id, preview: {}, currentView: {}});
             let serverOptions = getView(displayId).serverOptions;
-            let bundleDirs = getDirectories("./data");
+            let bundleDirs = self.bundleManager.getBundleInfos();
             let meta = JSON.parse(fs.readFileSync("./data/meta.json").toString());
 
             socket.emit("callback.dashboard.sync", {

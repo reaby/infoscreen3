@@ -1,7 +1,7 @@
 {
-	"bundleName": "default",
+	"displayName": "default nimi testi toimiiko 123",
 	"background": "bg.jpg",
-	"duration": 40,
+	"duration": 0,
 	"transition": "tiles3d",
 	"useWebFonts": false,
 	"displayTime": true,
@@ -18,5 +18,6 @@
 		"fontSize": 32,
 		"fontWeight": 900,
 		"fontFamily": "Arial Black"
-	}
+	},
+	"bundleName": "default"
 }

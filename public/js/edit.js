@@ -2,6 +2,7 @@ let canvas;
 let bundleData;
 
 let _clipboard = null;
+let slideName = "untitled";
 
 bundleData = {
     background: "",
@@ -161,8 +162,8 @@ socket.on('callback.save', function (data) {
     if (data.error) {
         alert(data.error);
     } else {
-        alert("slide saved successfully.");
-        //window.close();
+        // alert("slide saved successfully.");
+        window.close();
     }
 });
 
@@ -177,6 +178,10 @@ socket.on('callback.edit.updateFileList', function (data) {
 
 socket.on('callback.edit', function (data) {
     canvas.clear();
+    console.log(data);
+    if (data.slideData.name != null) {
+        slideName = data.slideData.name;
+    }
 
     $("#duration").val(data.slideData.duration + "");
 
@@ -446,12 +451,13 @@ function cueSlide() {
 
 function save() {
     canvas.setBackgroundImage(null, null, null);
-    var name = "untitled";
-    var texts = canvas.getObjects('i-text');
-    for (let i in texts) {
-        if (texts[i].id == "header") {
-            name = texts[i].text;
-            break;
+    if (slideName == "untitled") {
+        var texts = canvas.getObjects('i-text');
+        for (let i in texts) {
+            if (texts[i].id == "header") {
+                slideName = texts[i].text;
+                break;
+            }
         }
     }
 
@@ -471,19 +477,21 @@ function save() {
 
 
     var transition = $("#transitions").dropdown("get value");
-    if (transition === "null") transition = null;
+    if (transition === "null") transition = "";
 
 
     var obj = {
         bundleName: bundle,
-        name: name,
+        name: slideName,
         fileName: file,
         duration: duration,
         json: canvas.toJSON(['id']),
         png: canvas.toDataURL('png'),
         displayTime: checked,
-        transition: transition,
+        transition: transition
     };
+
+    console.log(obj);
 
     socket.emit("edit.save", obj);
 }

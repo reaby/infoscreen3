@@ -53,7 +53,7 @@ module.exports = function (websocket) {
         try {
 
             bundleData = bundleManager.getBundle(req.body.bundle).getBundleData();
-            bundleData.bundleName = req.body.bundleName;
+            bundleData.displayName = req.body.displayName;
             bundleData.background = req.body.background;
             bundleData.duration = parseInt(req.body.duration);
             bundleData.transition = transition;
