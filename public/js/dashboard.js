@@ -19,6 +19,9 @@ socket.on("callback.update", function (data) {
     }
 });
 
+socket.on("callback.error", function (data) {
+    alert(data);
+});
 
 socket.on("callback.dashboard.sync", function (data) {
     displayId = parseInt(data.displayId);
@@ -207,6 +210,23 @@ function editSlide(name, type) {
             window.open("/admin/edit/link?bundle=" + serverOptions.currentBundle + "&file=" + name + "&displayId=" + displayId, '_blank', 'location=no,height=400,width=600,scrollbars=no,status=no');
             break;
     }
+}
+
+function createNewBundle() {
+    $('#newBundle')
+        .modal({
+            closable: true,
+            onDeny: function () {
+                $('#newBundle').modal("hide");
+                return false;
+            },
+            onApprove: function () {
+                emit("admin.createBundle", {"bundle": $("#newBundleDirName").val()})
+                $("#newBundleDirName").val("");
+                $('#newBundle').modal("hide");
+            }
+        })
+        .modal('show');
 }
 
 function editBundle(bundleName) {

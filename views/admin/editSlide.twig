@@ -54,7 +54,7 @@
                             class="ui remove icon"></i></a>
             </div>
         </div>
-        <div class="item">
+        <!--  <div class="item">
             <div id="order" class="ui dropdown basic button">
                 <div class="default text">{{ t("admin.editSlide.order") }} <i class="dropdown icon"></i></div>
                 <div class="menu">
@@ -64,7 +64,21 @@
                     <div class="item" data-value="sendToBack">{{ t("admin.editSlide.sendToBack") }}</div>
                 </div>
             </div>
+        </div> -->
+
+        <div class="item">
+            <div class="ui inverted buttons">
+                <a href="#" onclick="setAlign('left')" class="ui basic icon button"><i
+                            class="ui align left icon"></i></a>
+                <a href="#" onclick="setAlign('center')" class="ui basic icon button"><i
+                            class="ui align center icon"></i></a>
+                <a href="#" onclick="setAlign('right')" class="ui basic icon button"><i
+                            class="ui align right icon"></i></a>
+                <a href="#" onclick="setAlign('justify')" class="ui basic icon button"><i
+                            class="ui align justify icon"></i></a>
+            </div>
         </div>
+
         <div class="item">
             <div class="ui input">
                 <input type="number" id="duration" placeholder="{{ t("navs.duration") }}" min="5"/>
@@ -152,7 +166,7 @@
                         // check file type
                         var imageType = /image.(jpeg|png)/;
                         if (!file.type.match(imageType)) {
-                          //  alert("File \"" + file.name + "\" is not a valid image file, only jpeg and png are supported");
+                            //  alert("File \"" + file.name + "\" is not a valid image file, only jpeg and png are supported");
                             return false;
                         }
 

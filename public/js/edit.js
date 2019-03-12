@@ -122,6 +122,14 @@ function displayTime() {
     $('#time2').html(time);
 }
 
+function setAlign(align) {
+        var object = canvas.getActiveObject();
+        if (object.type === "i-text") {
+            object.textAlign = align;
+        }
+        canvas.renderAll();
+}
+
 
 function setZindex(value) {
     switch (value) {
@@ -169,7 +177,6 @@ socket.on('callback.save', function (data) {
 
 socket.on('callback.edit.updateFileList', function (data) {
     if (data.error) {
-        console.log(data);
         alert(data.error);
     } else {
         openImageBrowser();
@@ -177,16 +184,13 @@ socket.on('callback.edit.updateFileList', function (data) {
 });
 
 socket.on('callback.edit', function (data) {
+    bundleData = data.bundleData;
     canvas.clear();
-    console.log(data);
     if (data.slideData.name != null) {
         slideName = data.slideData.name;
     }
 
     $("#duration").val(data.slideData.duration + "");
-
-    console.log(data.slideData.displayTime);
-
 
     if (data.slideData.displayTime !== null) {
         $("#override").checkbox('set checked');
@@ -243,7 +247,6 @@ socket.on('callback.edit', function (data) {
         nextSlide(data, true);
     }
 
-    bundleData = data.bundleData;
     setBackground(bundleData.background);
 });
 
@@ -276,9 +279,7 @@ function parseUrl(url) {
 }
 
 function nextSlide(data) {
-    canvas.loadFromJSON(data.json, function () {
-        canvas.renderAll();
-    }, function (o, object) {
+    canvas.loadFromJSON(data.json, canvas.renderAll.bind(canvas), function (o, object) {
 
         if (object.type === "i-text") {
             object.setOptions(bundleData.styleText);

@@ -29,6 +29,7 @@
   "admin": {
     "dashboard": {
       "allBundles": "Available Bundles",
+      "bundleName": "Directory Name",
       "slidesInRotation": "Slides in rotation",
       "preview": "Preview",
       "program": "Program"

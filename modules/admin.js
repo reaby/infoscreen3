@@ -271,8 +271,39 @@ class admin {
                 }
             });
 
-            /** edit web links **/
 
+            socket.on("admin.createBundle", function (data) {
+                cli.info("@ create Bundle");
+                console.log(data);
+
+                try {
+                    if (!fs.existsSync("data/" + data.bundle)) {
+                        fs.mkdirSync("data/" + data.bundle);
+                        fs.mkdirSync("data/" + data.bundle + "/backgrounds");
+                        fs.mkdirSync("data/" + data.bundle + "/images");
+                        fs.mkdirSync("data/" + data.bundle + "/render");
+                        fs.mkdirSync("data/" + data.bundle + "/slides");
+
+                        var tempData =JSON.parse(fs.readFileSync("templates/bundle/bundle.json").toString());
+                        tempData.displayName = data.bundle;
+                        fs.writeFileSync("data/" + data.bundle + "/bundle.json", JSON.stringify(tempData));
+
+                        fs.copyFileSync("templates/bundle/slides.json", "data/" + data.bundle + "/slides.json");
+                        fs.copyFileSync("templates/bundle/backgrounds/bg.jpg", "data/" + data.bundle + "/backgrounds/bg.jpg");
+                        bundleManager.getBundle(data.bundle);
+                        syncDashboard(io, data.displayId);
+                    } else {
+                        socket.emit("callback.error", "Error: bundle already exists.");
+                        syncDashboard(io, data.displayId);
+                    }
+                } catch (err) {
+                    cli.error(err, "Error while creating new bundle");
+                    socket.emit("callback.error", "Error: " + err);
+                }
+            });
+
+
+            /** edit web links **/
             socket.on('admin.editLink', function (data) {
                 let bundle = self.bundleManager.getBundle(data.bundleName);
                 let bundleData = bundle.getBundleData();

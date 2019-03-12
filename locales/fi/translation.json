@@ -14,7 +14,7 @@
     "displayTime": "Näytä aika",
     "startStream": "Aloita suoratoisto",
     "forceReload": "Lataa uudelleen",
-    "createNew": "Luo Uusi dia",
+    "createNew": "Luo Uusi",
     "createNewSlide": "Luo uusi dia",
     "addWebPage": "Lisää Web-sivu",
     "announce": "Ilmoita"
@@ -29,6 +29,7 @@
   "admin": {
     "dashboard": {
       "allBundles": "DiaPaketit",
+      "bundleName": "Hakemiston Nimi",
       "slidesInRotation": "Diakierto",
       "preview": "Esikatselu",
       "program": "Ohjelma"

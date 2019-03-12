@@ -7,11 +7,11 @@
     "fill": "#f90",
     "fontSize": 56,
     "fontWeight": 900,
-    "fontFamily": "Arial Black"
+    "fontFamily": "Arial"
   },
   "styleText": {
     "fill": "#fff",
-    "fontFamily": "Arial Black",
+    "fontFamily": "Arial",
     "fontSize": 42,
     "fontWeight": 900
   }

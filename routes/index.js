@@ -1,4 +1,5 @@
 let express = require('express');
+let authMiddleWare = require('../modules/auth.js');
 let router = express.Router();
 let fs = require("fs");
 let config = require("../config.js");
@@ -6,6 +7,8 @@ let displayMeta = require("../data/meta.json");
 const cli = require('../modules/cli.js');
 
 module.exports = function (websocket) {
+
+    router.use(authMiddleWare);
 
     router.get('/', function (req, res, next) {
         res.header('Access-Control-Allow-Origin', '*');

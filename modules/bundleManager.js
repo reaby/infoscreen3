@@ -10,8 +10,13 @@ let cli = require("./cli.js");
 class bundleManager {
 
     constructor() {
+        this.syncBundles();
+    }
+
+    syncBundles() {
         this.bundles = {};
         let dirs = getDirectories("./data");
+        dirs.sort();
 
         for (let name of dirs) {
             let data = getJson("./data/" + name + "/bundle.json");

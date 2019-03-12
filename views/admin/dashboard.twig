@@ -88,6 +88,7 @@
                     <h1 class="ui inverted header">
                         {{ t("admin.dashboard.allBundles") }}
                     </h1>
+                    <button class="ui basic inverted button" onclick="createNewBundle();">  {{ t("actions.createNew") }}</button>
 
                     <div id="allBundles" class="ui list">
                     </div>
@@ -127,6 +128,22 @@
                 </div>
 
             </div>
+        </div>
+    </div>
+
+<!-- modal -->
+    <div id="newBundle" class="ui modal">
+        <div class="header">{{ t("actions.createNew") }}</div>
+        <div class="ui scrolling content form">
+
+
+                <label>{{ t("admin.dashboard.bundleName") }}</label>
+                <input class="ui input" type="text" id="newBundleDirName" value="" required/>
+
+        </div>
+        <div class="actions">
+            <div class="ui ok button">{{ t("actions.save") }}</div>
+            <div class="ui cancel button">{{ t("actions.cancel") }}</div>
         </div>
     </div>
 
