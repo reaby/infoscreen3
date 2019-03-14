@@ -254,18 +254,21 @@ function setBackground(background) {
     if (background.indexOf(".mp4") !== -1) {
 
         if (parseUrl(video.src) !== background) {
-            bg.hide();
-            $(video).show();
+            bg.fadeOut();
             video.src = background;
+            video.load();
             video.play();
+            $(video).show();
         }
     } else {
         if (parseUrl(bgImage.src) !== background) {
             bgImage.src = background;
-            bg.show();
-            $(video).hide();
-            video.src = null;
+            bg.fadeIn();
+            // unload video
             video.pause();
+            video.removeAttribute("src");
+            video.load();
+            $(video).hide();
         }
     }
 }
@@ -365,7 +368,7 @@ function checkImages(allSlides) {
         fluxIds.push(fImages[j].id);
     }
     for (var k in allSlides) {
-        if (allSlides[k].type == "slide") {
+        if (allSlides[k].type === "slide") {
             allIds.push(allSlides[k].uuid);
         }
     }
@@ -373,7 +376,7 @@ function checkImages(allSlides) {
     // new slides count is less than slides in rotation
     // remove slides
     if (allIds.length < fluxIds.length) {
-        console.log("less");
+
         var diffIds = symmetricDifference(fluxIds, allIds);
         for (var l in diffIds) {
             window.f.clearImageById(diffIds[l]);
@@ -384,7 +387,6 @@ function checkImages(allSlides) {
         for (var i in allIds) {
             try {
                 if (fluxIds.indexOf(allIds[i]) < 0) {
-                    console.log("adding", "/render/" + serverOptions.currentBundle + "/" + allIds[i] + ".png");
                     var image = new Image();
                     image.src = "/render/" + serverOptions.currentBundle + "/" + allIds[i] + ".png";
                     image.id = allIds[i];

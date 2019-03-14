@@ -257,31 +257,23 @@ window.flux = {
             }
         },
         clearImages: function () {
+            delete this.images;
             this.images = [];
         },
         clearTempImages: function () {
-            let newImages = [];
             for (var i in this.images) {
-                if (this.images[i].class !== "temp") {
-                    newImages.push(this.images[i]);
-                } else {
-                    delete this.images[i];
-                    console.log("cleared temp");
+                if (this.images[i].class === "temp") {
+                    this.images.splice(i, 1);
                 }
             }
-            this.images = newImages;
         },
         clearImageById: function (id) {
-            let newImages = [];
             for (var i in this.images) {
-                if (this.images[i].id !== id) {
-                    newImages.push(this.images[i]);
-                } else {
-                    console.log("cleared image by id: " + id);
-                    delete this.images[i];
+                if (this.images[i].id === id) {
+
+                    this.images.splice(i, 1);
                 }
             }
-            this.images = newImages;
         },
         finishedLoading: function () {
             var _this = this;
@@ -422,8 +414,7 @@ window.flux = {
                 css1.cursor = 'pointer';
                 this.image1.addClass('hasLink');
                 this.image1.data('href', $(img1).data('href'));
-            }
-            else {
+            } else {
                 this.image1.removeClass('hasLink');
                 this.image1.data('href', null);
             }
@@ -454,8 +445,7 @@ window.flux = {
 
             try {
                 tran = new flux.transitions[transition](this, $.extend(this.options[transition] ? this.options[transition] : {}, opts));
-            }
-            catch (e) {
+            } catch (e) {
                 // If an invalid transition has been provided then use the fallback (default is to just switch the image)
                 tran = new flux.transition(this, {fallback: true});
             }

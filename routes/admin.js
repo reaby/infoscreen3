@@ -7,7 +7,7 @@ let path = require('path');
 let config = require("../config.js");
 let busboy = require("connect-busboy");
 
-module.exports = function (websocket) {
+module.exports = function (websocket, dispatcher) {
     var bundleManager = websocket.bundleManager;
 
     router.use(authMiddleWare);
@@ -74,6 +74,7 @@ module.exports = function (websocket) {
 
         }
 
+        dispatcher.emit("updateBundles");
         res.send("<!doctype HTML><html><head><script>window.close();</script></head><body></body></html>");
     });
 

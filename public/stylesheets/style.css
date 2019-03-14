@@ -204,3 +204,11 @@ iframe {
     animation-name: announce;
 }
 
+canvas {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -moz-font-smoothing:antialiased;
+    font-smoothing:antialiased;
+    text-rendering:geometricPrecision;
+    font-smooth:always;
+}

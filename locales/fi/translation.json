@@ -24,12 +24,14 @@
     "transition": "Siirtymä",
     "time": "Aika",
     "override": "Pakota",
-    "duration": "Pituus"
+    "duration": "Pituus",
+    "display": "Näyttö"
   },
   "admin": {
     "dashboard": {
       "allBundles": "DiaPaketit",
-      "bundleName": "Hakemiston Nimi",
+      "bundleName": "Diapaketin Nimi",
+      "bundleDirName": "Hakemiston Nimi",
       "slidesInRotation": "Diakierto",
       "preview": "Esikatselu",
       "program": "Ohjelma"

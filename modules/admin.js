@@ -45,6 +45,12 @@ class admin {
             }
         });
 
+        dispatcher.on("updateBundles", function () {
+            io.emit("callback.dashboard.updateBundles", {
+                "bundleDirs": self.bundleManager.getBundleInfos()
+            });
+        });
+
         /** helper function to call announce easier **/
         function announce(screens, event, data) {
             self.dispatcher.emit("announce", {screens: screens, event: event, data: data});
@@ -274,23 +280,22 @@ class admin {
 
             socket.on("admin.createBundle", function (data) {
                 cli.info("@ create Bundle");
-                console.log(data);
 
                 try {
-                    if (!fs.existsSync("data/" + data.bundle)) {
-                        fs.mkdirSync("data/" + data.bundle);
-                        fs.mkdirSync("data/" + data.bundle + "/backgrounds");
-                        fs.mkdirSync("data/" + data.bundle + "/images");
-                        fs.mkdirSync("data/" + data.bundle + "/render");
-                        fs.mkdirSync("data/" + data.bundle + "/slides");
+                    if (!fs.existsSync("data/" + data.dir)) {
+                        fs.mkdirSync("data/" + data.dir);
+                        fs.mkdirSync("data/" + data.dir + "/backgrounds");
+                        fs.mkdirSync("data/" + data.dir + "/images");
+                        fs.mkdirSync("data/" + data.dir + "/render");
+                        fs.mkdirSync("data/" + data.dir + "/slides");
 
-                        var tempData =JSON.parse(fs.readFileSync("templates/bundle/bundle.json").toString());
+                        var tempData = JSON.parse(fs.readFileSync("templates/bundle/bundle.json").toString());
                         tempData.displayName = data.bundle;
-                        fs.writeFileSync("data/" + data.bundle + "/bundle.json", JSON.stringify(tempData));
+                        fs.writeFileSync("data/" + data.dir + "/bundle.json", JSON.stringify(tempData));
 
-                        fs.copyFileSync("templates/bundle/slides.json", "data/" + data.bundle + "/slides.json");
-                        fs.copyFileSync("templates/bundle/backgrounds/bg.jpg", "data/" + data.bundle + "/backgrounds/bg.jpg");
-                        bundleManager.getBundle(data.bundle);
+                        fs.copyFileSync("templates/bundle/slides.json", "data/" + data.dir + "/slides.json");
+                        fs.copyFileSync("templates/bundle/backgrounds/bg.jpg", "data/" + data.dir + "/backgrounds/bg.jpg");
+                        bundleManager.getBundle(data.dir);
                         syncDashboard(io, data.displayId);
                     } else {
                         socket.emit("callback.error", "Error: bundle already exists.");

@@ -163,6 +163,8 @@ socket.on('connect', function () {
     canvas = new fabric.Canvas('edit');
     canvas.includeDefaultValues = false;
     canvas.preserveObjectStacking = true;
+    canvas.antialias = true;
+
     socket.emit('admin.editSlide', {bundleName: bundle, fileName: file});
 });
 
@@ -259,17 +261,19 @@ function setBackground(background) {
     if (background.indexOf(".mp4") !== -1) {
         if (parseUrl(video.src) !== background) {
             bg.hide();
-            $(video).show();
             video.src = background;
+            video.load();
             video.play();
+            $(video).show();
         }
     } else {
         if (parseUrl(bgImage.src) !== background) {
             bgImage.src = background;
             bg.show();
-            $(video).hide();
-            video.src = "";
             video.pause();
+            video.removeAttribute("src");
+            video.load();
+            $(video).hide();
         }
     }
 }
@@ -282,15 +286,17 @@ function nextSlide(data) {
     canvas.loadFromJSON(data.json, canvas.renderAll.bind(canvas), function (o, object) {
 
         if (object.type === "i-text") {
-            object.setOptions(bundleData.styleText);
 
             if (object.id === "header") {
                 object.setOptions(bundleData.styleHeader);
+            } else {
+                object.setOptions(bundleData.styleText);
             }
-            object.setShadow({color: "#000", blur: 3, offsetX: 0, offsetY: 0});
+            object.setShadow({color: "rgba(0,0,0,0.6)", blur: 5, offsetX: 2, offsetY: 2});
 
             object.lockRotation = true;
             object.hasControls = false;
+            object.lockUniScaling = true;
             object.hasRotatingPoint = false;
         }
 
@@ -353,13 +359,14 @@ function addText(content, isHeader) {
     if (y === 0) {
         y = 30;
     }
-    text.setOptions(bundleData.styleText);
-    text.setOptions({top: y + 10, left: 250});
 
     if (isHeader) {
         text.id = "header";
         text.setOptions(bundleData.styleHeader);
         text.setOptions({top: y + 10, left: 150});
+    } else {
+        text.setOptions(bundleData.styleText);
+        text.setOptions({top: y + 10, left: 250});
     }
 
     text.lockRotation = true;
@@ -367,8 +374,7 @@ function addText(content, isHeader) {
     text.lockUniScaling = true;
     text.hasRotatingPoint = false;
 
-    text.setShadow({color: "rgba(0,0,0,0.8)", blur: 5, offsetX: 2, offsetY: 2});
-
+    text.setShadow({color: "#000", blur: 5, offsetX: 2, offsetY: 2});
     canvas.add(text);
 }
 
@@ -491,8 +497,6 @@ function save() {
         displayTime: checked,
         transition: transition
     };
-
-    console.log(obj);
 
     socket.emit("edit.save", obj);
 }

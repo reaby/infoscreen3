@@ -24,12 +24,14 @@
     "transition": "transition",
     "time": "time",
     "override": "override",
-    "duration": "duration"
+    "duration": "duration",
+    "display": "display"
   },
   "admin": {
     "dashboard": {
       "allBundles": "Available Bundles",
-      "bundleName": "Directory Name",
+      "bundleName": "Bundle Name",
+      "bundleDirName": "Bundle Directory Name",
       "slidesInRotation": "Slides in rotation",
       "preview": "Preview",
       "program": "Program"

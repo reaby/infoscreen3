@@ -107,17 +107,21 @@ function setBackground() {
 
             if (parseUrl(video.src) !== background) {
                 bg.hide();
-                $(video).show();
                 video.src = background;
+                video.load();
                 video.play();
+                $(video).show();
             }
         } else {
             if (parseUrl(bgImage.src) !== background) {
                 bgImage.src = background;
                 bg.show();
-                $(video).hide();
-                video.src = null;
+                bgImage.src = background;
+                bg.show();
                 video.pause();
+                video.removeAttribute("src");
+                video.load();
+                $(video).hide();
             }
         }
     }

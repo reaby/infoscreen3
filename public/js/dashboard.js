@@ -38,7 +38,7 @@ socket.on("callback.dashboard.sync", function (data) {
 
     $('#bundles')
         .dropdown({
-            direction: "upward",
+            direction: "downward",
             values: valueArray,
             action: function (_label, _value) {
                 $('#bundles')
@@ -59,7 +59,7 @@ socket.on("callback.dashboard.sync", function (data) {
 
     $('#displays')
         .dropdown({
-            direction: "upward",
+            direction: "downward",
             values: valueArray,
             action: function (text, value) {
                 $('#displays')
@@ -84,7 +84,7 @@ socket.on("callback.dashboard.sync", function (data) {
 
     $('#transitions')
         .dropdown({
-            direction: "upward",
+            direction: "downward",
             values: transitionArray,
             action: function (text, value) {
                 $('#transitions').dropdown("hide");
@@ -100,27 +100,7 @@ socket.on("callback.dashboard.sync", function (data) {
 
     var preview = document.getElementById('preview');
     preview.src = "/admin/preview?displayId=" + displayId + "&socket=" + encodeURIComponent(socket.id);
-
-
-    let output = "";
-    for (var i in data.bundleDirs) {
-        let bundle = data.bundleDirs[i];
-        output += '<div class="ui green message item" id="bundle_' + bundle.dir + '">' +
-            '<div class="right floated content">' +
-            // '<button class="ui small basic inverted icon button" onclick="emit(\'admin.setBundle\', {bundle:\'' + bundle + '\'});"><i class="step forward icon"></i></button>' +
-            '<button class="ui small basic inverted icon button" onclick="editBundle(\'' + bundle.dir + '\')"><i class="list icon"></i></button>' +
-            '<button class="ui small basic inverted icon button" onclick="editBundleSlides(\'' + bundle.dir + '\')"><i class="edit icon"></i></button>' +
-            '<button class="ui small basic inverted icon button" onclick="changeBundle(\'' + bundle.dir + '\')"><i class="play icon"></i></button>' +
-            '</div>' +
-            '<div class="content">' +
-            '<div>' + bundle.name + '</div>' +
-            '</div>' +
-            '</div>';
-    }
-
-    $('#allBundles').html(output);
-
-
+    updateBundleData(bundleDirs);
 });
 
 socket.on("callback.dashboard.updateSlides", function (data) {
@@ -130,6 +110,9 @@ socket.on("callback.dashboard.updateSlides", function (data) {
     }
 });
 
+socket.on("callback.dashboard.updateBundles", function (data) {
+    updateBundleData(data.bundleDirs);
+});
 
 socket.on("callback.dashboard.update", function (data) {
     if (data.serverOptions.displayId !== displayId)
@@ -142,7 +125,7 @@ socket.on("callback.dashboard.update", function (data) {
     updateSlides(bundleSettings);
 
     $('#allBundles').children().css("border", "1px solid black");
-    $('#bundle_' + serverOptions.currentBundle).css("border", "1px solid #1ebc30");
+    $('#bundle_' + simpleHash(serverOptions.currentBundle)).css("border", "1px solid #1ebc30");
     $('#currentBundle').text(serverOptions.currentBundle);
     $('#currentDisplay').text(displayList[displayId].name);
     $('#transitions').dropdown("set selected", serverOptions.transition);
@@ -171,6 +154,29 @@ $(function () {
         }
     }).disableSelection();
 });
+
+function updateBundleData(bundleDirs) {
+    let output = "";
+    bundleDirs.sort(sortByName);
+    for (var i in bundleDirs) {
+        let bundle = bundleDirs[i];
+        output += '<div class="ui green message item" id="bundle_' + simpleHash(bundle.dir) + '">' +
+            '<div class="right floated content">' +
+            '<button class="ui small basic inverted icon button" onclick="editBundle(\'' + bundle.dir + '\')"><i class="list icon"></i></button>' +
+            '<button class="ui small basic inverted icon button" onclick="editBundleSlides(\'' + bundle.dir + '\')"><i class="edit icon"></i></button>' +
+            '<button class="ui small basic inverted icon button" onclick="changeBundle(\'' + bundle.dir + '\')"><i class="play icon"></i></button>' +
+            '</div>' +
+            '<div class="content">' +
+            '<div>' + bundle.name + '</div>' +
+            '</div>' +
+            '</div>';
+    }
+
+    $('#allBundles').html(output);
+    $('#allBundles').children().css("border", "1px solid black");
+    $('#bundle_' + simpleHash(serverOptions.currentBundle)).css("border", "1px solid #1ebc30");
+}
+
 
 function fixPreview() {
     var con = $("#programContainer"),
@@ -221,8 +227,9 @@ function createNewBundle() {
                 return false;
             },
             onApprove: function () {
-                emit("admin.createBundle", {"bundle": $("#newBundleDirName").val()})
+                emit("admin.createBundle", {"dir": $("#newBundleDirName").val(), "bundle": $("#newBundleName").val()});
                 $("#newBundleDirName").val("");
+                $("#newBundleName").val("");
                 $('#newBundle').modal("hide");
             }
         })
@@ -344,4 +351,25 @@ function forceReload() {
     if (confirm("Really reload all connected display clients ?")) {
         emit('admin.reload');
     }
+}
+
+function sortByName(a, b) {
+    if (a.name < b.name)
+        return -1;
+    if (a.name > b.name)
+        return 1;
+    return 0;
+}
+
+function simpleHash(string) {
+    var hash = 0;
+    if (string.length == 0) {
+        return hash;
+    }
+    for (var i = 0; i < string.length; i++) {
+        var char = string.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash; // Convert to 32bit integer
+    }
+    return hash;
 }

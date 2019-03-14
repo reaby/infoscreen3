@@ -86,15 +86,15 @@ class display {
              * @param socket
              */
             function (socket) {
-                console.log("WS display" + displayId + ":" + socket.conn.remoteAddress + " connect");
+                cli.info("WS display" + displayId + ":" + socket.conn.remoteAddress + " connect");
 
                 socket.on('error', function (error) {
-                    console.log("WS display" + displayId + ": error");
-                    console.log(error);
+                    cli.info("WS display" + displayId + ": error");
+                    cli.error(error);
                 });
 
                 socket.on('disconnect', function (reason) {
-                    console.log("WS display" + displayId + ": disconnect " + reason + " " + socket.conn.remoteAddress);
+                    cli.info("WS display" + displayId + ": disconnect " + reason + " " + socket.conn.remoteAddress);
                 });
 
                 socket.on('sync', function () {
@@ -199,8 +199,6 @@ class display {
             if (this.serverOptions.currentMeta.duration > 5) {
                 slideTimeout = parseFloat(this.serverOptions.currentMeta.duration) * 1000;
             }
-
-            console.log(this.serverOptions.displayId + " timeout:" + slideTimeout);
 
             if (slideTimeout >= 5000) {
                 this.timeoutId.push(

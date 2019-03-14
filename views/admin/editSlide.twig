@@ -16,6 +16,14 @@
         label {
             color: white;
         }
+        canvas {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            -moz-font-smoothing:antialiased;
+            font-smoothing:antialiased;
+            text-rendering:geometricPrecision;
+            font-smooth:always;
+        }
     </style>
 {% endblock %}
 
@@ -123,7 +131,6 @@
                 <img id="bgimg" class="fsimage" src=""/>
             </div>
             <video muted loop autoplay id="bgvid2" poster="">
-                <source src="" type="video/mp4">
             </video>
             <div id="time2" class="noselect delay animated">00:00</div>
         </div>

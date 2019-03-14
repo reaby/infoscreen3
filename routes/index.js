@@ -6,7 +6,7 @@ let config = require("../config.js");
 let displayMeta = require("../data/meta.json");
 const cli = require('../modules/cli.js');
 
-module.exports = function (websocket) {
+module.exports = function (websocket, dispatcher) {
 
     router.use(authMiddleWare);
 
