@@ -1,7 +1,7 @@
 let canvas;
 let bundleData;
 
-var grid = 1280/32;
+var grid = 1280 / 32;
 
 let _clipboard = null;
 let slideName = "untitled";
@@ -42,11 +42,10 @@ $(function () {
     $('#order')
         .dropdown({
             action: 'hide',
-            onChange: function (value, text, $selectedItem) {
+            onChange: function (value, text, selectedItem) {
                 setZindex(value);
             }
         });
-
 
     $('#contextmenu .dropdown').dropdown({
         on: 'hover',
@@ -305,19 +304,20 @@ function parseUrl(url) {
 
 function nextSlide(data) {
     canvas.loadFromJSON(data.json, function () {
+        var w = 1280 / 32 / 8;
 
         // Grid display part
         for (var i = 1; i <= (1280 / grid); i++) {
             canvas.add(new fabric.Line([i * grid, 0, i * grid, 1280], {
                 stroke: '#ccc',
-                strokeDashArray: [5, 5],
+                strokeDashArray: [w, w],
                 opacity: 0.5,
                 selectable: false,
                 zIndex: 0
             }));
             canvas.add(new fabric.Line([0, i * grid, 1280, i * grid], {
                 stroke: '#ccc',
-                strokeDashArray: [5, 5],
+                strokeDashArray: [w, w],
                 opacity: 0.5,
                 selectable: false,
                 zIndex: 0
@@ -648,4 +648,3 @@ function uuidv4() {
         return v.toString(16);
     });
 }
-
