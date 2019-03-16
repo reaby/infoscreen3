@@ -210,7 +210,7 @@ function editBundleSlides(name) {
 function editSlide(name, type) {
     switch (type) {
         case "slide":
-            window.open("/admin/edit/slide?bundle=" + serverOptions.currentBundle + "&file=" + name + "&displayId=" + displayId, '_blank', 'location=no,height=800,width=1304,scrollbars=no,status=no');
+            window.open("/admin/edit/slide?bundle=" + serverOptions.currentBundle + "&file=" + name + "&displayId=" + displayId, '_blank', 'location=no,height=900,width=1304,scrollbars=no,status=no');
             break;
         case "webpage":
             window.open("/admin/edit/link?bundle=" + serverOptions.currentBundle + "&file=" + name + "&displayId=" + displayId, '_blank', 'location=no,height=400,width=600,scrollbars=no,status=no');
