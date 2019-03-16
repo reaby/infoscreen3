@@ -1,6 +1,8 @@
 let canvas;
 let bundleData;
 
+var grid = 1280/32;
+
 let _clipboard = null;
 let slideName = "untitled";
 
@@ -13,6 +15,20 @@ bundleData = {
 };
 
 $(function () {
+    canvas = new fabric.Canvas('edit');
+    canvas.on('object:moving', function (options) {
+
+        if (Math.round(options.target.left / grid * 4) % 4 === 0) {
+            options.target.set({
+                left: Math.round(options.target.left / grid) * grid,
+
+            }).setCoords();
+        }
+        if (Math.round(options.target.top / grid * 4) % 4 === 0) {
+            options.target.set({top: Math.round(options.target.top / grid) * grid}).setCoords();
+
+        }
+    });
 
     $('html').keyup(function (e) {
         if (e.keyCode === 46) {
@@ -123,11 +139,11 @@ function displayTime() {
 }
 
 function setAlign(align) {
-        var object = canvas.getActiveObject();
-        if (object.type === "i-text") {
-            object.textAlign = align;
-        }
-        canvas.renderAll();
+    var object = canvas.getActiveObject();
+    if (object.type === "i-text") {
+        object.textAlign = align;
+    }
+    canvas.renderAll();
 }
 
 
@@ -159,8 +175,12 @@ fabric.Image.prototype.toObject = (function (toObject) {
     }
 })(fabric.Image.prototype.toObject);
 
+var canvasWidth = document.getElementById('edit').width,
+    canvasHeight = document.getElementById('edit').height;
+var edgedetection = 20;
+
 socket.on('connect', function () {
-    canvas = new fabric.Canvas('edit');
+
     canvas.includeDefaultValues = false;
     canvas.preserveObjectStacking = true;
     canvas.antialias = true;
@@ -282,8 +302,31 @@ function parseUrl(url) {
     return '/background' + url.split('background')[1]
 }
 
+
 function nextSlide(data) {
-    canvas.loadFromJSON(data.json, canvas.renderAll.bind(canvas), function (o, object) {
+    canvas.loadFromJSON(data.json, function () {
+
+        // Grid display part
+        for (var i = 1; i <= (1280 / grid); i++) {
+            canvas.add(new fabric.Line([i * grid, 0, i * grid, 1280], {
+                stroke: '#ccc',
+                strokeDashArray: [5, 5],
+                opacity: 0.5,
+                selectable: false,
+                zIndex: 0
+            }));
+            canvas.add(new fabric.Line([0, i * grid, 1280, i * grid], {
+                stroke: '#ccc',
+                strokeDashArray: [5, 5],
+                opacity: 0.5,
+                selectable: false,
+                zIndex: 0
+            }))
+        }
+
+        canvas.renderAll();
+
+    }, function (o, object) {
 
         if (object.type === "i-text") {
 
@@ -301,9 +344,9 @@ function nextSlide(data) {
         }
 
         object.lockUniScaling = true;
+
     });
 }
-
 
 function copyObject() {
     // clone what are you copying since you
