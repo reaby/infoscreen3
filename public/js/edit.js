@@ -501,6 +501,11 @@ function cueSlide() {
 
 function save() {
     canvas.setBackgroundImage(null, null, null);
+    var objects = canvas.getObjects('line');
+    for (let i in objects) {
+        canvas.remove(objects[i]);
+    }
+
     if (slideName == "untitled") {
         var texts = canvas.getObjects('i-text');
         for (let i in texts) {
