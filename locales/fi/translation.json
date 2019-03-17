@@ -61,6 +61,7 @@
       "fontBorder": "Rajan väri"
     },
     "editSlide": {
+      "changeColor": "Vaihda väriä",
       "insertImage": "Lisää kuva",
       "dropToUpload": "Raahaa kuva tähän ladataksesi...",
       "order": "Järjestys",

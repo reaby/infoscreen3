@@ -66,7 +66,8 @@
             </div>
         </div>
     </div>
-    <div class="ui primary pointing menu" style="margin: 0;">
+
+    <div class="ui menu" style="margin-top: 0;">
         <div class="item">
             <div class="ui inverted buttons">
                 <a href="#" onclick="addHeader('header')" class="ui basic icon button"><i
@@ -94,7 +95,6 @@
                 </a>
                 <a class="ui basic icon button"
                    onclick="setZindex('sendToBack');">
-
                     <i class="ui level down icon"></i>
                 </a>
             </div>
@@ -112,11 +112,45 @@
                             class="ui align justify icon"></i></a>
             </div>
         </div>
+        <div class="item">
+            <div onclick="fontSize(1);" class="ui basic icon button">
+                <i class="icons">
+                    <i class="plus icon"></i>
+                    <i class="corner font icon"></i>
+                </i>
+            </div>
+            <div onclick="fontSize(-1);" class="ui basic icon button">
+                <i class="icons">
+                    <i class="minus icon"></i>
+                    <i class="corner font icon"></i>
+                </i>
+            </div>
+
+        </div>
+        <div class="item">
+            <div id="colorPicker" class="ui basic button">{{ t("admin.editSlide.changeColor") }} </div>
+
+            <div class="ui popup" style="display: none; min-width: 500px;">
+                <div onclick="changeColor(this);" class="ui white basic icon button"></div>
+                <div onclick="changeColor(this);" class="ui grey icon button"></div>
+                <div onclick="changeColor(this);" style="background:black;" class="ui black icon button"></div>
+                <div onclick="changeColor(this);" class="ui red icon icon button"></div>
+                <div onclick="changeColor(this);" class="ui orange icon button"></div>
+                <div onclick="changeColor(this);" class="ui yellow icon button"></div>
+                <div onclick="changeColor(this);" class="ui olive icon button"></div>
+                <div onclick="changeColor(this);" class="ui green icon button"></div>
+                <div onclick="changeColor(this);" class="ui teal icon button"></div>
+                <div onclick="changeColor(this);" class="ui blue icon button"></div>
+                <div onclick="changeColor(this);" class="ui violet icon button"></div>
+                <div onclick="changeColor(this);" class="ui purple icon button"></div>
+                <div onclick="changeColor(this);" class="ui pink icon button"></div>
+                <div onclick="changeColor(this);" class="ui brown icon button"></div>
+            </div>
+        </div>
 
         <div class="right menu">
             <div class="item">
-                <div class="ui inverted buttons">
-                    <a href="#" onclick="copyObject()" class="ui basic icon button"><i
+                <div class="ui inverted buttons"><a href="#" onclick="copyObject()" class="ui basic icon button"><i
                                 class="ui copy icon"></i></a>
                     <a href="#" onclick="pasteObject()" class="ui basic icon button"><i
                                 class="ui paste icon"></i></a>
@@ -160,6 +194,7 @@
             {{ t("actions.delete") }}
         </a>
     </div>
+
     <div id="imageLayer" class="ui modal">
         <div class="header">{{ t("admin.editSlide.insertImage") }}</div>
         <div id="dropzone" class="scrolling content">

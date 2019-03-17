@@ -16,17 +16,16 @@ bundleData = {
 
 $(function () {
     canvas = new fabric.Canvas('edit');
-    canvas.on('object:moving', function (options) {
 
+    canvas.on('object:moving', function (options) {
         if (Math.round(options.target.left / grid * 4) % 4 === 0) {
             options.target.set({
                 left: Math.round(options.target.left / grid) * grid,
-
             }).setCoords();
         }
+
         if (Math.round(options.target.top / grid * 4) % 4 === 0) {
             options.target.set({top: Math.round(options.target.top / grid) * grid}).setCoords();
-
         }
     });
 
@@ -52,6 +51,17 @@ $(function () {
     });
 
     $("#displaytime").checkbox();
+    $('#colorPicker')
+        .popup({
+            inline: true,
+            hoverable: true,
+            position: 'bottom center',
+            delay: {
+                show: 200,
+                hide: 800
+            }
+        });
+
 
     displayTime();
     setInterval(displayTime, 1000);
@@ -587,7 +597,6 @@ function saveAsFullScreenImage(name = "untitled", imageData) {
         }
 
         var checked = null;
-
         if ($("#override").checkbox('is checked')) {
             checked = $("#displaytime").checkbox('is checked');
         }
@@ -637,6 +646,38 @@ function deleteImage(name) {
     }
 }
 
+function changeColor(elem) {
+    var obj = canvas.getActiveObject();
+    obj.setColor(window.getComputedStyle(elem).backgroundColor);
+    canvas.renderAll();
+}
+
+function fontSize(direction) {
+    for (var obj of canvas.getActiveObjects()) {
+        var sizes = [20, 28, 32, 36, 40, 44, 48, 50, 54, 58, 64, 72, 96];
+        if (obj.type === "i-text") {
+
+            var idx = closest(sizes, obj.get("fontSize"));
+
+            if ((idx + direction) < sizes.length && (idx + direction) > 0) {
+                obj.setOptions({fontSize: sizes[idx + direction]});
+            }
+        }
+    }
+    canvas.renderAll();
+}
+
+function closest(list, x) {
+    var min,
+        chosen = 0;
+    for (var i in list) {
+        min = Math.abs(list[chosen] - x);
+        if (Math.abs(list[i] - x) < min) {
+            chosen = i;
+        }
+    }
+    return parseInt(chosen);
+}
 
 function openImageBrowser() {
     $("#imageList").load("/admin/ajax/imagelist?bundle=" + bundle + "&nocache=" + uuidv4(), null, function () {

@@ -61,6 +61,7 @@
       "fontBorder": "Border Color"
     },
     "editSlide": {
+      "changeColor": "Change Color",
       "insertImage": "Insert Image",
       "dropToUpload": "Drag'n'drop image here to upload",
       "order": "Order",
