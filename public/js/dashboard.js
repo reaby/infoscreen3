@@ -162,8 +162,8 @@ function updateBundleData(bundleDirs) {
         let bundle = bundleDirs[i];
         output += '<div class="ui green message item" id="bundle_' + simpleHash(bundle.dir) + '">' +
             '<div class="right floated content">' +
-            '<button class="ui small basic inverted icon button" onclick="editBundle(\'' + bundle.dir + '\')"><i class="list icon"></i></button>' +
-            '<button class="ui small basic inverted icon button" onclick="editBundleSlides(\'' + bundle.dir + '\')"><i class="edit icon"></i></button>' +
+            '<button class="ui small basic inverted icon button" onclick="editBundle(\'' + bundle.dir + '\')"><i class="edit icon"></i></button>' +
+            '<button class="ui small basic inverted icon button" onclick="editBundleSlides(\'' + bundle.dir + '\')"><i class="list icon"></i></button>' +
             '<button class="ui small basic inverted icon button" onclick="changeBundle(\'' + bundle.dir + '\')"><i class="play icon"></i></button>' +
             '</div>' +
             '<div class="content">' +
