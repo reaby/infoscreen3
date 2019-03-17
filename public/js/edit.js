@@ -340,11 +340,18 @@ function nextSlide(data) {
 
         if (object.type === "i-text") {
 
+            var fill = object.get("fill");
+
             if (object.id === "header") {
                 object.setOptions(bundleData.styleHeader);
             } else {
                 object.setOptions(bundleData.styleText);
             }
+
+            if (fill != null) {
+                object.setOptions({fill: fill});
+            }
+
             object.setShadow({color: "rgba(0,0,0,0.6)", blur: 5, offsetX: 2, offsetY: 2});
 
             object.lockRotation = true;
@@ -648,7 +655,8 @@ function deleteImage(name) {
 
 function changeColor(elem) {
     var obj = canvas.getActiveObject();
-    obj.setColor(window.getComputedStyle(elem).backgroundColor);
+    console.log(window.getComputedStyle(elem).backgroundColor);
+    obj.setOptions({fill: window.getComputedStyle(elem).backgroundColor});
     canvas.renderAll();
 }
 
