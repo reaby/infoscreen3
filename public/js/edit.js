@@ -344,15 +344,20 @@ function nextSlide(data) {
 
             if (object.id === "header") {
                 object.setOptions(bundleData.styleHeader);
+                if (bundleData.styleHeader.fill !== "") {
+                    object.setShadow({color: "rgba(0,0,0,0.6)", blur: 5, offsetX: 2, offsetY: 2});
+                }
             } else {
                 object.setOptions(bundleData.styleText);
+                if (bundleData.styleText.fill !== "") {
+                    object.setShadow({color: "rgba(0,0,0,0.6)", blur: 5, offsetX: 2, offsetY: 2});
+                }
             }
 
             if (fill != null) {
                 object.setOptions({fill: fill});
             }
 
-            object.setShadow({color: "rgba(0,0,0,0.6)", blur: 5, offsetX: 2, offsetY: 2});
 
             object.lockRotation = true;
             object.hasControls = false;
