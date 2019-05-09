@@ -311,29 +311,32 @@ function parseUrl(url) {
     return '/background' + url.split('background')[1]
 }
 
+function drawGrid() {
+    var w = 1280 / 32 / 8;
+
+    // Grid display part
+    for (var i = 1; i <= (1280 / grid); i++) {
+        canvas.add(new fabric.Line([i * grid, 0, i * grid, 1280], {
+            stroke: '#ccc',
+            strokeDashArray: [w, w],
+            opacity: 0.5,
+            selectable: false,
+            zIndex: 0
+        }));
+        canvas.add(new fabric.Line([0, i * grid, 1280, i * grid], {
+            stroke: '#ccc',
+            strokeDashArray: [w, w],
+            opacity: 0.5,
+            selectable: false,
+            zIndex: 0
+        }))
+    }
+    canvas.renderAll();
+}
 
 function nextSlide(data) {
     canvas.loadFromJSON(data.json, function () {
-        var w = 1280 / 32 / 8;
-
-        // Grid display part
-        for (var i = 1; i <= (1280 / grid); i++) {
-            canvas.add(new fabric.Line([i * grid, 0, i * grid, 1280], {
-                stroke: '#ccc',
-                strokeDashArray: [w, w],
-                opacity: 0.5,
-                selectable: false,
-                zIndex: 0
-            }));
-            canvas.add(new fabric.Line([0, i * grid, 1280, i * grid], {
-                stroke: '#ccc',
-                strokeDashArray: [w, w],
-                opacity: 0.5,
-                selectable: false,
-                zIndex: 0
-            }))
-        }
-
+        drawGrid();
         canvas.renderAll();
 
     }, function (o, object) {
@@ -507,6 +510,11 @@ function cueSlide() {
                 duration = parseFloat($("#duration").val());
             }
 
+            var objects = canvas.getObjects('line');
+            for (let i in objects) {
+                canvas.remove(objects[i]);
+            }
+
             let obj = {
                 json: canvas.toJSON(['id']),
                 png: canvas.toDataURL('png'),
@@ -514,6 +522,8 @@ function cueSlide() {
                 duration: duration
             };
             socket.emit("admin.override", obj);
+
+            drawGrid();
         }
     } else {
         alert("Can't find display to announce");
