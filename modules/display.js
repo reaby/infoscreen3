@@ -4,7 +4,7 @@ let cli = require("./cli.js");
 let bundleManager = require('./bundleManager.js');
 
 /**
- * handles one instance of display
+ * handles one display instance
  * @module infoscreen3/display
  */
 class display {
@@ -62,7 +62,6 @@ class display {
 
         /**
          * helper callback for global announce
-         /**
          * @listens event:announce
          *
          */
@@ -112,6 +111,7 @@ class display {
     init(meta) {
         this.changeBundle(meta.bundle);
     }
+
 
     /**
      * change displayed bundle

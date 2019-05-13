@@ -13,6 +13,9 @@ class bundleManager {
         this.syncBundles();
     }
 
+    /**
+     * Sync bundles...
+     */
     syncBundles() {
         this.bundles = {};
         let dirs = getDirectories("./data");
@@ -27,7 +30,7 @@ class bundleManager {
     }
 
     /**
-     *
+     * get bundle
      * @param {string} name
      * @returns {bundle}
      */
@@ -43,7 +46,7 @@ class bundleManager {
                 cli.success(name + " load");
                 return this.bundles[name];
             } catch (err) {
-                cli.error("bundle by name "+ name +" not found on filesystem", err);
+                cli.error("bundle by name " + name + " not found on filesystem", err);
             }
         }
     }
@@ -64,13 +67,22 @@ class bundleManager {
     }
 }
 
+/**
+ * helper function to returns all directories for path
+ * @param path
+ * @return {string[]}
+ */
 function getDirectories(path) {
     return fs.readdirSync(path).filter(function (file) {
         return fs.statSync(path + '/' + file).isDirectory();
     });
 }
 
-
+/**
+ * helper function to load and parse json to array
+ * @param file
+ * @return {any}
+ */
 function getJson(file) {
     return JSON.parse(fs.readFileSync(file).toString());
 }

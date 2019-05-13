@@ -15,9 +15,9 @@ const eventDispatcher = new Dispatcher();
 let app = express();
 let server = require('http').Server(app);
 let io = require('socket.io')(server);
-let i18next = require("i18next"),
-    FilesystemBackend = require("i18next-node-fs-backend"),
-    i18nextMiddleware = require("i18next-express-middleware");
+let i18next = require("i18next");
+let FilesystemBackend = require("i18next-node-fs-backend");
+let i18nextMiddleware = require("i18next-express-middleware");
 
 if (config.mediaServer) {
     const {NodeMediaServer} = require('node-media-server');

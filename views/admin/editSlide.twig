@@ -32,6 +32,7 @@
     <div class="ui primary pointing menu" style="margin: 0;">
         <div class="item">
             <div class="ui input">
+                <label for="duration"></label>
                 <input type="number" id="duration" placeholder="{{ t("navs.duration") }}" min="5"/>
             </div>
         </div>
@@ -53,6 +54,12 @@
                 <span id="currentTransition" class="section"></span>
             </div>
             <i class="dropdown icon"></i>
+        </div>
+        <div class="item">
+            <div class="ui labeled input">
+                <label class="ui right pointing label" for="slide_name">{{ t("navs.slideName") }}</label>
+                <input class="ui input" name="slideName" type="text" id="slideName" value="untitled"/>
+            </div>
         </div>
         <div class="right menu">
             <div class="item">

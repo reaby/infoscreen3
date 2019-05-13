@@ -219,6 +219,7 @@ socket.on('callback.edit', function (data) {
     canvas.clear();
     if (data.slideData.name != null) {
         slideName = data.slideData.name;
+        $("#slideName").val(slideName);
     }
 
     $("#duration").val(data.slideData.duration + "");
@@ -537,8 +538,8 @@ function save() {
     for (let i in objects) {
         canvas.remove(objects[i]);
     }
-
-    if (slideName == "untitled") {
+    slideName = $("#slideName").val();
+    if (slideName === "untitled") {
         var texts = canvas.getObjects('i-text');
         for (let i in texts) {
             if (texts[i].id == "header") {
@@ -670,7 +671,7 @@ function deleteImage(name) {
 
 function changeColor(elem) {
     var obj = canvas.getActiveObject();
-    console.log(window.getComputedStyle(elem).backgroundColor);
+   // console.log(window.getComputedStyle(elem).backgroundColor);
     obj.setOptions({fill: window.getComputedStyle(elem).backgroundColor});
     canvas.renderAll();
 }

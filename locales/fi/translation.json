@@ -25,7 +25,8 @@
     "time": "Aika",
     "override": "Pakota",
     "duration": "Pituus",
-    "display": "Näyttö"
+    "display": "Näyttö",
+    "slideName": "Dian nimi"
   },
   "admin": {
     "dashboard": {

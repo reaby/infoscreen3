@@ -25,7 +25,8 @@
     "time": "time",
     "override": "override",
     "duration": "duration",
-    "display": "display"
+    "display": "display",
+    "slideName": "Slide Name"
   },
   "admin": {
     "dashboard": {
