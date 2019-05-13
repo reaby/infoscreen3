@@ -51,8 +51,8 @@ module.exports = function (websocket, dispatcher) {
         }
 
         try {
-
-            bundleData = bundleManager.getBundle(req.body.bundle).getBundleData();
+            let bundle = bundleManager.getBundle(req.body.bundle);
+            bundleData = bundle.getBundleData();
             bundleData.displayName = req.body.displayName;
             bundleData.background = req.body.background;
             bundleData.duration = parseInt(req.body.duration);
@@ -67,7 +67,8 @@ module.exports = function (websocket, dispatcher) {
             bundleData.styleText.fontSize = parseInt(req.body.textFontSize);
             bundleData.styleText.fill = req.body.textFill;
             bundleData.styleText.stroke = req.body.textStroke;
-            bundleManager.getBundle(req.body.bundle).save();
+            bundle.setBundleData(bundleData);
+            bundle.save();
 
         } catch (err) {
             cli.error("error loading bundle", err);

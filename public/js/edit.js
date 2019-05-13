@@ -1,10 +1,10 @@
-let canvas;
-let bundleData;
+var canvas;
+var bundleData;
 
 var grid = 1280 / 32;
 
-let _clipboard = null;
-let slideName = "untitled";
+var _clipboard = null;
+var slideName = "untitled";
 
 bundleData = {
     background: "",
@@ -16,6 +16,9 @@ bundleData = {
 
 $(function () {
     canvas = new fabric.Canvas('edit');
+    canvas.includeDefaultValues = false;
+    canvas.preserveObjectStacking = true;
+    canvas.antialias = true;
 
     canvas.on('object:moving', function (options) {
         if (Math.round(options.target.left / grid * 4) % 4 === 0) {
@@ -189,11 +192,6 @@ var canvasWidth = document.getElementById('edit').width,
 var edgedetection = 20;
 
 socket.on('connect', function () {
-
-    canvas.includeDefaultValues = false;
-    canvas.preserveObjectStacking = true;
-    canvas.antialias = true;
-
     socket.emit('admin.editSlide', {bundleName: bundle, fileName: file});
 });
 
@@ -257,9 +255,7 @@ socket.on('callback.edit', function (data) {
 
     $('#currentTransition').text(data.slideData.transition || "default");
 
-
     if (data.bundleData.useWebFonts) {
-        if (data.bundleData.styleHeader.fontFamily !== bundleData.styleHeader.fontFamily || data.bundleData.styleText.fontFamily !== bundleData.styleText.fontFamily) {
             WebFont.load({
                 google: {
                     families: [data.bundleData.styleHeader.fontFamily, data.bundleData.styleText.fontFamily]
@@ -272,9 +268,6 @@ socket.on('callback.edit', function (data) {
                     nextSlide(data, true);
                 }
             });
-        } else {
-            nextSlide(data, true);
-        }
     } else {
         nextSlide(data, true);
     }
@@ -302,7 +295,11 @@ function setBackground(background) {
             bg.show();
             video.pause();
             video.removeAttribute("src");
-            video.load();
+            try {
+                video.load();
+            } catch (err) {
+                console.log(err);
+            }
             $(video).hide();
         }
     }
@@ -361,7 +358,6 @@ function nextSlide(data) {
             if (fill != null) {
                 object.setOptions({fill: fill});
             }
-
 
             object.lockRotation = true;
             object.hasControls = false;
@@ -671,7 +667,7 @@ function deleteImage(name) {
 
 function changeColor(elem) {
     var obj = canvas.getActiveObject();
-   // console.log(window.getComputedStyle(elem).backgroundColor);
+    // console.log(window.getComputedStyle(elem).backgroundColor);
     obj.setOptions({fill: window.getComputedStyle(elem).backgroundColor});
     canvas.renderAll();
 }

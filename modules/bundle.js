@@ -21,6 +21,11 @@ class bundleClass {
         return this.bundleData;
     }
 
+    setBundleData(data) {
+        this.bundleData = data;
+        this.bundleData['bundleName'] = this.name;  // to ensure backwards compatibility
+    }
+
     getSlideJsonFile(fileName) {
         try {
             return fs.readFileSync("./data/" + this.name + "/slides/" + fileName).toString();
@@ -120,6 +125,7 @@ class bundleClass {
     }
 
     save() {
+        this.sync();
         try {
             fs.writeFileSync("./data/" + this.name + "/slides.json", this.toJson());
             fs.writeFileSync("./data/" + this.name + "/bundle.json", JSON.stringify(this.bundleData, null, "\t"));
