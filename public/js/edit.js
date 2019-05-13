@@ -258,7 +258,7 @@ socket.on('callback.edit', function (data) {
     if (data.bundleData.useWebFonts) {
             WebFont.load({
                 google: {
-                    families: [data.bundleData.styleHeader.fontFamily, data.bundleData.styleText.fontFamily]
+                    families: [data.bundleData.styleHeader.fontFamily +  ":700,900", data.bundleData.styleText.fontFamily+":700,900"]
                 },
                 timeout: 2000,
                 active: function () {
