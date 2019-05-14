@@ -148,6 +148,7 @@ function displayTime() {
     if (min < 10) min = "0" + min;
     var time = date.getHours() + ":" + min;
     $('#time2').html(time);
+    checkTimeDisplay();
 }
 
 function setAlign(align) {
@@ -271,7 +272,7 @@ socket.on('callback.edit', function (data) {
     } else {
         nextSlide(data, true);
     }
-
+    checkTimeDisplay();
     setBackground(bundleData.background);
 });
 
@@ -353,6 +354,22 @@ function drawGrid() {
         }))
     }
     canvas.renderAll();
+}
+
+function checkTimeDisplay() {
+    if ($("#override").checkbox('is checked')) {
+        if ($("#displaytime").checkbox('is checked')) {
+            $('#time2').removeClass('flipOutX').addClass("flipInX");
+        } else {
+            $('#time2').addClass('flipOutX').removeClass("flipInX");
+        }
+    } else {
+        if (bundleData.displayTime) {
+            $('#time2').removeClass('flipOutX').addClass("flipInX");
+        } else {
+            $('#time2').addClass('flipOutX').removeClass("flipInX");
+        }
+    }
 }
 
 function nextSlide(data) {
