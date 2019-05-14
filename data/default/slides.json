@@ -16,7 +16,7 @@
 		"enabled": true,
 		"displayTime": null,
 		"type": "slide",
-		"transition": "",
+		"transition": null,
 		"index": 1
 	},
 	{
@@ -35,7 +35,7 @@
 		"duration": null,
 		"enabled": true,
 		"displayTime": null,
-		"transition": "",
+		"transition": null,
 		"type": "slide",
 		"index": 3
 	}
