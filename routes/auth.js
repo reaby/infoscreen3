@@ -4,8 +4,6 @@ let passport = require("passport");
 module.exports = function (websocket, dispatcher) {
 
     router.get('/login', function (req, res, next) {
-        console.log(req.session);
-
         res.render('auth/login');
     });
 

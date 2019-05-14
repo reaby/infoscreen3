@@ -8,7 +8,6 @@ const cli = require('../modules/cli.js');
 function ensureIsAdmin(req, res, next) {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
         req.session.location = "/";
-        console.log(req.session);
         return res.redirect("/login");
     }
     return next();

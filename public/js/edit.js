@@ -308,7 +308,6 @@ function setBackground(background) {
 function setStyle(object, styleName, value) {
     var style = { };
     style[styleName] = value;
-    console.log(object);
 
     if (object.setSelectionStyles && object.isEditing) {
         object.setSelectionStyles(style);
