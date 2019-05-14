@@ -256,18 +256,18 @@ socket.on('callback.edit', function (data) {
     $('#currentTransition').text(data.slideData.transition || "default");
 
     if (data.bundleData.useWebFonts) {
-            WebFont.load({
-                google: {
-                    families: [data.bundleData.styleHeader.fontFamily +  ":700,900", data.bundleData.styleText.fontFamily+":700,900"]
-                },
-                timeout: 2000,
-                active: function () {
-                    nextSlide(data, true);
-                },
-                inactive: function () {
-                    nextSlide(data, true);
-                }
-            });
+        WebFont.load({
+            google: {
+                families: [data.bundleData.styleHeader.fontFamily + ":700,900", data.bundleData.styleText.fontFamily + ":700,900"]
+            },
+            timeout: 2000,
+            active: function () {
+                nextSlide(data, true);
+            },
+            inactive: function () {
+                nextSlide(data, true);
+            }
+        });
     } else {
         nextSlide(data, true);
     }
@@ -306,23 +306,26 @@ function setBackground(background) {
 }
 
 function setStyle(object, styleName, value) {
-    var style = { };
+    var style = {};
     style[styleName] = value;
 
     if (object.setSelectionStyles && object.isEditing) {
         object.setSelectionStyles(style);
-    }
-    else {
-        object.setOptions({styles: {} });
+    } else {
+        object.setOptions({styles: {}});
         object.setOptions(style);
     }
-
 }
 
 function getStyle(object, styleName) {
-    return (object.getSelectionStyles && object.isEditing)
-        ? object.getSelectionStyles()[styleName]
-        : object[styleName];
+    if (object.getSelectionStyles && object.isEditing) {
+        if (object.getSelectionStyles()[styleName]) {
+            return object.getSelectionStyles()[styleName];
+        }
+        return object[styleName];
+    } else {
+        return object[styleName];
+    }
 }
 
 function parseUrl(url) {
@@ -699,19 +702,29 @@ function changeColor(elem) {
     canvas.renderAll();
 }
 
+function setCenter(direction) {
+    switch (direction) {
+        case "h":
+            canvas.getActiveObject().viewportCenterH();
+            break;
+        case "v":
+            canvas.getActiveObject().viewportCenterV();
+            break;
+    }
+}
+
 function fontSize(direction) {
     for (var obj of canvas.getActiveObjects()) {
         var sizes = [20, 28, 32, 36, 40, 44, 48, 50, 54, 58, 64, 72, 96];
         if (obj.type === "i-text") {
-
-            var idx = closest(sizes, obj.get("fontSize"));
+            var idx = closest(sizes, getStyle(obj, "fontSize"));
 
             if ((idx + direction) < sizes.length && (idx + direction) > 0) {
-                obj.setOptions({fontSize: sizes[idx + direction]});
+                setStyle(obj, "fontSize", sizes[idx + direction]);
             }
         }
     }
-    canvas.renderAll();
+    canvas.requestRenderAll();
 }
 
 function closest(list, x) {
