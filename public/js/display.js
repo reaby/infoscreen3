@@ -43,6 +43,7 @@ $(function () {
 });
 
 var layer = 0;
+var flvPlayer;
 
 /** bundleData
  * @see data/default/bundle.json
@@ -203,6 +204,10 @@ function nextSlide(data) {
     if (serverOptions.isAnnounce) {
         $("#" + getWebLayer()).addClass("fadeOut").removeClass("fadeIn");
         $("#" + getWebLayer(1)).addClass("fadeOut").removeClass("fadeIn");
+        setTimeout(function () {
+            clearIFrame(getWebLayer());
+            clearIFrame(getWebLayer(1));
+        }, 2500);
         $("#slider").show();
         $("#slider").addClass();
         $("#helperLayer").addClass("announce");
@@ -233,8 +238,13 @@ function nextSlide(data) {
                     transition = serverOptions.currentMeta.transition;
                 }
 
-                $("#" + getWebLayer()).addClass("fadeOut").removeClass("fadeIn");
-                $("#" + getWebLayer(1)).addClass("fadeOut").removeClass("fadeIn");
+                $("#" + getWebLayer()).addClass("fadeOut").removeClass("fadeIn").contents().empty();
+                $("#" + getWebLayer(1)).addClass("fadeOut").removeClass("fadeIn").contents().empty();
+                setTimeout(function () {
+                    clearIFrame(getWebLayer());
+                    clearIFrame(getWebLayer(1));
+                }, 2500);
+
                 $("#slider").show();
                 window.f.showImageById(serverOptions.currentFile, transition);
                 break;
@@ -433,6 +443,11 @@ function displayWebPage(url) {
 function getWebLayer(offset) {
     if (offset === undefined) offset = 0;
     return "webLayer" + (layer + offset) % 2;
+}
+
+function clearIFrame(elementId) {
+    var frame = document.getElementById(elementId);
+    frame.contentWindow.location.href = "/empty";
 }
 
 

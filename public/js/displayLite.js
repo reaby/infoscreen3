@@ -4,6 +4,7 @@ var layer = 0;
  * @see data/default/bundle.json
  *
  **/
+var flvPlayer;
 var connectionTimeoutId;
 var bundleData;
 var serverOptions;
@@ -159,6 +160,11 @@ function nextSlide(data) {
     if (serverOptions.isAnnounce) {
         $("#" + getWebLayer()).addClass("fadeOut").removeClass("fadeIn");
         $("#" + getWebLayer(1)).addClass("fadeOut").removeClass("fadeIn");
+        setTimeout(function() {
+            clearIFrame(getLayer());
+            clearIFrame(getLayer(1));
+        }, 1000);
+
         $("#helperLayer").addClass("announce");
         try {
             var randomId = uuidv4();
@@ -178,6 +184,10 @@ function nextSlide(data) {
                 $(elem).show();
                 $("#" + getWebLayer()).addClass("fadeOut").removeClass("fadeIn");
                 $("#" + getWebLayer(1)).addClass("fadeOut").removeClass("fadeIn");
+                setTimeout(function() {
+                    clearIFrame(getLayer());
+                    clearIFrame(getLayer(1));
+                }, 1000);
                 elem.src = "/render/" + serverOptions.currentBundle + "/" + serverOptions.currentFile + ".png";
                 break;
         }
@@ -198,24 +208,29 @@ function nextSlide(data) {
 
 function setBackground(background) {
     background = "/background/" + bundleData.bundleName + "/" + background;
+    if (serverOptions.isStreaming) return;
 
     var video = document.getElementById("bgvid");
     var bg = $("#bg");
     var bgImage = document.getElementById("bgimg");
     if (background.indexOf(".mp4") !== -1) {
+
         if (parseUrl(video.src) !== background) {
-            bg.hide();
-            $(video).show();
+            bg.fadeOut();
             video.src = background;
+            video.load();
             video.play();
+            $(video).show();
         }
     } else {
         if (parseUrl(bgImage.src) !== background) {
             bgImage.src = background;
-            bg.show();
-            $(video).hide();
-            video.src = "";
+            bg.fadeIn();
+            // unload video
             video.pause();
+            video.removeAttribute("src");
+            video.load();
+            $(video).hide();
         }
     }
 }
@@ -302,4 +317,9 @@ function getWebLayer(offset) {
     return "webLayer" + (weblayer + offset) % 2;
 }
 
+function clearIFrame(id) {
+    var frame = document.getElementById(id),
+        frameDoc = frame.contentDocument || frame.contentWindow.document;
+    frameDoc.documentElement.innerHTML = "";
+}
 

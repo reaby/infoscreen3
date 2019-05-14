@@ -15,6 +15,10 @@ module.exports = function (websocket, dispatcher) {
         res.render('index', {config: config});
     });
 
+    router.get('/empty', function (req, res, next) {
+        res.render('empty');
+    });
+
     router.get('/display/:id/lite', function (req, res, next) {
         res.header('Access-Control-Allow-Origin', '*');
         let idx = parseInt(req.params.id);
