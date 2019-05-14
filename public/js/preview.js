@@ -166,13 +166,40 @@ function nextSlide(data, updateOptions) {
 
     canvas.loadFromJSON(data.json, function () {
         canvas.renderAll();
-    }, function (o, object) {
-        object.set(data.bundleData.styleText);
-        if (object.id === "header") {
-            object.set(data.bundleData.styleHeader);
-        }
+    }, function (obj, object) {
 
-        object.setShadow({color: "#000", blur: 3, offsetX: 0, offsetY: 0});
+        if (object.type === "i-text") {
+
+            var fill = object.get("fill");
+            var fontSize = object.get("fontSize");
+
+            if (object.id === "header") {
+                object.setOptions(bundleData.styleHeader);
+                if (bundleData.styleHeader.fontSize !== fontSize) {
+                    object.setOptions({fontSize: fontSize});
+                }
+                if (bundleData.styleHeader.fill !== "") {
+                    object.setShadow({color: "rgba(0,0,0,0.6)", blur: 5, offsetX: 2, offsetY: 2});
+                }
+            } else {
+                object.setOptions(bundleData.styleText);
+                if (bundleData.styleText.fontSize !== fontSize) {
+                    object.setOptions({fontSize: fontSize});
+                }
+                if (bundleData.styleText.fill !== "") {
+                    object.setShadow({color: "rgba(0,0,0,0.6)", blur: 5, offsetX: 2, offsetY: 2});
+                }
+            }
+
+            if (fill != null) {
+                object.setOptions({fill: fill});
+            }
+
+            object.lockRotation = true;
+            object.hasControls = false;
+            object.lockUniScaling = true;
+            object.hasRotatingPoint = false;
+        }
 
     });
 }

@@ -305,6 +305,27 @@ function setBackground(background) {
     }
 }
 
+function setStyle(object, styleName, value) {
+    var style = { };
+    style[styleName] = value;
+    console.log(object);
+
+    if (object.setSelectionStyles && object.isEditing) {
+        object.setSelectionStyles(style);
+    }
+    else {
+        object.setOptions({styles: {} });
+        object.setOptions(style);
+    }
+
+}
+
+function getStyle(object, styleName) {
+    return (object.getSelectionStyles && object.isEditing)
+        ? object.getSelectionStyles()[styleName]
+        : object[styleName];
+}
+
 function parseUrl(url) {
     return '/background' + url.split('background')[1]
 }
@@ -337,19 +358,26 @@ function nextSlide(data) {
         drawGrid();
         canvas.renderAll();
 
-    }, function (o, object) {
+    }, function (obj, object) {
 
         if (object.type === "i-text") {
 
             var fill = object.get("fill");
+            var fontSize = object.get("fontSize");
 
             if (object.id === "header") {
                 object.setOptions(bundleData.styleHeader);
+                if (bundleData.styleHeader.fontSize !== fontSize) {
+                    object.setOptions({fontSize: fontSize});
+                }
                 if (bundleData.styleHeader.fill !== "") {
                     object.setShadow({color: "rgba(0,0,0,0.6)", blur: 5, offsetX: 2, offsetY: 2});
                 }
             } else {
                 object.setOptions(bundleData.styleText);
+                if (bundleData.styleText.fontSize !== fontSize) {
+                    object.setOptions({fontSize: fontSize});
+                }
                 if (bundleData.styleText.fill !== "") {
                     object.setShadow({color: "rgba(0,0,0,0.6)", blur: 5, offsetX: 2, offsetY: 2});
                 }
@@ -569,7 +597,7 @@ function save() {
         name: slideName,
         fileName: file,
         duration: duration,
-        json: canvas.toJSON(['id']),
+        json: canvas.toJSON(['id', 'fontSize']),
         png: canvas.toDataURL('png'),
         displayTime: checked,
         transition: transition
@@ -668,7 +696,7 @@ function deleteImage(name) {
 function changeColor(elem) {
     var obj = canvas.getActiveObject();
     // console.log(window.getComputedStyle(elem).backgroundColor);
-    obj.setOptions({fill: window.getComputedStyle(elem).backgroundColor});
+    setStyle(obj, "fill", window.getComputedStyle(elem).backgroundColor);
     canvas.renderAll();
 }
 
