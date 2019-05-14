@@ -5,19 +5,19 @@ let bundleManager = require('./bundleManager.js');
 
 /**
  * handles one display instance
- * @module infoscreen3/display
+ * @module infoscreen/display
  */
 class display {
 
     /**
      * @param {object} sharedIO - socketIO
      * @param {object} dispatcher  - dispatcher
-     * @param {object} meta - reads from ./data/meta.json --> as display[displayId]
+     * @param {object} meta - reads from config.displays
      * @param {number} displayId - this display instances id
      * @param {object} bundleManager
      */
     constructor(sharedIO, dispatcher, meta, displayId, bundleManager) {
-        cli.info("Starting display" + displayId + ": " + meta.name + "...");
+        cli.info("Starting display with id " + displayId + " ...");
 
         /** @property {Array} timeoutId - holds setTimeout id's for mainLoop */
         this.timeoutId = [];
@@ -104,7 +104,7 @@ class display {
             }); // io
 
         this.init(meta);
-        cli.info("done.");
+        cli.success(meta.name + " started with '" + meta.bundle + "'");
     } // display
 
 
@@ -236,4 +236,5 @@ class display {
     }
 }
 
+/** @exports display */
 module.exports = display;

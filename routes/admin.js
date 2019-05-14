@@ -1,5 +1,4 @@
 let express = require('express');
-let authMiddleWare = require('../modules/auth.js');
 let router = express.Router();
 let cli = require("../modules/cli.js");
 let fs = require('fs');
@@ -7,14 +6,28 @@ let path = require('path');
 let config = require("../config.js");
 let busboy = require("connect-busboy");
 
+function ensureIsAdmin(req, res, next) {
+
+    if (!req.isAuthenticated || !req.isAuthenticated()) {
+        req.session.location = "/admin";
+        return res.redirect("/login");
+    } else {
+        if (!req.user.permissions.isAdmin) {
+            cli.error(req.user.displayName + " has tried to access admin!", "permission error");
+            return res.redirect("/login");
+        }
+    }
+    next();
+}
+
 module.exports = function (websocket, dispatcher) {
     var bundleManager = websocket.bundleManager;
 
-    router.use(authMiddleWare);
+    router.use(ensureIsAdmin);
     router.use(busboy({immediate: true}));
 
     router.get('/', function (req, res, next) {
-        res.render('admin/dashboard', {config: config});
+        res.render('admin/dashboard', {config: config, permission: req.user.permissions});
     });
 
     router.get('/preview', function (req, res, next) {
@@ -100,14 +113,12 @@ module.exports = function (websocket, dispatcher) {
 
 
     router.get('/edit/bundleSlides', function (req, res, next) {
-        // let bundles = getDirectories("./data");
         var bundle = {};
         try {
             bundle = bundleManager.getBundle(req.query['bundle']);
         } catch (err) {
-
+            cli.error(err, "can't find bundle");
         }
-        console.log(bundle);
         res.render('admin/editBundleSlides', {config: config, bundle: bundle});
     });
 
@@ -128,12 +139,6 @@ module.exports = function (websocket, dispatcher) {
 
         res.render('ajax/bundleImageList', {bundleImages: output});
     });
-
-    function getDirectories(path) {
-        return fs.readdirSync(path).filter(function (file) {
-            return fs.statSync(path + '/' + file).isDirectory();
-        });
-    }
 
     return router;
 };

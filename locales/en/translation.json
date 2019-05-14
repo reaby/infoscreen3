@@ -1,5 +1,11 @@
 {
   "infoscreen": "InfoScreen<sup>3</sup>",
+  "auth": {
+    "userName": "Username",
+    "password": "Password",
+    "login": "Login",
+    "logout": "Logout"
+  },
   "actions": {
     "upload": "Upload",
     "uploadScale": "Upload and scale 16:9",

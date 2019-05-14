@@ -1,4 +1,4 @@
-let meta = require("../data/meta.json");
+let availableDisplays = require("../config.js").displays;
 let display = require("./display.js");
 let admin = require("./admin.js");
 let cli = require('./cli.js');
@@ -8,12 +8,12 @@ let fs = require('fs');
 
 /**
  *
- * @type {module:infoscreen3/display[]}
+ * @type {display[]}
  */
 let screenView = [];
 
 /**
- * @exports infoscreen3/websocket
+ * @exports websocket
  */
 module.exports = function (server, app, io, dispatcher) {
     console.log(chalk.green(">> ") + "InfoScreen3" + chalk.green("<<"));
@@ -53,7 +53,7 @@ module.exports = function (server, app, io, dispatcher) {
     cli.info("Starting websocket backends...");
 
     let screenId = 0;
-    for (let metadata of meta.displays) {
+    for (let metadata of availableDisplays) {
         screenView.push(new display(io, dispatcher, metadata, screenId, bundleManager));
         screenId += 1;
     }
@@ -80,7 +80,7 @@ module.exports = function (server, app, io, dispatcher) {
                     previewImages.push("/img/nopreview.png");
                 }
             }
-            socket.emit("callback.displays", {displays: meta.displays, previewImages: previewImages});
+            socket.emit("callback.displays", {displays: availableDisplays, previewImages: previewImages});
         });
     });
 

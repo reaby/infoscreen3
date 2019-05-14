@@ -447,7 +447,10 @@ function getWebLayer(offset) {
 
 function clearIFrame(elementId) {
     var frame = document.getElementById(elementId);
-    frame.contentWindow.location.href = "/empty";
+
+    if (frame.contentWindow.location.href !== document.location.origin + "/empty") {
+        frame.contentWindow.location.href = "/empty";
+    }
 }
 
 

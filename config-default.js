@@ -1,14 +1,76 @@
 module.exports = {
     "serverListenPort": process.env.PORT || 8000,
-    "serverHost": process.env.HOST || "localhost",
-    "serverUrl": "http://" + (process.env.HOST || "localhost"),
+    "serverHost": process.env.HOST || "127.0.0.1",
+    "serverUrl": "http://" + (process.env.HOST || "127.0.0.1"),  // used for web client
+    "sessionKey": "generateRandomStringForSecret",
+    "secureViews": false,        // set true to use password also for viewing info screen content
+    "useLocalAssets": false,    // used to load javascript libraries locally from /public/assets
+    "mediaServer": false,       // local streaming server for rtmp, see docs how to use
+    "defaultLocale": "en",
+
+    /*
+     * Administrators
+     */
+
     "admins": [
         {
-            "name": process.env.ADMIN_USER || "admin",
-            "pass": process.env.ADMIN_PASS || "admin"
+            "id": 1,
+            "displayName": "Administrator",
+            "username": "admin",
+            "password": "admin",
+            "permissions": {
+                "isAdmin": true,
+                "dashboard": {
+                    "addBundle": true,
+                    "addSlides": true,
+                    "addWebPage": true,
+                }
+            }
+        },
+        {
+            "id": 2,
+            "displayName": "Display Operator",
+            "username": "operator",
+            "password": "operator",
+            "permissions": {
+                "isAdmin": true,
+                "dashboard": {
+                    "addBundle": false,
+                    "addSlides": true,
+                    "addWebPage": false,
+                }
+            }
+        },
+        {
+            "id": 3,
+            "displayName": "Display Viewer",
+            "username": "view",
+            "password": "view",
+            "permissions": {
+                "isAdmin": false,
+            }
         }
     ],
-    "mediaServer": false,
-    "useLocalAssets": false,
-    "defaultLocale": "en"
+    /*
+     * Displays
+     * If needed, define more screens
+     */
+
+    "displays": [
+        {
+            "id": 1,
+            "name": "Big Screen",
+            "bundle": "default"
+        },
+        {
+            "id": 2,
+            "name": "Secondary Screen",
+            "bundle": "set1"
+        },
+        {
+            "id": 3,
+            "name": "Kiosk",
+            "bundle": "default"
+        }
+    ]
 };

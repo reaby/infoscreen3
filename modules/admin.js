@@ -540,13 +540,13 @@ class admin {
             previewInstances.push({adminId: socket.id, preview: {}, currentView: {}});
             let serverOptions = getView(displayId).serverOptions;
             let bundleDirs = self.bundleManager.getBundleInfos();
-            let meta = JSON.parse(fs.readFileSync("./data/meta.json").toString());
+
 
             socket.emit("callback.dashboard.sync", {
                 displayId: displayId,
                 bundleDirs: bundleDirs,
                 serverOptions: serverOptions,
-                displays: meta.displays
+                displays: config.displays
             });
         }
 

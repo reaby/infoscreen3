@@ -1,7 +1,7 @@
 {
 	"displayName": "default",
 	"background": "bg.jpg",
-	"duration": 0,
+	"duration": 30,
 	"transition": "tiles3d",
 	"useWebFonts": false,
 	"displayTime": true,

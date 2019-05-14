@@ -1,0 +1,44 @@
+{% extends 'layout/auth.twig' %}
+
+{% block header %}
+    <style>
+        body > .grid {
+            height: 100%;
+        }
+
+        .image {
+            margin-top: -100px;
+        }
+
+        .column {
+            max-width: 450px;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="ui middle aligned center aligned grid">
+        <div class="column">
+            <h2 class="ui orange image header">
+                InfoScreen<sup>3</sup>
+            </h2>
+            <form class="ui large form" action="/login" method="post">
+                <div class="ui stacked segment">
+                    <div class="field">
+                        <div class="ui left icon input">
+                            <i class="user icon"></i>
+                            <input type="text" name="username" placeholder="{{ t("auth.userName") }}"/>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="ui left icon input">
+                            <i class="lock icon"></i>
+                            <input type="password" name="password" placeholder="{{ t("auth.password") }}"/>
+                        </div>
+                    </div>
+                    <button type="submit" class="ui fluid large orange submit button">{{ t("auth.login") }}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

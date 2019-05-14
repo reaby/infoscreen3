@@ -45,7 +45,9 @@
         </div>
 
         <div class="right menu">
-
+            <div class="item">
+                <a href="/logout" class="ui red basic button">{{ t("auth.logout") }}</a>
+            </div>
         </div>
     </div>
     <!-- Grids -->
@@ -57,9 +59,10 @@
                     <h1 class="ui inverted header">
                         {{ t("admin.dashboard.allBundles") }}
                     </h1>
-                    <button class="ui basic inverted button"
-                            onclick="createNewBundle();">  {{ t("actions.createNew") }}</button>
-
+                    {% if permission.dashboard.addBundle %}
+                        <button class="ui basic inverted button"
+                                onclick="createNewBundle();">  {{ t("actions.createNew") }}</button>
+                    {% endif %}
                     <div id="allBundles" class="ui list"></div>
                 </div>
             </div>
@@ -69,11 +72,14 @@
                     <h1 class="ui inverted header">
                         {{ t("admin.dashboard.slidesInRotation") }}
                     </h1>
-
-                    <button class="ui basic inverted button"
-                            onclick="createNew();">  {{ t("actions.createNew") }}</button>
-                    <button class="ui basic inverted button" onclick="addLink();">{{ t("actions.addWebPage") }}</button>
-
+                    {% if permission.dashboard.addSlides %}
+                        <button class="ui basic inverted button" onclick="createNew();">{{ t("actions.createNew") }}
+                        </button>
+                    {% endif %}
+                    {% if permission.dashboard.addWebPage %}
+                        <button class="ui basic inverted button" onclick="addLink();">{{ t("actions.addWebPage") }}
+                        </button>
+                    {% endif %}
                     <div id="bundleSlides" class="ui sortable list">
 
                     </div>

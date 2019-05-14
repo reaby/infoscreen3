@@ -1,5 +1,11 @@
 {
   "infoscreen": "InfoScreen<sup>3</sup>",
+  "auth": {
+    "userName": "Käyttäjätunnus",
+    "password": "Salasana",
+    "login": "Kirjaudu",
+    "logout": "Kirjaudu ulos"
+  },
   "actions": {
     "upload": "Lataa",
     "uploadScale": "Lataa ja skaalaa 16:9",

@@ -8,7 +8,6 @@ Usage is very easy after you have setup the server at local network. The viewer 
 1. npm install
 2. copy `config-default.js` to `config.js`
 3. check config settings and if you don't need local rtmp media server, set `mediaServer` to `false`
-4. (edit `/data/meta.json`, add, remove or rename the displays you need or use the defaults)
 5. npm start
 
 # Default usage
