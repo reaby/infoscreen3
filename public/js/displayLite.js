@@ -26,6 +26,67 @@ $(function () {
     fixImageSizes();
     displayTime();
     setInterval(displayTime, 1000);
+
+// socketio callbacks
+    /** when connected **/
+    socket.on('connect', function () {
+        socket.emit("sync");
+    });
+
+    socket.on('error', function () {
+        $("#networkstatus").css("opacity", 1);
+    });
+
+    socket.on('disconnect', function () {
+        $("#networkstatus").css("opacity", 1);
+    });
+
+    socket.on('pong', function () {
+        updateTimeout();
+    });
+
+    socket.on('callback.blackout', function (data) {
+        serverOptions = data.serverOptions;
+        checkBlackout();
+    });
+
+    socket.on('callback.time', function (data) {
+        serverOptions.displayTime = data;
+        checkTimeDisplay();
+    });
+
+
+    /** callback Load **/
+    socket.on('callbackLoad', function (data) {
+        serverOptions = data.serverOptions;
+        bundleData = data.bundleData;
+        checkBlackout();
+        nextSlide(data);
+    });
+
+
+    /** callback Update **/
+    socket.on('callback.update', function (data) {
+        serverOptions = data.serverOptions;
+        bundleData = data.bundleData;
+        checkBlackout();
+        nextSlide(data);
+    });
+
+    socket.on('callback.reload', function () {
+        location.reload(true);
+    });
+
+    socket.on('callback.announce', function (data) {
+        checkBlackout();
+        nextSlide(data);
+    });
+
+    socket.on('callback.forceSlide', function (data) {
+        checkBlackout();
+        nextSlide(data);
+    });
+
 });
 
 $(window).bind("resize", function () {
@@ -37,68 +98,6 @@ function getLayer(offset) {
     if (offset === undefined) offset = 0;
     return "layer" + (layer + offset) % 2;
 }
-
-
-// socketio callbacks
-/** when connected **/
-socket.on('connect', function () {
-    console.log("connect, calling sync!");
-    socket.emit("sync");
-});
-
-socket.on('error', function () {
-    $("#networkstatus").css("opacity", 1);
-});
-
-socket.on('disconnect', function () {
-    $("#networkstatus").css("opacity", 1);
-});
-
-socket.on('pong', function () {
-    updateTimeout();
-});
-
-socket.on('callback.blackout', function (data) {
-    serverOptions = data.serverOptions;
-    checkBlackout();
-});
-
-socket.on('callback.time', function (data) {
-    serverOptions.displayTime = data;
-    checkTimeDisplay();
-});
-
-
-/** callback Load **/
-socket.on('callbackLoad', function (data) {
-    serverOptions = data.serverOptions;
-    bundleData = data.bundleData;
-    checkBlackout();
-    nextSlide(data);
-});
-
-
-/** callback Update **/
-socket.on('callback.update', function (data) {
-    serverOptions = data.serverOptions;
-    bundleData = data.bundleData;
-    checkBlackout();
-    nextSlide(data);
-});
-
-socket.on('callback.reload', function () {
-    location.reload(true);
-});
-
-socket.on('callback.announce', function (data) {
-    checkBlackout();
-    nextSlide(data);
-});
-
-socket.on('callback.forceSlide', function (data) {
-    checkBlackout();
-    nextSlide(data);
-});
 
 
 /**
@@ -161,9 +160,9 @@ function nextSlide(data) {
         $("#" + getWebLayer()).addClass("fadeOut").removeClass("fadeIn");
         $("#" + getWebLayer(1)).addClass("fadeOut").removeClass("fadeIn");
         setTimeout(function () {
-            clearIFrame(getLayer());
-            clearIFrame(getLayer(1));
-        }, 1000);
+            clearIFrame(getWebLayer());
+            clearIFrame(getWebLayer(1));
+        }, 1500);
 
         $("#helperLayer").addClass("announce");
         try {
@@ -307,9 +306,7 @@ function uuidv4() {
 var weblayer = 0;
 
 function displayWebPage(url) {
-    var ifr = document.getElementById(getWebLayer());
-    ifr.contentWindow.location.href = url;
-    $("#" + getWebLayer()).addClass("fadeIn").removeClass("fadeOut");
+    $("#" + getWebLayer()).attr('src', url).addClass("fadeIn").removeClass("fadeOut");
     $("#" + getWebLayer(1)).addClass("fadeOut").removeClass("fadeIn");
     weblayer++;
     if (weblayer > 1) {
@@ -323,8 +320,8 @@ function getWebLayer(offset) {
 }
 
 function clearIFrame(id) {
-    var frame = document.getElementById(id),
-        frameDoc = frame.contentDocument || frame.contentWindow.document;
-    frameDoc.documentElement.innerHTML = "";
+    if ($('#' + id).attr('src') !== "/empty") {
+        $('#' + id).attr('src', '/empty');
+    }
 }
 

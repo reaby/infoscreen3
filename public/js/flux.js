@@ -72,6 +72,7 @@ window.flux = {
         this.options.transitions = newTrans;
 
         this.images = [];
+        this.imageData = [];
         this.imageLoadedCount = 0;
         this.currentImageIndex = 0;
         this.nextImageIndex = 1;
@@ -229,20 +230,18 @@ window.flux = {
             this.setNextIndex(index);
 
             // Temporarily stop the transition interval
-            //clearInterval(this.interval);
-            //this.interval = null;
+        //    clearInterval(this.interval);
+        //    this.interval = null;
 
             this.setupImages();
             this.transition(trans, opts);
         },
         showImageById: function (id, trans, opts) {
-            let i = 0;
-            for (var img of this.images) {
-                if (img.id === id) {
+            for (var i in this.images) {
+                if (this.images[i].id === id) {
                     this.showImage(i, trans, opts);
                     break;
                 }
-                i++;
             }
             this.clearTempImages();
         },
@@ -257,20 +256,21 @@ window.flux = {
             }
         },
         clearImages: function () {
-            delete this.images;
             this.images = [];
+            this.imageData = [];
         },
         clearTempImages: function () {
             for (var i in this.images) {
                 if (this.images[i].class === "temp") {
                     this.images.splice(i, 1);
+                    this.imageData.splice(i, 1);
                 }
             }
         },
         clearImageById: function (id) {
             for (var i in this.images) {
                 if (this.images[i].id === id) {
-
+                    this.imageData.splice(i, 1);
                     this.images.splice(i, 1);
                 }
             }
@@ -400,29 +400,20 @@ window.flux = {
             this.updateCaption();
         },
         setupImages: function () {
-            var img1 = this.getImage(this.currentImageIndex);
+
+            var img1 = this.getImageData(this.currentImageIndex);
             css1 = {
-                'background-image': 'url("' + img1.src + '")',
+                'background-image': 'url("' + img1.replace(/(\r\n|\n|\r)/gm, "") + '")',
                 'z-index': 101,
                 'cursor': 'auto',
                 'background-repeat': 'no-repeat',
                 'background-size': this.options.width + "px " + this.options.height + "px"
             };
 
-            // Does this image have an associated link?
-            if ($(img1).data('href')) {
-                css1.cursor = 'pointer';
-                this.image1.addClass('hasLink');
-                this.image1.data('href', $(img1).data('href'));
-            } else {
-                this.image1.removeClass('hasLink');
-                this.image1.data('href', null);
-            }
-
             this.image1.css(css1).children().remove();
-
+            var img2 = this.getImageData(this.nextImageIndex);
             this.image2.css({
-                'background-image': 'url("' + this.getImage(this.nextImageIndex).src + '")',
+                'background-image': 'url("' + img2.replace(/(\r\n|\n|\r)/gm, "")  + '")',
                 'z-index': 100,
                 'background-repeat': 'no-repeat',
                 'background-size': this.options.width + "px " + this.options.height + "px",
@@ -469,6 +460,11 @@ window.flux = {
             index = index % this.images.length;
 
             return this.images[index];
+        },
+        getImageData: function (index) {
+            index = index % this.imageData.length;
+
+            return this.imageData[index];
         },
         setNextIndex: function (nextIndex) {
             if (nextIndex == undefined)

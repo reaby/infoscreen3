@@ -44,7 +44,7 @@ $(function () {
 
 var layer = 0;
 var flvPlayer;
-
+var doNext = false;
 /** bundleData
  * @see data/default/bundle.json
  *
@@ -85,6 +85,7 @@ function getLayer(offset) {
 /** when connected **/
 socket.on('connect', function () {
     socket.emit("sync");
+    doNext = true;
 });
 
 socket.on('callback.blackout', function (data) {
@@ -117,7 +118,10 @@ socket.on('callbackLoad', function (data) {
     checkBlackout();
     setBackground(data.bundleData.background);
     if (checkStream(serverOptions) === false) {
-        nextSlide(data);
+        if (doNext) {
+            doNext = false;
+            nextSlide(data);
+        }
     }
 });
 
@@ -198,7 +202,7 @@ function checkBlackout() {
 function nextSlide(data) {
     serverOptions = data.serverOptions;
     bundleData = data.bundleData;
-    checkImages(data.slides);
+    var needWait = checkImages(data.slides);
     checkTimeDisplay();
 
     if (serverOptions.isAnnounce) {
@@ -208,17 +212,17 @@ function nextSlide(data) {
             clearIFrame(getWebLayer());
             clearIFrame(getWebLayer(1));
         }, 2500);
-        $("#slider").show();
-        $("#slider").addClass();
-        $("#helperLayer").addClass("announce");
         try {
             var randomId = uuidv4();
-            var image = new Image();
-            image.src = "/tmp/" + serverOptions.displayId + "/?randomId=" + randomId;
-            image.id = randomId;
-            image.class = "temp";
-            window.f.images.push(image);
-            window.f.showTempImage(randomId);
+            getDataUri("/tmp/" + serverOptions.displayId + "/?randomId=" + randomId, randomId, function (imageId, dataUrl, image) {
+                image.id = imageId;
+                image.class = "temp";
+                window.f.images.push(image);
+                window.f.imageData.push(dataUrl);
+                $("#slider").show();
+                $("#helperLayer").addClass("announce");
+                window.f.showTempImage(imageId);
+            });
         } catch (err) {
             console.log(err);
         }
@@ -246,7 +250,10 @@ function nextSlide(data) {
                 }, 2500);
 
                 $("#slider").show();
-                window.f.showImageById(serverOptions.currentFile, transition);
+                setTimeout(function () {
+                    window.f.showImageById(serverOptions.currentFile, transition);
+                }, needWait ? 1000 : 50);
+
                 break;
         }
     }
@@ -293,9 +300,7 @@ function showBackgroundOnly() {
 }
 
 function checkStream(serverOptions) {
-
     if (serverOptions.isStreaming && streamStarted === false) {
-        console.log("start stream!");
         if (flvjs.isSupported()) {
             var videoElement = document.getElementById('bgvid');
             flvPlayer = flvjs.createPlayer({
@@ -327,6 +332,7 @@ function checkStream(serverOptions) {
                 flvPlayer = null;
                 streamStarted = false;
             }
+            return false;
         }
         return false;
     }
@@ -339,31 +345,30 @@ function checkStream(serverOptions) {
  */
 function preloadImages(allSlides) {
     window.f.clearImages();
-
     for (var i in allSlides) {
         try {
             if (allSlides[i].type === "slide") {
-                var image = new Image();
-                image.src = "/render/" + serverOptions.currentBundle + "/" + allSlides[i].uuid + ".png";
-                image.id = allSlides[i].uuid;
-                window.f.images.push(image);
+                getDataUri("/render/" + serverOptions.currentBundle + "/" + allSlides[i].uuid + ".png", allSlides[i].uuid, function (imageId, imageData, image) {
+                    image.id = imageId;
+                    window.f.images.push(image);
+                    window.f.imageData.push(imageData);
+                });
             }
         } catch (err) {
             console.log(err);
         }
     }
-    window.f.setupImages();
 }
 
 function reloadImage(data) {
     if (serverOptions.currentBundle === data.bundleName) {
         window.f.clearImageById(data.uuid);
         window.f.setupImages();
-
-        var image = new Image();
-        image.src = "/render/" + data.bundleName + "/" + data.uuid + ".png?" + uuidv4();
-        image.id = data.uuid;
-        window.f.images.push(image);
+        getDataUri("/render/" + data.bundleName + "/" + data.uuid + ".png?" + uuidv4(), data.uuid, function (imageId, imageData, image) {
+            image.id = imageId;
+            window.f.images.push(image);
+            window.f.imageData.push(imageData);
+        });
     }
 }
 
@@ -398,18 +403,20 @@ function checkImages(allSlides) {
         for (var i in allIds) {
             try {
                 if (fluxIds.indexOf(allIds[i]) < 0) {
-                    var image = new Image();
-                    image.src = "/render/" + serverOptions.currentBundle + "/" + allIds[i] + ".png";
-                    image.id = allIds[i];
-                    window.f.images.push(image);
+                    getDataUri("/render/" + serverOptions.currentBundle + "/" + allIds[i] + ".png", allIds[i], function (imageId, imageData, image) {
+                        image.id = imageId;
+                        window.f.images.push(image);
+                        window.f.imageData.push(imageData);
+                    });
+                    return true;
                 }
             } catch (err) {
                 console.log(err);
+                return false;
             }
         }
     }
-
-
+    return false;
 }
 
 /** Generate an uuid
@@ -431,9 +438,7 @@ function updateTimeout() {
 
 
 function displayWebPage(url) {
-    var ifr = document.getElementById(getWebLayer());
-    ifr.contentWindow.location.href = url;
-    $("#" + getWebLayer()).addClass("fadeIn").removeClass("fadeOut");
+    $("#" + getWebLayer()).attr('src', url).addClass("fadeIn").removeClass("fadeOut");
     $("#" + getWebLayer(1)).addClass("fadeOut").removeClass("fadeIn");
     layer++;
     if (layer > 1) {
@@ -446,12 +451,22 @@ function getWebLayer(offset) {
     return "webLayer" + (layer + offset) % 2;
 }
 
-function clearIFrame(elementId) {
-    var frame = document.getElementById(elementId);
-
-    if (frame.contentWindow.location.href !== document.location.origin + "/empty") {
-        frame.contentWindow.location.href = "/empty";
+function clearIFrame(id) {
+    if ($('#' + id).attr('src') !== "/empty") {
+        $('#' + id).attr('src', '/empty');
     }
 }
 
 
+function getDataUri(url, imageId, callback) {
+    var image = new Image();
+    image.onload = function () {
+        var canvas = document.createElement('canvas');
+        canvas.width = this.naturalWidth; // or 'width' if you want a special/scaled size
+        canvas.height = this.naturalHeight; // or 'height' if you want a special/scaled size
+
+        canvas.getContext('2d').drawImage(this, 0, 0);
+        callback(imageId, canvas.toDataURL('image/png'), this);
+    };
+    image.src = url;
+}

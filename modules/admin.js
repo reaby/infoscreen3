@@ -206,10 +206,16 @@ class admin {
             // override
             socket.on('admin.override', function (data) {
                 try {
-                    let view = getView(parseInt(data.displayId));
-                    view.overrideSlide(data.json, data.png, data.duration);
-
-                    view.displayCurrentSlide();
+                    if (data.displayId === null) {
+                        if (data.duration == null || data.duration <= 5) {
+                            data.duration = 45;
+                        }
+                        dispatcher.emit("all.override", data);
+                    } else {
+                        let view = getView(parseInt(data.displayId));
+                        view.overrideSlide(data.json, data.png, data.duration);
+                        view.displayCurrentSlide();
+                    }
                 } catch (err) {
                     cli.error("error, admin.override", err);
                 }
@@ -223,9 +229,8 @@ class admin {
             });
 
             socket.on('admin.dashboard.sync', function (data) {
-               cli.error("admin.dashboard.sync is deprecated!");
-                // syncDashboard(socket, 0);
-               // updateDashboard(socket, data.displayId);
+                syncDashboard(socket, data.displayId);
+                updateDashboard(socket, data.displayId);
             });
 
             socket.on('admin.setDisplay', function (data) {

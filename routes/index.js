@@ -24,11 +24,20 @@ module.exports = function (websocket, dispatcher) {
         res.render('index', {config: config});
     });
 
+    router.get('/favicon.ico', function (req, res, next) {
+        res.send("public/favicon.ico");
+    });
+
     router.get('/display/:id/lite', function (req, res, next) {
         res.header('Access-Control-Allow-Origin', '*');
         let idx = parseInt(req.params.id);
         let volume = req.params.videoVolume || 1.;
-        res.render('liteDisplay', {config: config, display: availableDisplays[idx], displayId: idx, videoVolume: volume});
+        res.render('liteDisplay', {
+            config: config,
+            display: availableDisplays[idx],
+            displayId: idx,
+            videoVolume: volume
+        });
     });
 
     router.get('/display/:id', function (req, res, next) {

@@ -23,7 +23,8 @@
     "createNew": "Create New",
     "createNewSlide": "Create New Slide",
     "addWebPage": "Add Web page",
-    "announce": "Fast Announce"
+    "announce": "Fast Announce",
+    "announceAll": "Global Announce"
   },
   "navs": {
     "bundle": "bundle",

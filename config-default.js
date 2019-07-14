@@ -58,17 +58,14 @@ module.exports = {
 
     "displays": [
         {
-            "id": 1,
             "name": "Big Screen",
             "bundle": "default"
         },
         {
-            "id": 2,
             "name": "Secondary Screen",
             "bundle": "set1"
         },
         {
-            "id": 3,
             "name": "Kiosk",
             "bundle": "default"
         }

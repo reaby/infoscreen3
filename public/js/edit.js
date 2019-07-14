@@ -546,31 +546,34 @@ function removeSelectedObjects() {
 
 }
 
-function cueSlide() {
-    if (displayId !== null) {
-        if (confirm('Force display of the current slide?')) {
-            var duration = null;
-            if ($.isNumeric($("#duration").val())) {
-                duration = parseFloat($("#duration").val());
-            }
-
-            var objects = canvas.getObjects('line');
-            for (let i in objects) {
-                canvas.remove(objects[i]);
-            }
-
-            let obj = {
-                json: canvas.toJSON(['id']),
-                png: canvas.toDataURL('png'),
-                displayId: displayId,
-                duration: duration
-            };
-            socket.emit("admin.override", obj);
-
-            drawGrid();
+function cueSlide(id) {
+    if (id === null) {
+        var bool = confirm('You are about to display the current slide for ALL DISPLAYS, are you sure?')
+        if (bool === false) {
+            return;
         }
-    } else {
-        alert("Can't find display to announce");
+    }
+
+    if (confirm('Force display of the current slide?') && bool) {
+        var duration = null;
+        if ($.isNumeric($("#duration").val())) {
+            duration = parseFloat($("#duration").val());
+        }
+
+        var objects = canvas.getObjects('line');
+        for (let i in objects) {
+            canvas.remove(objects[i]);
+        }
+
+        let obj = {
+            json: canvas.toJSON(['id']),
+            png: canvas.toDataURL('png'),
+            displayId: id,
+            duration: duration
+        };
+        socket.emit("admin.override", obj);
+
+        drawGrid();
     }
 }
 

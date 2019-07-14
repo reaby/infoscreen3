@@ -2,12 +2,18 @@
 
 {% block header %}
     <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io.connect("{{ config.serverUrl }}:{{ config.serverListenPort }}/admin");
+    </script>
 {% endblock %}
 
 
 {% block body %}
     <div class="ui container">
         <div class="ui basic segment">
+            <h1 class="ui center aligned inverted header">
+                {{ t ("infoscreen") }}
+            </h1>
             <h2 class="ui center aligned inverted dividing header">{{ t("index.displays") }}</h2>
 
             <div class="ui three stackable cards" id="displayList">
@@ -18,13 +24,89 @@
                             <h3 class="ui center aligned header">{{ display.name }}</h3>
                         </div>
                         <div class="extra content">
-                            <a href="/admin?displayId={{ loop.index0 }}" class="ui small button">View</a>
+                            <a href="/admin?displayId={{ loop.index0 }}" class="ui icon button">  <i class="wrench icon"></i></a>
+                            <!-- Controls -->
+                            <div class="ui inverted buttons">
+                                <button class="ui icon button"
+                                        onclick="socket.emit('controls.previous', {displayId: parseInt({{ loop.index0 }})});">
+                                    <i class="step backward icon"></i>
+                                </button>
+
+                                <button id="play{{ loop.index0 }}" class="ui icon button"
+                                        onclick="socket.emit('controls.play', {displayId: parseInt({{ loop.index0 }})});">
+                                    <i class="play icon"></i>
+                                </button>
+
+                                <button id="pause{{ loop.index0 }}" class="ui icon button"
+                                        onclick="socket.emit('controls.pause', {displayId: parseInt({{ loop.index0 }})});">
+                                    <i class="pause icon"></i>
+                                </button>
+
+                                <button class="ui icon button"
+                                        onclick="socket.emit('controls.next', {displayId: parseInt({{ loop.index0 }})});">
+                                    <i class="step forward icon"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 {% endfor %}
             </div>
         </div>
     </div>
+
+    <script>
+        var serverOptions = {};
+        var bundleData = {};
+        var displayCount = {{ config.displays.length }};
+
+        for (var i = 0; i < displayCount; i++) {
+            socket.emit('admin.dashboard.sync', {displayId: i});
+        }
+
+        socket.on('callback.update', function (data) {
+            serverOptions = data.serverOptions;
+            updateControls(serverOptions);
+        });
+
+        socket.on("callback.dashboard.sync", function (data) {
+            updateControls(data.serverOptions);
+        });
+
+        socket.on("callback.dashboard.update", function (data) {
+            updateControls(data.serverOptions);
+        });
+
+
+        function updateControls(serverOptions) {
+            var id = serverOptions.displayId;
+
+            if (serverOptions.blackout) {
+                $('#blackout' + id).removeClass('basic');
+            } else {
+                $('#blackout' + id).addClass('basic');
+            }
+
+            if (serverOptions.displayTime) {
+                $('#toggleTime' + id).removeClass('basic');
+            } else {
+                $('#toggleTime' + id).addClass('basic');
+            }
+
+            if (serverOptions.isStreaming) {
+                $('#stream' + id).removeClass('basic');
+            } else {
+                $('#stream' + id).addClass('basic');
+            }
+
+            if (serverOptions.loop) {
+                $('#play' + id).addClass('green');
+                $('#pause' + id).removeClass('orange');
+
+            } else {
+                $('#play' + id).removeClass('green');
+                $('#pause' + id).addClass('orange');
+            }
+
+        }
+    </script>
 {% endblock %}
-
-

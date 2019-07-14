@@ -23,7 +23,8 @@
     "createNew": "Luo Uusi",
     "createNewSlide": "Luo uusi dia",
     "addWebPage": "Lisää Web-sivu",
-    "announce": "Ilmoita"
+    "announce": "Ilmoita",
+    "announceAll": "Ilmoita Kaikille"
   },
   "navs": {
     "bundle": "DiaPaketti",

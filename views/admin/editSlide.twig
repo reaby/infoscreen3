@@ -66,9 +66,10 @@
                 <div class="ui buttons">
                     <a href="#" onclick="save()" class="ui green button">{{ t("actions.save") }}</a>
                     {% if displayId != null %}
-                        <a href="#" onclick="cueSlide()" class="ui basic teal button">{{ t("actions.announce") }}</a>
+                        <a href="#" onclick="cueSlide(displayId)" class="ui basic teal button">{{ t("actions.announce") }}</a>
                     {% endif %}
-                    <a href="#" onclick="window.close()" class="ui red button">{{ t("actions.cancel") }}</a>
+                    <a href="#" onclick="cueSlide(null)" class="ui red button">{{ t("actions.announceAll") }}</a>
+                    <a href="#" onclick="window.close()" class="ui button">{{ t("actions.cancel") }}</a>
                 </div>
             </div>
         </div>

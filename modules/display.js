@@ -65,6 +65,12 @@ class display {
          * @listens event:announce
          *
          */
+
+        dispatcher.on("all.override", function (data) {
+            self.overrideSlide(data.json, data.png, data.duration);
+            self.displayCurrentSlide();
+        });
+
         dispatcher.on("announce", function (obj) {
             // if global announce, ie screens is null
             if (obj.screens == null) {
@@ -109,6 +115,7 @@ class display {
 
 
     init(meta) {
+        this.io.emit("callback.reload");
         this.changeBundle(meta.bundle);
     }
 
@@ -127,6 +134,7 @@ class display {
         this.serverOptions.currentId = bundle.enabledSlides.indexOf(this.serverOptions.currentFile);
         this.serverOptions.transition = bundle.getBundleData().transition;
         this.serverOptions.loop = true;
+        this.io.emit("callbackLoad", this.getSlideData());
         this.mainLoop();
     }
 
