@@ -304,6 +304,7 @@ function checkStream(serverOptions) {
             });
             try {
                 flvPlayer.attachMediaElement(videoElement);
+                flvPlayer.volume = videoVolume;
                 flvPlayer.load();
                 flvPlayer.play();
                 showBackgroundOnly();

@@ -223,8 +223,9 @@ class admin {
             });
 
             socket.on('admin.dashboard.sync', function (data) {
-                syncDashboard(socket, 0);
-                updateDashboard(socket, data.displayId);
+               cli.error("admin.dashboard.sync is deprecated!");
+                // syncDashboard(socket, 0);
+               // updateDashboard(socket, data.displayId);
             });
 
             socket.on('admin.setDisplay', function (data) {

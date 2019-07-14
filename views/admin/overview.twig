@@ -1,0 +1,30 @@
+{% extends 'layout/admin.twig' %}
+
+{% block header %}
+    <script src="/socket.io/socket.io.js"></script>
+{% endblock %}
+
+
+{% block body %}
+    <div class="ui container">
+        <div class="ui basic segment">
+            <h2 class="ui center aligned inverted dividing header">{{ t("index.displays") }}</h2>
+
+            <div class="ui three stackable cards" id="displayList">
+                {% for display in config.displays %}
+                    <div class="ui card">
+                        <iframe class="ui img fluid" src="/display/{{ loop.index0 }}/lite?videoVolume=0"></iframe>
+                        <div class="content">
+                            <h3 class="ui center aligned header">{{ display.name }}</h3>
+                        </div>
+                        <div class="extra content">
+                            <a href="/admin?displayId={{ loop.index0 }}" class="ui small button">View</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+

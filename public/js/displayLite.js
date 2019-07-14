@@ -160,7 +160,7 @@ function nextSlide(data) {
     if (serverOptions.isAnnounce) {
         $("#" + getWebLayer()).addClass("fadeOut").removeClass("fadeIn");
         $("#" + getWebLayer(1)).addClass("fadeOut").removeClass("fadeIn");
-        setTimeout(function() {
+        setTimeout(function () {
             clearIFrame(getLayer());
             clearIFrame(getLayer(1));
         }, 1000);
@@ -184,7 +184,7 @@ function nextSlide(data) {
                 $(elem).show();
                 $("#" + getWebLayer()).addClass("fadeOut").removeClass("fadeIn");
                 $("#" + getWebLayer(1)).addClass("fadeOut").removeClass("fadeIn");
-                setTimeout(function() {
+                setTimeout(function () {
                     clearIFrame(getLayer());
                     clearIFrame(getLayer(1));
                 }, 1000);
@@ -250,11 +250,16 @@ function checkStream(serverOptions) {
         if (flvjs.isSupported()) {
             var videoElement = document.getElementById('bgvid');
             flvPlayer = flvjs.createPlayer({
-                type: 'flv',
-                url: serverOptions.streamSource
-            });
+                    type: 'flv',
+                    url: serverOptions.streamSource
+                }, {
+                    enableStashBuffer: false,   // enable for much longer buffer, note, video may stall if network jitter
+                    isLive: true
+                }
+            );
             try {
                 flvPlayer.attachMediaElement(videoElement);
+                flvPlayer.volume = videoVolume;
                 flvPlayer.load();
                 flvPlayer.play();
                 showBackgroundOnly();

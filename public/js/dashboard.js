@@ -1,12 +1,13 @@
 var serverOptions;
 var bundleSettings;
 var bundleDirs;
-var displayId = 0;
 var displayList;
 
 
 socket.on('connect', function () {
-    emit('admin.dashboard.sync');
+    emit("admin.setDisplay", {display: displayId});
+    var program = document.getElementById('program');
+    program.src = "/display/" + displayId;
 });
 
 socket.on("callback.update", function (data) {

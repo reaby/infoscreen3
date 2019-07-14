@@ -168,6 +168,7 @@
 
     <script>
         var socket = io.connect("{{ config.serverUrl }}:{{ config.serverListenPort }}/admin");
+        var displayId = {{ displayId }};
     </script>
     <script src="/js/dashboard.js"></script>
 {% endblock %}

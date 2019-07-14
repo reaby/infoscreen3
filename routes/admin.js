@@ -9,7 +9,8 @@ let busboy = require("connect-busboy");
 function ensureIsAdmin(req, res, next) {
 
     if (!req.isAuthenticated || !req.isAuthenticated()) {
-        req.session.location = "/admin";
+        console.log(req.originalUrl);
+        req.session.location = req.originalUrl;
         return res.redirect("/login");
     } else {
         if (!req.user.permissions.isAdmin) {
@@ -27,15 +28,19 @@ module.exports = function (websocket, dispatcher) {
     router.use(busboy({immediate: true}));
 
     router.get('/', function (req, res, next) {
-        res.render('admin/dashboard', {config: config, permission: req.user.permissions});
+        let displayId = req.query['displayId'] || 0;
+        res.render('admin/dashboard', {config: config, displayId: displayId, permission: req.user.permissions});
     });
 
     router.get('/preview', function (req, res, next) {
         let socketId = req.query['socket'];
-        let displayId = req.query['displayId'] || 0;
+        let displayId = parseInt(req.query['displayId']) || 0;
         res.render('preview', {config: config, socketId: socketId, displayId: displayId});
     });
 
+    router.get('/overview', function (req, res, next) {
+        res.render('admin/overview', {config: config});
+    });
 
     router.get('/edit/slide', function (req, res, next) {
         let bundle = req.query['bundle'];

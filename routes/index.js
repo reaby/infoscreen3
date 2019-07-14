@@ -7,7 +7,8 @@ const cli = require('../modules/cli.js');
 
 function ensureIsAdmin(req, res, next) {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
-        req.session.location = "/";
+        console.log(req.originalUrl);
+        req.session.location = req.originalUrl;
         return res.redirect("/login");
     }
     return next();
@@ -17,6 +18,7 @@ module.exports = function (websocket, dispatcher) {
     if (config.secureViews) {
         router.use(ensureIsAdmin);
     }
+
     router.get('/', function (req, res, next) {
         res.header('Access-Control-Allow-Origin', '*');
         res.render('index', {config: config});
@@ -25,13 +27,15 @@ module.exports = function (websocket, dispatcher) {
     router.get('/display/:id/lite', function (req, res, next) {
         res.header('Access-Control-Allow-Origin', '*');
         let idx = parseInt(req.params.id);
-        res.render('liteDisplay', {config: config, display: availableDisplays[idx], displayId: idx});
+        let volume = req.params.videoVolume || 1.;
+        res.render('liteDisplay', {config: config, display: availableDisplays[idx], displayId: idx, videoVolume: volume});
     });
 
     router.get('/display/:id', function (req, res, next) {
         res.header('Access-Control-Allow-Origin', '*');
         let idx = parseInt(req.params.id);
-        res.render('display', {config: config, display: availableDisplays[idx], displayId: idx});
+        let volume = req.params.videoVolume || 1.;
+        res.render('display', {config: config, display: availableDisplays[idx], displayId: idx, videoVolume: volume});
     });
 
     router.get('/images/:dir/:name', function (req, res, next) {
