@@ -4,7 +4,7 @@ is useful tool when you need displaying same content to multiple locations or ne
 
 Usage is very easy after you have setup the server at local network. The viewer is simply a web page so you need just computer with a browser to setup your displays.
 
-#Features
+# Features
 * Can display easily slides from browser, you just need network connection, laptop with some browser
 * Output resolution does not matter, all contents are automatically scaled from full hd or half-hd as source material.
 * Slides:
