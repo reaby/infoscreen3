@@ -93,7 +93,7 @@ socket.on('callback.preview', function (data) {
 
 
 function setBackground() {
-    background = "/background/" + bundleData.bundleName + "/" + bundleData.background;
+    background = "/background/" + bundleData.background;
 
     var video = document.getElementById("bgvid");
     var bg = $("#bg");
@@ -141,19 +141,6 @@ function fixCanvas() {
     canvas.setWidth(1280).setHeight(720);
     $("#c").css("width", width + "px").css("height", height + "px");
     canvas.calcOffset();
-}
-
-function override() {
-    var obj = canvas.toJSON(['id']);
-    var video = document.getElementById("bgvid");
-    var bg = "";
-    if (video.src.indexOf(".mp4") !== -1) {
-        bg = video.src;
-    } else {
-        bg = video.poster;
-    }
-
-    socket.emit("admin.override", {json: obj, displayId: displayId, background: bg});
 }
 
 

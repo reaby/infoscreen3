@@ -1,7 +1,7 @@
 [
 	{
 		"uuid": "f0411f05-a312-44a7-82fd-778328ba390e",
-		"name": "testing 123",
+		"name": "Welcome",
 		"duration": null,
 		"enabled": true,
 		"displayTime": null,
@@ -11,7 +11,7 @@
 	},
 	{
 		"uuid": "03191688-bb93-4376-a3ab-53ed790b2155",
-		"name": "2 header",
+		"name": "Features",
 		"duration": null,
 		"enabled": true,
 		"displayTime": null,
@@ -21,22 +21,12 @@
 	},
 	{
 		"uuid": "6a298b8c-9246-411f-b364-2d73c7e292d0",
-		"name": "header test  3",
+		"name": "Language support",
 		"duration": null,
 		"enabled": true,
 		"displayTime": null,
 		"transition": null,
 		"type": "slide",
 		"index": 2
-	},
-	{
-		"uuid": "39e5205f-9ace-4597-9873-f9ea5846dff0",
-		"name": "header",
-		"duration": null,
-		"enabled": true,
-		"displayTime": null,
-		"transition": null,
-		"type": "slide",
-		"index": 3
 	}
 ]

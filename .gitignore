@@ -66,4 +66,5 @@ config.js
 tmp/*.png
 public/assets/
 data/bundles/*
-!data/bundles/default/
+!data/bundles/default
+!data/bundles/default/*

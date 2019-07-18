@@ -143,7 +143,7 @@ module.exports = function (websocket, dispatcher) {
 
     router.get('/ajax/imagelist', function (req, res, next) {
         let bundle = req.query['bundle'];
-        let bundleRoot = path.normalize("./data/bundles" + bundle);
+        let bundleRoot = path.normalize("./data/bundles/" + bundle);
         let bundleImages = fs.readdirSync(bundleRoot + "/images", {
             dotfiles: false
         });

@@ -34,7 +34,7 @@ $(function () {
 
     $('html').keyup(function (e) {
         if (e.keyCode === 46) {
-            obj = canvas.getActiveObject();
+            var obj = canvas.getActiveObject();
             if (!obj.isEditing) {
                 removeSelectedObjects();
             }
@@ -216,12 +216,14 @@ socket.on('callback.edit.updateFileList', function (data) {
 socket.on('callback.edit', function (data) {
     bundleData = data.bundleData;
     canvas.clear();
+    console.log(data);
+
     if (data.slideData.name != null) {
         slideName = data.slideData.name;
         $("#slideName").val(slideName);
     }
 
-    $("#duration").val(data.slideData.duration + "");
+    $("#duration").val(data.slideData.duration || "");
 
     if (data.slideData.displayTime !== null) {
         $("#override").checkbox('set checked');
@@ -277,7 +279,7 @@ socket.on('callback.edit', function (data) {
 });
 
 function setBackground(background) {
-    background = "/background/" + bundleData.bundleName + "/" + background;
+    background = "/background/" + background;
 
     var video = document.getElementById("bgvid2");
     var bg = $("#bg");
@@ -541,7 +543,7 @@ function removeSelectedObjects() {
     for (var i in obj) {
         canvas.remove(obj[i]);
     }
-    canvas.discardActiveObject();
+    canvas.discardActiveObject(null);
     canvas.requestRenderAll();
 
 }
@@ -554,11 +556,13 @@ function cueSlide(id) {
         }
     }
 
-    if (confirm('Force display of the current slide?') && bool) {
+    if (confirm('Force display of the current slide?')) {
         var duration = null;
         if ($.isNumeric($("#duration").val())) {
             duration = parseFloat($("#duration").val());
         }
+        var transition = $("#transitions").dropdown("get value");
+        if (transition === "null") transition = "";
 
         var objects = canvas.getObjects('line');
         for (let i in objects) {
@@ -569,8 +573,10 @@ function cueSlide(id) {
             json: canvas.toJSON(['id']),
             png: canvas.toDataURL('png'),
             displayId: id,
-            duration: duration
+            duration: duration,
+            transition: transition
         };
+
         socket.emit("admin.override", obj);
 
         drawGrid();
@@ -584,6 +590,7 @@ function save() {
     for (let i in objects) {
         canvas.remove(objects[i]);
     }
+
     slideName = $("#slideName").val();
     if (slideName === "untitled") {
         var texts = canvas.getObjects('i-text');

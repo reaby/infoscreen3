@@ -130,8 +130,8 @@ class admin {
                     serverOptions.streamSource = "";
                     cli.success("stop stream");
                 }
-                view.io.emit("callbackLoad", view.getSlideData());
-               updateDashboard(io);
+                view.io.emit("callback.load", view.getSlideData());
+                updateDashboard(io);
             });
 
 
@@ -139,7 +139,7 @@ class admin {
                 let view = getView();
                 view.clearTimers();
                 getServerOptions().loop = false;
-               updateDashboard(io);
+                updateDashboard(io);
             });
 
             socket.on('controls.next', function (data) {
@@ -151,7 +151,7 @@ class admin {
                 view.serverOptions.blackout = view.serverOptions.blackout === false;
 
                 view.io.emit("callback.blackout", {serverOptions: view.serverOptions});
-               updateDashboard(io);
+                updateDashboard(io);
             });
 
             socket.on("controls.preview", function (data) {
@@ -198,7 +198,7 @@ class admin {
                     bundleSettings.setSlideStatus(fileName, false);
                 }
 
-               updateDashboard(socket);
+                updateDashboard(socket);
             });
 
             // override
@@ -211,8 +211,7 @@ class admin {
                         dispatcher.emit("all.override", data);
                     } else {
                         let view = getView();
-                        view.overrideSlide(data.json, data.png, data.duration);
-                        view.displayCurrentSlide();
+                        view.overrideSlide(data.json, data.png, data.duration, data.transition);
                     }
                 } catch (err) {
                     cli.error("error, admin.override", err);
@@ -232,11 +231,11 @@ class admin {
             });
 
             socket.on('admin.listSlides', function (data) {
-               updateDashboard(socket);
+                updateDashboard(socket);
             });
 
             socket.on('admin.listBundles', function (data) {
-               updateDashboard(socket);
+                updateDashboard(socket);
             });
 
 
@@ -250,13 +249,12 @@ class admin {
                 }
 
                 // calculate next slide order for all displays which has the bundle selected
-                for (let display of screenView) {
-                    if (display.serverOptions.currentBundle === data.bundleName) {
-                        for (let slide of bundle.allSlides) {
-                            // calculate new index for next slide;
-                            if (slide.uuid === display.serverOptions.currentFile) {
-                                display.serverOptions.loopIndex = slide.index + 1;
-                            }
+                let display = screenView;
+                if (display.serverOptions.currentBundle === data.bundleName) {
+                    for (let slide of bundle.allSlides) {
+                        // calculate new index for next slide;
+                        if (slide.uuid === display.serverOptions.currentFile) {
+                            display.serverOptions.loopIndex = slide.index + 1;
                         }
                     }
                 }
@@ -271,6 +269,7 @@ class admin {
                     let bundle = bundleManager.getBundle(data.bundleName);
                     bundle.removeUuid(data.uuid);
                     updateSlides(io, bundle.name, bundle);
+                    announce(null, "callback.removeSlide", data);
                 } catch (err) {
                     cli.error("error while removing slide", err);
                 }
@@ -402,7 +401,7 @@ class admin {
                 }
 
                 getServerOptions().transition = transition;
-               updateDashboard(io);
+                updateDashboard(io);
             });
 
             socket.on('edit.save', function (data) {
@@ -479,7 +478,7 @@ class admin {
                     let replace = "^data:" + data.type + ";base64,";
                     let re = new RegExp(replace, "g");
 
-                    fs.writeFileSync(".data/bundles/" + data.bundleName + "/images/" + filename + ext, data.imageData.replace(re, ""), "base64");
+                    fs.writeFileSync("./data/bundles/" + data.bundleName + "/images/" + filename + ext, data.imageData.replace(re, ""), "base64");
                     cli.success("upload of " + filename + ext);
                     socket.emit("callback.edit.updateFileList", {});
                 } catch (err) {
@@ -491,7 +490,7 @@ class admin {
 
             socket.on('edit.deleteImage', function (data) {
                 try {
-                    fs.unlinkSync(".data/bundles/" + data.bundleName + "/images/" + data.name);
+                    fs.unlinkSync("./data/bundles/" + data.bundleName + "/images/" + data.name);
                     cli.success("delete " + data.name);
                     socket.emit("callback.edit.updateFileList", {});
                 } catch (err) {

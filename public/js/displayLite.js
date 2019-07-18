@@ -57,7 +57,7 @@ $(function () {
 
 
     /** callback Load **/
-    socket.on('callbackLoad', function (data) {
+    socket.on('callback.load', function (data) {
         serverOptions = data.serverOptions;
         bundleData = data.bundleData;
         checkBlackout();

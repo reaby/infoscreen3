@@ -80,7 +80,6 @@ function getLayer(offset) {
     return "layer" + (layer + offset) % 2;
 }
 
-
 // socketio callbacks
 /** when connected **/
 socket.on('connect', function () {
@@ -111,18 +110,18 @@ socket.on('callback.time', function (data) {
 });
 
 /** callback Load **/
-socket.on('callbackLoad', function (data) {
+socket.on('callback.load', function (data) {
     serverOptions = data.serverOptions;
     bundleData = data.bundleData;
     preloadImages(data.slides);
     checkBlackout();
-    setBackground(data.bundleData.background);
-    if (checkStream(serverOptions) === false) {
-        if (doNext) {
-            doNext = false;
+    setTimeout(function () {
+        setBackground(data.bundleData.background);
+        if (checkStream(serverOptions) === false) {
             nextSlide(data);
         }
-    }
+    }, 1000);
+
 });
 
 
@@ -134,6 +133,10 @@ socket.on('callback.update', function (data) {
     if (checkStream(serverOptions) === false) {
         nextSlide(data);
     }
+});
+
+socket.on('callback.removeSlide', function (data) {
+    window.f.clearImageById(data.uuid);
 });
 
 socket.on('callback.reload', function () {
@@ -202,7 +205,6 @@ function checkBlackout() {
 function nextSlide(data) {
     serverOptions = data.serverOptions;
     bundleData = data.bundleData;
-    var needWait = checkImages(data.slides);
     checkTimeDisplay();
 
     if (serverOptions.isAnnounce) {
@@ -249,11 +251,8 @@ function nextSlide(data) {
                     clearIFrame(getWebLayer(1));
                 }, 2500);
 
-                $("#slider").show();
-                setTimeout(function () {
-                    window.f.showImageById(serverOptions.currentFile, transition);
-                }, needWait ? 1000 : 50);
-
+//                $("#slider").show();
+                window.f.showImageById(serverOptions.currentFile, transition);
                 break;
         }
     }
@@ -362,12 +361,20 @@ function preloadImages(allSlides) {
 
 function reloadImage(data) {
     if (serverOptions.currentBundle === data.bundleName) {
-        window.f.clearImageById(data.uuid);
-        window.f.setupImages();
         getDataUri("/render/" + data.bundleName + "/" + data.uuid + ".png?" + uuidv4(), data.uuid, function (imageId, imageData, image) {
-            image.id = imageId;
-            window.f.images.push(image);
-            window.f.imageData.push(imageData);
+            var found = false;
+            for (var i in window.f.images) {
+                if (window.f.images[i].id === data.uuid) {
+                    window.f.imageData[i] = imageData;
+                    found = true;
+                }
+            }
+            if (!found) {
+                console.log("notfound, adding!");
+                image.id = imageId;
+                window.f.images.push(image);
+                window.f.imageData.push(imageData);
+            }
         });
     }
 }
@@ -392,7 +399,6 @@ function checkImages(allSlides) {
     // new slides count is less than slides in rotation
     // remove slides
     if (allIds.length < fluxIds.length) {
-
         var diffIds = symmetricDifference(fluxIds, allIds);
         for (var l in diffIds) {
             window.f.clearImageById(diffIds[l]);
@@ -466,7 +472,7 @@ function getDataUri(url, imageId, callback) {
         canvas.height = this.naturalHeight; // or 'height' if you want a special/scaled size
 
         canvas.getContext('2d').drawImage(this, 0, 0);
-        callback(imageId, canvas.toDataURL('image/png'), this);
+        callback(imageId, canvas.toDataURL('image/png'), {src: url});
     };
     image.src = url;
 }

@@ -76,7 +76,8 @@ class display {
 
         dispatcher.on("announce", function (obj) {
             // if global announce, ie screens is null
-            if (obj.screens == null) {
+            if (obj.screens === null) {
+                console.log("announcing: " + this.displayId);
                 io.emit(obj.event, obj.data);
             } else {
                 // screens is array
@@ -107,7 +108,7 @@ class display {
 
                 socket.on('sync', function () {
                     cli.info("request sync " + self.name);
-                    socket.emit("callbackLoad", self.getSlideData());
+                    socket.emit("callback.load", self.getSlideData());
                 });
 
             }); // io
@@ -137,7 +138,7 @@ class display {
         this.serverOptions.currentId = bundle.enabledSlides.indexOf(this.serverOptions.currentFile);
         this.serverOptions.transition = bundle.getBundleData().transition;
         this.serverOptions.loop = true;
-        this.io.emit("callbackLoad", this.getSlideData());
+        this.io.emit("callback.load", this.getSlideData());
         this.mainLoop();
     }
 
@@ -226,8 +227,10 @@ class display {
         this.serverOptions.loopIndex += 1;
     }
 
-    overrideSlide(json, pngData, duration) {
+    overrideSlide(json, pngData, duration, transition) {
         this.clearTimers();
+        var _transition = this.serverOptions.transition;
+        this.serverOptions.transition = transition;
         this.serverOptions.loop = false;
         this.serverOptions.isAnnounce = true;
         // save temporarily png data...
@@ -240,6 +243,8 @@ class display {
                     that.mainLoop();
                 }, duration * 1000));
         }
+        this.displayCurrentSlide();
+        this.serverOptions.transition = _transition;
     }
 
     displayCurrentSlide() {

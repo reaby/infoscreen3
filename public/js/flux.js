@@ -72,7 +72,7 @@ window.flux = {
         this.options.transitions = newTrans;
 
         this.images = [];
-        this.imageData = [];
+        this["imageData"] = [];
         this.imageLoadedCount = 0;
         this.currentImageIndex = 0;
         this.nextImageIndex = 1;
@@ -89,7 +89,7 @@ window.flux = {
                 window.location = $(event.target).data('href');
         });
 
-        this.imageContainer = $('<div class="images loading"></div>').css({
+        this.imageContainer = $('<div class="images"></div>').css({
             'position': 'relative',
             'overflow': 'hidden',
             'min-height': '100px',
@@ -105,28 +105,13 @@ window.flux = {
         }
 
         // Create the placeholders for the current and next image
-        this.image1 = $('<div class="image1" style="width: 100%; height: 100%;"></div>').appendTo(this.imageContainer);
-        this.image2 = $('<div class="image2" style="width: 100%; height: 100%;"></div>').appendTo(this.imageContainer);
+        this.image1 = $('<div class="image1" style="width:100%;height:100%;"></div>').appendTo(this.imageContainer);
+        this.image2 = $('<div class="image2" style="width:100%;height:100%;"></div>').appendTo(this.imageContainer);
 
         $(this.image1).add(this.image2).css({
             'position': 'absolute',
             'top': '0px',
             'left': '0px'
-        });
-
-        // Get a list of the images to use
-        this.element.find('img, a img').each(function (index, found_img) {
-            var imgClone = found_img.cloneNode(false),
-                link = $(found_img).parent();
-
-            // If this img is directly inside a link then save the link for later use
-            if (link.is('a'))
-                $(imgClone).data('href', link.attr('href'));
-
-            _this.images.push(imgClone);
-
-            // Remove the images from the DOM
-            $(found_img).remove();
         });
 
         // Load the images afterwards as IE seems to load images synchronously
@@ -230,8 +215,8 @@ window.flux = {
             this.setNextIndex(index);
 
             // Temporarily stop the transition interval
-        //    clearInterval(this.interval);
-        //    this.interval = null;
+            //    clearInterval(this.interval);
+            //    this.interval = null;
 
             this.setupImages();
             this.transition(trans, opts);
@@ -270,8 +255,8 @@ window.flux = {
         clearImageById: function (id) {
             for (var i in this.images) {
                 if (this.images[i].id === id) {
-                    this.imageData.splice(i, 1);
                     this.images.splice(i, 1);
+                    this.imageData.splice(i, 1);
                 }
             }
         },
@@ -463,7 +448,6 @@ window.flux = {
         },
         getImageData: function (index) {
             index = index % this.imageData.length;
-
             return this.imageData[index];
         },
         setNextIndex: function (nextIndex) {
