@@ -3,8 +3,10 @@
   "background": "bg.jpg",
   "duration": 20,
   "useWebFonts": false,
+  "displayTime": true,
+  "transition": "blocks2",
   "styleHeader": {
-    "fill": "#f90",
+    "fill": "#fff",
     "fontSize": 56,
     "fontWeight": 900,
     "fontFamily": "Arial"

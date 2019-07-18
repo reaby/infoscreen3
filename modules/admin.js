@@ -291,7 +291,6 @@ class admin {
                         fs.writeFileSync("data/bundles/" + data.dir + "/bundle.json", JSON.stringify(tempData));
 
                         fs.copyFileSync("templates/bundle/slides.json", "data/bundles/" + data.dir + "/slides.json");
-                        fs.copyFileSync("templates/bundle/backgrounds/bg.jpg", "data/bundles/" + data.dir + "/backgrounds/bg.jpg");
                         bundleManager.getBundle(data.dir);
                         syncDashboard(io);
                     } else {
