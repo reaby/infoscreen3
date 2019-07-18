@@ -1,3 +1,5 @@
+let displays = require(`./data/displays.json`);
+
 module.exports = {
     "serverListenPort": process.env.PORT || 8000,
     "serverHost": process.env.HOST || "127.0.0.1",
@@ -51,23 +53,5 @@ module.exports = {
             }
         }
     ],
-    /*
-     * Displays
-     * If needed, define more screens
-     */
-
-    "displays": [
-        {
-            "name": "Big Screen",
-            "bundle": "default"
-        },
-        {
-            "name": "Secondary Screen",
-            "bundle": "set1"
-        },
-        {
-            "name": "Kiosk",
-            "bundle": "default"
-        }
-    ]
+    "displays": displays
 };

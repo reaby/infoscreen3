@@ -1,0 +1,14 @@
+[
+  {
+    "name": "Big Screen",
+    "bundle": "default"
+  },
+  {
+    "name": "Secondary Screen",
+    "bundle": "default"
+  },
+  {
+    "name": "Kiosk",
+    "bundle": "default"
+  }
+]
