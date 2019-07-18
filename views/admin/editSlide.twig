@@ -9,7 +9,7 @@
         {% if displayId != null %}
         var displayId = {{ displayId }};
         {% else %}
-        var displayId = null;
+        var displayId = 0;
         {% endif %}
     </script>
     <style>
@@ -225,7 +225,7 @@
     <canvas id="tempCanvas" width="1280" height="720" style="display: none"></canvas>
 
     <script>
-        var socket = io.connect("{{ config.serverUrl }}:{{ config.serverListenPort }}/admin-{{ displayId }}");
+        var socket = io.connect("{{ config.serverUrl }}:{{ config.serverListenPort }}/admin-" + displayId);
     </script>
     <script>
         var images = {};
