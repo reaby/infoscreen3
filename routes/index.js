@@ -49,7 +49,7 @@ module.exports = function (websocket, dispatcher) {
 
     router.get('/images/:dir/:name', function (req, res, next) {
         let options = {
-            root: './data/' + req.params.dir + '/images/',
+            root: './data/bundles/' + req.params.dir + '/images/',
             dotfiles: 'deny',
             headers: {
                 'x-timestamp': Date.now(),
@@ -67,7 +67,7 @@ module.exports = function (websocket, dispatcher) {
 
     router.get('/render/:dir/:name', function (req, res, next) {
         let options = {
-            root: './data/' + req.params.dir + '/render/',
+            root: './data/bundles/' + req.params.dir + '/render/',
             dotfiles: 'deny',
             headers: {
                 'x-timestamp': Date.now(),
@@ -101,9 +101,9 @@ module.exports = function (websocket, dispatcher) {
         });
     });
 
-    router.get('/background/:dir/:name', function (req, res, next) {
+    router.get('/background/:name', function (req, res, next) {
         let options = {
-            root: './data/' + req.params.dir + '/backgrounds/',
+            root: './data/backgrounds/',
             dotfiles: 'deny',
             headers: {
                 'x-timestamp': Date.now(),

@@ -2,14 +2,14 @@ let cli = require("./cli.js");
 let fs = require("fs");
 
 /**
- *
+ * @module infoscreen3/bundle
  */
 class bundleClass {
 
     constructor(name, data, slides) {
         this.name = name;
         this.bundleData = data;
-        this.bundleData['bundleName']= this.name;
+        this.bundleData['bundleName'] = this.name;
         this.allSlides = slides;
         this.enabledSlides = [];
         this.disabledSlides = [];
@@ -28,7 +28,7 @@ class bundleClass {
 
     getSlideJsonFile(fileName) {
         try {
-            return fs.readFileSync("./data/" + this.name + "/slides/" + fileName).toString();
+            return fs.readFileSync("./data/bundles/" + this.name + "/slides/" + fileName).toString();
         } catch (err) {
             return "{}";
         }
@@ -56,7 +56,7 @@ class bundleClass {
             }
             if (slide.uuid === uuid) {
                 if (slide.type === "slide") {
-                    let path = "./data/" + this.name;
+                    let path = "./data/bundles/" + this.name;
                     try {
                         if (fs.existsSync(path + "/render/" + uuid + ".png")) {
                             fs.unlinkSync(path + "/render/" + uuid + ".png");
@@ -127,8 +127,8 @@ class bundleClass {
     save() {
         this.sync();
         try {
-            fs.writeFileSync("./data/" + this.name + "/slides.json", this.toJson());
-            fs.writeFileSync("./data/" + this.name + "/bundle.json", JSON.stringify(this.bundleData, null, "\t"));
+            fs.writeFileSync("./data/bundles/" + this.name + "/slides.json", this.toJson());
+            fs.writeFileSync("./data/bundles/" + this.name + "/bundle.json", JSON.stringify(this.bundleData, null, "\t"));
         } catch (e) {
             cli.error("error while saving file:", e);
         }
@@ -162,4 +162,8 @@ function sortByProperty(property) {
     }
 }
 
+/**
+ *
+ * @type {bundleClass}
+ */
 module.exports = bundleClass;

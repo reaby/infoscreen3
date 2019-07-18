@@ -1,33 +1,31 @@
 let fs = require("fs");
-let config = require("../config.js");
-let cli = require('./cli.js');
+let config = require(`../config.js`);
+let cli = require(`./cli.js`);
 
 /**
- * @module infoscreen3/admin
- * @class
+ *
  */
 class admin {
 
     /**
-     *
      * @param sharedIO
      * @param dispatcher
-     * @param screenViews
+     * @param screenView
+     * @param displayId
      * @param bundleManager
      */
-    constructor(sharedIO, dispatcher, screenViews, bundleManager) {
-        cli.info("Starting admin socket interface");
-
+    constructor(sharedIO, dispatcher, screenView, displayId, bundleManager) {
         /**
-         * @typedef {object} previewInstance
+         * @typedef {string[]} previewInstance
          * @property {string} adminId is string from admin socket.Id
          * @property {object} preview, pure previews socket
          *
-         * @type {previewInstance[]}
+         * @type {object}
          */
         let previewInstances = [];
-        let io = sharedIO.of("/admin");
+        let io = sharedIO.of("/admin-" + displayId);
         this.io = io;
+        this.displayId = displayId;
         this.dispatcher = dispatcher;
 
         this.bundleManager = bundleManager;
@@ -94,31 +92,31 @@ class admin {
 
             // toggle time
             socket.on('controls.time.toggle', function (data) {
-                let view = getView(data.displayId);
+                let view = getView();
                 let bool = !view.serverOptions.displayTime;
 
                 view.getBundle().bundleData.displayTime = bool;
                 view.serverOptions.displayTime = bool;
 
                 view.io.emit("callback.time", bool);
-                updateDashboard(io, data.displayId);
+                updateDashboard(io);
             });
 
             socket.on('controls.previous', function (data) {
-                let view = getView(data.displayId);
+                let view = getView();
                 view.serverOptions.loopIndex -= 2;
                 view.mainLoop();
             });
 
             socket.on('controls.play', function (data) {
-                getServerOptions(data.displayId).loop = true;
-                getView(data.displayId).mainLoop();
-                updateDashboard(io, data.displayId);
+                getServerOptions().loop = true;
+                getView().mainLoop();
+                updateDashboard(io);
             });
 
             socket.on('controls.startStream', function (data) {
-                let view = getView(data.displayId);
-                let serverOptions = getServerOptions(data.displayId);
+                let view = getView();
+                let serverOptions = getServerOptions();
 
                 if (serverOptions.isStreaming === false) {
                     serverOptions.loop = false;
@@ -133,27 +131,27 @@ class admin {
                     cli.success("stop stream");
                 }
                 view.io.emit("callbackLoad", view.getSlideData());
-                updateDashboard(io, data.displayId);
+               updateDashboard(io);
             });
 
 
             socket.on('controls.pause', function (data) {
-                let view = getView(data.displayId);
+                let view = getView();
                 view.clearTimers();
-                getServerOptions(data.displayId).loop = false;
-                updateDashboard(io, data.displayId);
+                getServerOptions().loop = false;
+               updateDashboard(io);
             });
 
             socket.on('controls.next', function (data) {
-                getView(data.displayId).mainLoop();
+                getView().mainLoop();
             });
 
             socket.on('controls.blackout', function (data) {
-                let view = getView(data.displayId);
+                let view = getView();
                 view.serverOptions.blackout = view.serverOptions.blackout === false;
 
                 view.io.emit("callback.blackout", {serverOptions: view.serverOptions});
-                updateDashboard(io, data.displayId);
+               updateDashboard(io);
             });
 
             socket.on("controls.preview", function (data) {
@@ -179,19 +177,19 @@ class admin {
             });
 
             socket.on("controls.skipTo", function (data) {
-                let bundleSettings = getView(data.displayId).getBundle();
+                let bundleSettings = getView().getBundle();
                 let slides = bundleSettings.enabledSlides;
 
                 let idx = slides.indexOf(data.fileName);
                 if (idx >= 0) {
-                    getServerOptions(data.displayId).loopIndex = idx;
+                    getServerOptions().loopIndex = idx;
                 }
-                getView(data.displayId).mainLoop();
+                getView().mainLoop();
             });
 
             socket.on('controls.toggle', function (data) {
                 let fileName = data.fileName;
-                let bundleSettings = getView(data.displayId).getBundle();
+                let bundleSettings = getView().getBundle();
                 let idx = bundleSettings.disabledSlides.indexOf(fileName);
 
                 if (idx > -1) {
@@ -200,7 +198,7 @@ class admin {
                     bundleSettings.setSlideStatus(fileName, false);
                 }
 
-                updateDashboard(socket, data.displayId);
+               updateDashboard(socket);
             });
 
             // override
@@ -212,7 +210,7 @@ class admin {
                         }
                         dispatcher.emit("all.override", data);
                     } else {
-                        let view = getView(parseInt(data.displayId));
+                        let view = getView();
                         view.overrideSlide(data.json, data.png, data.duration);
                         view.displayCurrentSlide();
                     }
@@ -222,28 +220,23 @@ class admin {
             });
 
             socket.on('admin.setBundle', function (data) {
-                let view = getView(data.displayId);
+                let view = getView();
                 view.changeBundle(data.bundle);
                 view.displayCurrentSlide();
-                updateDashboard(io, data.displayId);
+                updateDashboard(io);
             });
 
-            socket.on('admin.dashboard.sync', function (data) {
-                syncDashboard(socket, data.displayId);
-                updateDashboard(socket, data.displayId);
-            });
-
-            socket.on('admin.setDisplay', function (data) {
-                syncDashboard(socket, data.display);
-                updateDashboard(socket, data.display);
+            socket.on('admin.dashboard.sync', function () {
+                syncDashboard(socket);
+                updateDashboard(socket);
             });
 
             socket.on('admin.listSlides', function (data) {
-                updateDashboard(socket, data.displayId);
+               updateDashboard(socket);
             });
 
             socket.on('admin.listBundles', function (data) {
-                updateDashboard(socket, data.displayId);
+               updateDashboard(socket);
             });
 
 
@@ -257,7 +250,7 @@ class admin {
                 }
 
                 // calculate next slide order for all displays which has the bundle selected
-                for (let display of screenViews) {
+                for (let display of screenView) {
                     if (display.serverOptions.currentBundle === data.bundleName) {
                         for (let slide of bundle.allSlides) {
                             // calculate new index for next slide;
@@ -288,24 +281,23 @@ class admin {
                 cli.info("@ create Bundle");
 
                 try {
-                    if (!fs.existsSync("data/" + data.dir)) {
-                        fs.mkdirSync("data/" + data.dir);
-                        fs.mkdirSync("data/" + data.dir + "/backgrounds");
-                        fs.mkdirSync("data/" + data.dir + "/images");
-                        fs.mkdirSync("data/" + data.dir + "/render");
-                        fs.mkdirSync("data/" + data.dir + "/slides");
+                    if (!fs.existsSync("data/bundles" + data.dir)) {
+                        fs.mkdirSync("data/bundles/" + data.dir);
+                        fs.mkdirSync("data/bundles/" + data.dir + "/images");
+                        fs.mkdirSync("data/bundles/" + data.dir + "/render");
+                        fs.mkdirSync("data/bundles/" + data.dir + "/slides");
 
-                        var tempData = JSON.parse(fs.readFileSync("templates/bundle/bundle.json").toString());
+                        let tempData = JSON.parse(fs.readFileSync("templates/bundle/bundle.json").toString());
                         tempData.displayName = data.bundle;
-                        fs.writeFileSync("data/" + data.dir + "/bundle.json", JSON.stringify(tempData));
+                        fs.writeFileSync("data/bundles/" + data.dir + "/bundle.json", JSON.stringify(tempData));
 
-                        fs.copyFileSync("templates/bundle/slides.json", "data/" + data.dir + "/slides.json");
-                        fs.copyFileSync("templates/bundle/backgrounds/bg.jpg", "data/" + data.dir + "/backgrounds/bg.jpg");
+                        fs.copyFileSync("templates/bundle/slides.json", "data/bundles/" + data.dir + "/slides.json");
+                        fs.copyFileSync("templates/bundle/backgrounds/bg.jpg", "data/bundles/" + data.dir + "/backgrounds/bg.jpg");
                         bundleManager.getBundle(data.dir);
-                        syncDashboard(io, data.displayId);
+                        syncDashboard(io);
                     } else {
                         socket.emit("callback.error", "Error: bundle already exists.");
-                        syncDashboard(io, data.displayId);
+                        syncDashboard(io);
                     }
                 } catch (err) {
                     cli.error(err, "Error while creating new bundle");
@@ -333,7 +325,6 @@ class admin {
                     filename = uuidv4();
                 }
 
-                var duration = null;
                 if (data.duration === "") {
                     data.duration = null;
                 }
@@ -405,13 +396,13 @@ class admin {
 
             /** change transition **/
             socket.on('admin.setTransition', function (data) {
-                var transition = data.transition;
+                let transition = data.transition;
                 if (data.transition === "null") {
                     transition = null;
                 }
 
-                getServerOptions(data.displayId).transition = transition;
-                updateDashboard(io, data.displayId);
+                getServerOptions().transition = transition;
+               updateDashboard(io);
             });
 
             socket.on('edit.save', function (data) {
@@ -421,20 +412,20 @@ class admin {
                     filename = uuidv4();
                 }
 
-                var duration = data.duration;
-                if (data.duration == "") {
+                let duration = data.duration;
+                if (data.duration === "") {
                     duration = null;
                 }
 
-                var transition = data.transition;
-                if (data.transition == "") {
+                let transition = data.transition;
+                if (data.transition === "") {
                     transition = null;
                 }
 
 
                 try {
-                    fs.writeFileSync("./data/" + data.bundleName + "/render/" + filename + ".png", data.png.replace(/^data:image\/png;base64,/, ""), "base64");
-                    fs.writeFileSync("./data/" + data.bundleName + "/slides/" + filename, JSON.stringify(data.json));
+                    fs.writeFileSync("./data/bundles/" + data.bundleName + "/render/" + filename + ".png", data.png.replace(/^data:image\/png;base64,/, ""), "base64");
+                    fs.writeFileSync("./data/bundles/" + data.bundleName + "/slides/" + filename, JSON.stringify(data.json));
 
                     let bundle = self.bundleManager.getBundle(data.bundleName);
 
@@ -488,7 +479,7 @@ class admin {
                     let replace = "^data:" + data.type + ";base64,";
                     let re = new RegExp(replace, "g");
 
-                    fs.writeFileSync("./data/" + data.bundleName + "/images/" + filename + ext, data.imageData.replace(re, ""), "base64");
+                    fs.writeFileSync(".data/bundles/" + data.bundleName + "/images/" + filename + ext, data.imageData.replace(re, ""), "base64");
                     cli.success("upload of " + filename + ext);
                     socket.emit("callback.edit.updateFileList", {});
                 } catch (err) {
@@ -500,7 +491,7 @@ class admin {
 
             socket.on('edit.deleteImage', function (data) {
                 try {
-                    fs.unlinkSync("./data/" + data.bundleName + "/images/" + data.name);
+                    fs.unlinkSync(".data/bundles/" + data.bundleName + "/images/" + data.name);
                     cli.success("delete " + data.name);
                     socket.emit("callback.edit.updateFileList", {});
                 } catch (err) {
@@ -516,12 +507,9 @@ class admin {
 
         /**
          * @param {object} socket
-         * @param {number|string} displayId
          */
-        function updateDashboard(socket, displayId) {
-            displayId = parseInt(displayId);
-
-            let view = getView(displayId);
+        function updateDashboard(socket) {
+            let view = getView();
             let serverOptions = view.serverOptions;
             let bundleSettings = view.getBundle();
 
@@ -540,11 +528,9 @@ class admin {
             });
         }
 
-        function syncDashboard(socket, displayId) {
-            displayId = parseInt(displayId);
-
+        function syncDashboard(socket) {
             previewInstances.push({adminId: socket.id, preview: {}, currentView: {}});
-            let serverOptions = getView(displayId).serverOptions;
+            let serverOptions = getView().serverOptions;
             let bundleDirs = self.bundleManager.getBundleInfos();
 
 
@@ -582,27 +568,24 @@ class admin {
         }
 
         /**
-         * @param {number} displayId
+         * @return infoscreen3/display.serverOptions
          */
-        function getServerOptions(displayId) {
-            return getView(displayId).serverOptions;
+        function getServerOptions() {
+            return getView().serverOptions;
 
         }
 
         /**
-         *
-         * @param displayId
+         * @return display
          */
-        function getView(displayId) {
-            try {
-                return screenViews[parseInt(displayId)];
-            } catch (err) {
-                throw "display not found";
-            }
+        function getView() {
+            return screenView;
         }
     }
 
 } // admin
 
-
+/**
+ * @type {admin}
+ */
 module.exports = admin;

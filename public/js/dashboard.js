@@ -5,9 +5,7 @@ var displayList;
 
 
 socket.on('connect', function () {
-    emit("admin.setDisplay", {display: displayId});
-    var program = document.getElementById('program');
-    program.src = "/display/" + displayId;
+    emit("admin.dashboard.sync");
 });
 
 socket.on("callback.update", function (data) {
@@ -67,9 +65,7 @@ socket.on("callback.dashboard.sync", function (data) {
                     .dropdown("hide");
 
                 displayId = parseInt(value);
-                emit("admin.setDisplay", {display: value});
-                var program = document.getElementById('program');
-                program.src = "/display/" + value;
+                document.location = "/admin/display/" + displayId;
             }
         }).dropdown("set selected", displayId);
 

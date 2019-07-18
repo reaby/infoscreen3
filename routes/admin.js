@@ -6,10 +6,15 @@ let path = require('path');
 let config = require("../config.js");
 let busboy = require("connect-busboy");
 
+function getFiles(path) {
+    return fs.readdirSync(path).filter(function (file) {
+        return fs.statSync(path + '/' + file).isFile();
+    });
+}
+
 function ensureIsAdmin(req, res, next) {
 
     if (!req.isAuthenticated || !req.isAuthenticated()) {
-        console.log(req.originalUrl);
         req.session.location = req.originalUrl;
         return res.redirect("/login");
     } else {
@@ -28,8 +33,7 @@ module.exports = function (websocket, dispatcher) {
     router.use(busboy({immediate: true}));
 
     router.get('/', function (req, res, next) {
-        let displayId = req.query['displayId'] || 0;
-        res.render('admin/dashboard', {config: config, displayId: displayId, permission: req.user.permissions});
+        res.render('admin/overview', {config: config});
     });
 
     router.get('/preview', function (req, res, next) {
@@ -38,8 +42,9 @@ module.exports = function (websocket, dispatcher) {
         res.render('preview', {config: config, socketId: socketId, displayId: displayId});
     });
 
-    router.get('/overview', function (req, res, next) {
-        res.render('admin/overview', {config: config});
+    router.get('/display/:id', function (req, res, next) {
+        let displayId = parseInt(req.params.id) || 0;
+        res.render('admin/dashboard', {config: config, displayId: displayId, permission: req.user.permissions});
     });
 
     router.get('/edit/slide', function (req, res, next) {
@@ -106,7 +111,15 @@ module.exports = function (websocket, dispatcher) {
             cli.error("error loading bundle", err);
         }
 
-        res.render('admin/editBundleProperties', {config: config, bundle: bundle, bundleData: bundleData});
+        let bundleRoot = path.normalize("./data/bundles/" + bundle);
+        let backgroundImages = getFiles("./data/backgrounds/");
+
+        res.render('admin/editBundleProperties', {
+            config: config,
+            bundle: bundle,
+            bundleData: bundleData,
+            backgroundImages: backgroundImages
+        });
     });
 
     router.get('/edit/link', function (req, res, next) {
@@ -130,7 +143,7 @@ module.exports = function (websocket, dispatcher) {
 
     router.get('/ajax/imagelist', function (req, res, next) {
         let bundle = req.query['bundle'];
-        let bundleRoot = path.normalize("./data/" + bundle);
+        let bundleRoot = path.normalize("./data/bundles" + bundle);
         let bundleImages = fs.readdirSync(bundleRoot + "/images", {
             dotfiles: false
         });

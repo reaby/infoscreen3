@@ -21,11 +21,14 @@
                 <input type="text" value="{{ bundleData.displayName }}" name="displayName"/>
             </div>
             <div class="field">
-
                 <label>{{ t("admin.editBundleProperties.background") }}</label>
-                <input type="text" value="{{ bundleData.background }}" name="background"/>
-
+                <select name="background">
+                    {% for image in backgroundImages %}
+                        <option value="{{ image }}" {% if image == bundleData.background %} selected {% endif %}>{{ image }}</option>
+                    {% endfor %}
+                </select>
             </div>
+
             <div class="field">
                 <label>{{ t("admin.editBundleProperties.transition") }}</label>
                 <div id="transitions" class="ui selection dropdown">

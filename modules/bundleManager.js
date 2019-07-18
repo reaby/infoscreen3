@@ -1,8 +1,8 @@
 "use strict";
 
-const bundle = require('./bundle.js');
+const bundle = require(`./bundle.js`);
 let fs = require("fs");
-let cli = require("./cli.js");
+let cli = require(`./cli.js`);
 
 /**
  * @module infoscreen3/bundleManager
@@ -18,12 +18,12 @@ class bundleManager {
      */
     syncBundles() {
         this.bundles = {};
-        let dirs = getDirectories("./data");
+        let dirs = getDirectories("./data/bundles/");
         dirs.sort();
 
         for (let name of dirs) {
-            let data = getJson("./data/" + name + "/bundle.json");
-            let slides = getJson("./data/" + name + "/slides.json");
+            let data = getJson("./data/bundles/" + name + "/bundle.json");
+            let slides = getJson("./data/bundles/" + name + "/slides.json");
 
             this.bundles[name] = new bundle(name, data, slides);
         }
@@ -40,8 +40,8 @@ class bundleManager {
         } else {
             try {
                 cli.info(name + " not in bundles, trying to load from fs...");
-                let data = getJson("./data/" + name + "/bundle.json");
-                let slides = getJson("./data/" + name + "/slides.json");
+                let data = getJson("./data/bundles/" + name + "/bundle.json");
+                let slides = getJson("./data/bundles/" + name + "/slides.json");
                 this.bundles[name] = new bundle(name, data, slides);
                 cli.success(name + " load");
                 return this.bundles[name];
@@ -81,7 +81,7 @@ function getDirectories(path) {
 /**
  * helper function to load and parse json to array
  * @param file
- * @return {any}
+ * @return {object}
  */
 function getJson(file) {
     return JSON.parse(fs.readFileSync(file).toString());

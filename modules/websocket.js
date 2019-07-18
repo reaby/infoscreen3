@@ -1,19 +1,24 @@
-let availableDisplays = require("../config.js").displays;
-let display = require("./display.js");
-let admin = require("./admin.js");
-let cli = require('./cli.js');
-let _bundleManager = require('./bundleManager.js');
+let availableDisplays = require(`../config.js`).displays;
+let display = require(`./display.js`);
+let admin = require(`./admin.js`);
+let cli = require(`./cli.js`);
+let _bundleManager = require(`./bundleManager.js`);
 let chalk = require('chalk');
 let fs = require('fs');
 
 /**
- *
  * @type {display[]}
  */
 let screenView = [];
+/** @type {admin[]} */
+let adminView = [];
 
 /**
- * @exports websocket
+ * @param server
+ * @param app
+ * @param io
+ * @param dispatcher
+ * @return {{screenView: display[], adminView: admin[], bundleManager: bundleManager}}
  */
 module.exports = function (server, app, io, dispatcher) {
     console.log(chalk.green(">> ") + "InfoScreen3" + chalk.green("<<"));
@@ -50,15 +55,17 @@ module.exports = function (server, app, io, dispatcher) {
 
     let bundleManager = new _bundleManager();
 
-    cli.info("Starting websocket backends...");
+    cli.info("Starting websocket backend...");
 
     let screenId = 0;
+
     for (let metadata of availableDisplays) {
-        screenView.push(new display(io, dispatcher, metadata, screenId, bundleManager));
+        let view = new display(io, dispatcher, metadata, screenId, bundleManager);
+        screenView.push(view);
+        adminView.push(new admin(io, dispatcher, view, screenId, bundleManager));
         screenId += 1;
     }
 
-    let adminView = new admin(io, dispatcher, screenView, bundleManager);
 
     io.of("/lobby").on("connection", function (socket) {
         cli.info("WS/" + socket.conn.remoteAddress + " connect");

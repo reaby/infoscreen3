@@ -12,7 +12,7 @@
 	{
 		"uuid": "03191688-bb93-4376-a3ab-53ed790b2155",
 		"name": "2 header",
-		"duration": 10,
+		"duration": null,
 		"enabled": true,
 		"displayTime": null,
 		"type": "slide",

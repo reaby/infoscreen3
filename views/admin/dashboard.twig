@@ -13,9 +13,9 @@
 {% block body %}
     <!-- top menu -->
     <div class="ui primary top attached pointing menu" style="height: 5vh;">
-        <span class="header item">
+        <a class="header item" href="/admin">
           {{ t("infoscreen") }}
-        </span>
+        </a>
 
         <div id="displays" class="ui dropdown item">
             <div class="ui small breadcrumb">
@@ -99,7 +99,7 @@
                 <div class="row">
                     <div id="programContainer" class="ui inverted segment">
                         <h2 class="ui inverted nopadded header currentDisplay"> {{ t("admin.dashboard.program") }} </h2>
-                        <iframe class="nopadded" id="program" src="/display/0"></iframe>
+                        <iframe class="nopadded" id="program" src="/display/{{ displayId }}"></iframe>
                     </div>
                 </div>
 
@@ -167,7 +167,7 @@
     </div>
 
     <script>
-        var socket = io.connect("{{ config.serverUrl }}:{{ config.serverListenPort }}/admin");
+        var socket = io.connect("{{ config.serverUrl }}:{{ config.serverListenPort }}/admin-{{ displayId }}");
         var displayId = {{ displayId }};
     </script>
     <script src="/js/dashboard.js"></script>

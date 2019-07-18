@@ -24,7 +24,7 @@
                             <h3 class="ui center aligned header">{{ display.name }}</h3>
                         </div>
                         <div class="extra content">
-                            <a href="/admin?displayId={{ loop.index0 }}" class="ui icon button">  <i class="wrench icon"></i></a>
+                            <a href="/admin/display/{{ loop.index0 }}" class="ui icon button">  <i class="wrench icon"></i></a>
                             <!-- Controls -->
                             <div class="ui inverted buttons">
                                 <button class="ui icon button"
@@ -106,7 +106,6 @@
                 $('#play' + id).removeClass('green');
                 $('#pause' + id).addClass('orange');
             }
-
         }
     </script>
 {% endblock %}

@@ -1,11 +1,10 @@
 let fs = require("fs");
 let path = require("path");
-let cli = require("./cli.js");
-let bundleManager = require('./bundleManager.js');
+let cli = require(`./cli.js`);
+let bundleManager = require(`./bundleManager.js`);
 
 /**
  * handles one display instance
- * @module infoscreen/display
  */
 class display {
 
@@ -14,13 +13,17 @@ class display {
      * @param {object} dispatcher  - dispatcher
      * @param {object} meta - reads from config.displays
      * @param {number} displayId - this display instances id
-     * @param {object} bundleManager
+     * @param {module:infoscreen3/bundleManager} bundleManager
      */
     constructor(sharedIO, dispatcher, meta, displayId, bundleManager) {
         cli.info("Starting display with id " + displayId + " ...");
 
         /** @property {Array} timeoutId - holds setTimeout id's for mainLoop */
         this.timeoutId = [];
+
+        /**
+         * @type {bundleManager|module:infoscreen3/bundleManager}
+         */
         this.bundleManager = bundleManager;
         let self = this;
 
@@ -154,7 +157,7 @@ class display {
     }
 
     /**
-     * @returns {bundle}
+     * @return {bundle}
      */
     getBundle() {
         return this.bundleManager.getBundle(this.serverOptions.currentBundle);
@@ -244,5 +247,7 @@ class display {
     }
 }
 
-/** @exports display */
+/**
+ * @type {display}
+ */
 module.exports = display;

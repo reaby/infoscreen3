@@ -222,7 +222,7 @@
     <canvas id="tempCanvas" width="1280" height="720" style="display: none"></canvas>
 
     <script>
-        var socket = io.connect("{{ config.serverUrl }}:{{ config.serverListenPort }}/admin");
+        var socket = io.connect("{{ config.serverUrl }}:{{ config.serverListenPort }}/admin-{{ displayId }}");
     </script>
     <script>
         var images = {};

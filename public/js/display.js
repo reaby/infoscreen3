@@ -262,7 +262,7 @@ function nextSlide(data) {
 }
 
 function setBackground(background) {
-    background = "/background/" + bundleData.bundleName + "/" + background;
+    background = "/background/" + background;
     if (serverOptions.isStreaming) return;
 
     var video = document.getElementById("bgvid");

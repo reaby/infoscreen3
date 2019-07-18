@@ -65,4 +65,5 @@ typings/
 config.js
 tmp/*.png
 public/assets/
-data/localtest/
+data/bundles/*
+!data/bundles/default/
