@@ -1,5 +1,4 @@
 let fs = require("fs");
-let path = require("path");
 let cli = require(`./cli.js`);
 let bundleManager = require(`./bundleManager.js`);
 
@@ -207,7 +206,7 @@ class display {
             let that = this;
 
             // override slide timeout if set by slide
-            var slideTimeout = this.serverOptions.slideDuration * 1000;
+            let slideTimeout = this.serverOptions.slideDuration * 1000;
             if (this.serverOptions.currentMeta.duration > 5) {
                 slideTimeout = parseFloat(this.serverOptions.currentMeta.duration) * 1000;
             }
@@ -229,7 +228,7 @@ class display {
 
     overrideSlide(json, pngData, duration, transition) {
         this.clearTimers();
-        var _transition = this.serverOptions.transition;
+        let _transition = this.serverOptions.transition;
         this.serverOptions.transition = transition;
         this.serverOptions.loop = false;
         this.serverOptions.isAnnounce = true;

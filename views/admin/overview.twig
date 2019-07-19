@@ -24,7 +24,8 @@
                             <h3 class="ui center aligned header">{{ display.name }}</h3>
                         </div>
                         <div class="extra content">
-                            <a href="/admin/display/{{ loop.index0 }}" class="ui icon button">  <i class="wrench icon"></i></a>
+                            <a href="/admin/display/{{ loop.index0 }}" class="ui icon button"> <i
+                                        class="wrench icon"></i></a>
                             <!-- Controls -->
                             <div class="ui inverted buttons">
                                 <button class="ui icon button"
@@ -59,23 +60,11 @@
         var bundleData = {};
         var displayCount = {{ config.displays.length }};
 
-        for (var i = 0; i < displayCount; i++) {
-            socket.emit('admin.dashboard.sync', {displayId: i});
-        }
-
-        socket.on('callback.update', function (data) {
-            serverOptions = data.serverOptions;
-            updateControls(serverOptions);
+        socket.on('callback.serverOptions', function (data) {
+            for (var obj of data) {
+                updateControls(obj.serverOptions);
+            }
         });
-
-        socket.on("callback.dashboard.sync", function (data) {
-            updateControls(data.serverOptions);
-        });
-
-        socket.on("callback.dashboard.update", function (data) {
-            updateControls(data.serverOptions);
-        });
-
 
         function updateControls(serverOptions) {
             var id = serverOptions.displayId;

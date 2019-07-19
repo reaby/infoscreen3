@@ -22,13 +22,14 @@ class admin {
          *
          * @type {object}
          */
-        let previewInstances = [];
         let io = sharedIO.of("/admin-" + displayId);
         this.io = io;
         this.displayId = displayId;
         this.dispatcher = dispatcher;
-
+        this.screenView = screenView;
         this.bundleManager = bundleManager;
+        this.previewInstances = [];
+
         let self = this;
         // helper callback for global announce
         dispatcher.on("announce", function (obj) {
@@ -60,18 +61,18 @@ class admin {
 
             socket.on('error', function (error) {
                 cli.error(error, "WS error on socket id:" + socket.id);
-                for (let i in previewInstances) {
-                    if (previewInstances[i].adminId === socket.id || previewInstances[i].preview === socket) {
-                        delete previewInstances[i];
+                for (let i in self.previewInstances) {
+                    if (self.previewInstances[i].adminId === socket.id || self.previewInstances[i].preview === socket) {
+                        self.previewInstances.splice(i, 1);
                         break;
                     }
                 }
             });
 
             socket.on('disconnect', function (reason) {
-                for (let i in previewInstances) {
-                    if (previewInstances[i].adminId === socket.id || previewInstances[i].preview === socket) {
-                        delete previewInstances[i];
+                for (let i in self.previewInstances) {
+                    if (self.previewInstances[i].adminId === socket.id || self.previewInstances[i].preview === socket) {
+                        self.previewInstances.splice(i, 1);
                         break;
                     }
                 }
@@ -79,9 +80,9 @@ class admin {
             });
 
             socket.on('sync.preview', function (socketId) {
-                for (let i in previewInstances) {
-                    if (previewInstances[i].adminId === decodeURIComponent(socketId)) {
-                        previewInstances[i].preview = socket;
+                for (let i in self.previewInstances) {
+                    if (self.previewInstances[i].adminId === decodeURIComponent(socketId)) {
+                        self.previewInstances[i].preview = socket;
                     }
                 }
             });
@@ -91,32 +92,36 @@ class admin {
             });
 
             // toggle time
-            socket.on('controls.time.toggle', function (data) {
-                let view = getView();
+            socket.on('controls.time.toggle', function () {
+                let view = self.getView();
                 let bool = !view.serverOptions.displayTime;
 
                 view.getBundle().bundleData.displayTime = bool;
                 view.serverOptions.displayTime = bool;
 
                 view.io.emit("callback.time", bool);
-                updateDashboard(io);
+                self.updateDashboard(io);
             });
 
-            socket.on('controls.previous', function (data) {
-                let view = getView();
-                view.serverOptions.loopIndex -= 2;
-                view.mainLoop();
+            socket.on('controls.previous', function () {
+                self.controls('previous');
             });
 
-            socket.on('controls.play', function (data) {
-                getServerOptions().loop = true;
-                getView().mainLoop();
-                updateDashboard(io);
+            socket.on('controls.play', function () {
+                self.controls('play');
             });
+            socket.on('controls.pause', function () {
+                self.controls('pause');
+            });
+
+            socket.on('controls.next', function () {
+                self.controls('next');
+            });
+
 
             socket.on('controls.startStream', function (data) {
-                let view = getView();
-                let serverOptions = getServerOptions();
+                let view = self.getView();
+                let serverOptions = self.getServerOptions();
 
                 if (serverOptions.isStreaming === false) {
                     serverOptions.loop = false;
@@ -131,27 +136,16 @@ class admin {
                     cli.success("stop stream");
                 }
                 view.io.emit("callback.load", view.getSlideData());
-                updateDashboard(io);
+                self.updateDashboard(io);
             });
 
 
-            socket.on('controls.pause', function (data) {
-                let view = getView();
-                view.clearTimers();
-                getServerOptions().loop = false;
-                updateDashboard(io);
-            });
-
-            socket.on('controls.next', function (data) {
-                getView().mainLoop();
-            });
-
-            socket.on('controls.blackout', function (data) {
-                let view = getView();
+            socket.on('controls.blackout', function () {
+                let view = self.getView();
                 view.serverOptions.blackout = view.serverOptions.blackout === false;
 
                 view.io.emit("callback.blackout", {serverOptions: view.serverOptions});
-                updateDashboard(io);
+                self.updateDashboard(io);
             });
 
             socket.on("controls.preview", function (data) {
@@ -162,7 +156,7 @@ class admin {
                 }
 
                 try {
-                    getPreview(socket).preview.emit("callback.preview",
+                    self.getPreview(socket).preview.emit("callback.preview",
                         {
                             bundleData: bundle.getBundleData(),
                             json: json,
@@ -177,19 +171,19 @@ class admin {
             });
 
             socket.on("controls.skipTo", function (data) {
-                let bundleSettings = getView().getBundle();
+                let bundleSettings = self.getView().getBundle();
                 let slides = bundleSettings.enabledSlides;
 
                 let idx = slides.indexOf(data.fileName);
                 if (idx >= 0) {
-                    getServerOptions().loopIndex = idx;
+                    self.getServerOptions().loopIndex = idx;
                 }
-                getView().mainLoop();
+                self.getView().mainLoop();
             });
 
             socket.on('controls.toggle', function (data) {
                 let fileName = data.fileName;
-                let bundleSettings = getView().getBundle();
+                let bundleSettings = self.getView().getBundle();
                 let idx = bundleSettings.disabledSlides.indexOf(fileName);
 
                 if (idx > -1) {
@@ -198,7 +192,7 @@ class admin {
                     bundleSettings.setSlideStatus(fileName, false);
                 }
 
-                updateDashboard(socket);
+                self.updateDashboard(socket);
             });
 
             // override
@@ -210,7 +204,7 @@ class admin {
                         }
                         dispatcher.emit("all.override", data);
                     } else {
-                        let view = getView();
+                        let view = self.getView();
                         view.overrideSlide(data.json, data.png, data.duration, data.transition);
                     }
                 } catch (err) {
@@ -219,23 +213,23 @@ class admin {
             });
 
             socket.on('admin.setBundle', function (data) {
-                let view = getView();
+                let view = self.getView();
                 view.changeBundle(data.bundle);
                 view.displayCurrentSlide();
-                updateDashboard(io);
+                self.updateDashboard(io);
             });
 
             socket.on('admin.dashboard.sync', function () {
-                syncDashboard(socket);
-                updateDashboard(socket);
+                self.syncDashboard(socket);
+                self.updateDashboard(socket);
             });
 
-            socket.on('admin.listSlides', function (data) {
-                updateDashboard(socket);
+            socket.on('admin.listSlides', function () {
+                self.updateDashboard(socket);
             });
 
-            socket.on('admin.listBundles', function (data) {
-                updateDashboard(socket);
+            socket.on('admin.listBundles', function () {
+                self.updateDashboard(socket);
             });
 
 
@@ -292,10 +286,10 @@ class admin {
 
                         fs.copyFileSync("templates/bundle/slides.json", "data/bundles/" + data.dir + "/slides.json");
                         bundleManager.getBundle(data.dir);
-                        syncDashboard(io);
+                        self.syncDashboard(io);
                     } else {
                         socket.emit("callback.error", "Error: bundle already exists.");
-                        syncDashboard(io);
+                        self.syncDashboard(io);
                     }
                 } catch (err) {
                     cli.error(err, "Error while creating new bundle");
@@ -399,8 +393,8 @@ class admin {
                     transition = null;
                 }
 
-                getServerOptions().transition = transition;
-                updateDashboard(io);
+                self.getServerOptions().transition = transition;
+                self.updateDashboard(io);
             });
 
             socket.on('edit.save', function (data) {
@@ -499,89 +493,98 @@ class admin {
             });
 
         }); // io
-
-
-        /** helper functions  */
-
-        /**
-         * @param {object} socket
-         */
-        function updateDashboard(socket) {
-            let view = getView();
-            let serverOptions = view.serverOptions;
-            let bundleSettings = view.getBundle();
-
-            socket.emit("callback.dashboard.update", {
-                bundleSettings: bundleSettings,
-                allSlides: bundleSettings.allSlides,
-                serverOptions: serverOptions,
-                displayId: displayId
-            });
-        }
-
-        function updateSlides(socket, bundlename, bundle) {
-            socket.emit("callback.dashboard.updateSlides", {
-                bundleName: bundlename,
-                bundleSettings: bundle
-            });
-        }
-
-        function syncDashboard(socket) {
-            previewInstances.push({adminId: socket.id, preview: {}, currentView: {}});
-            let serverOptions = getView().serverOptions;
-            let bundleDirs = self.bundleManager.getBundleInfos();
-
-
-            socket.emit("callback.dashboard.sync", {
-                displayId: displayId,
-                bundleDirs: bundleDirs,
-                serverOptions: serverOptions,
-                displays: config.displays
-            });
-        }
-
-        function getDirectories(path) {
-            return fs.readdirSync(path).filter(function (file) {
-                return fs.statSync(path + '/' + file).isDirectory();
-            });
-        }
-
-        function getPreview(socket) {
-            for (let i in previewInstances) {
-                if (previewInstances[i].adminId === socket.id) {
-                    return previewInstances[i];
-                }
-            }
-
-            throw "error";
-        }
-
-        /** Generate an uuid
-         * @url https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript#2117523 **/
-        function uuidv4() {
-            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-                let r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
-                return v.toString(16);
-            });
-        }
-
-        /**
-         * @return infoscreen3/display.serverOptions
-         */
-        function getServerOptions() {
-            return getView().serverOptions;
-
-        }
-
-        /**
-         * @return display
-         */
-        function getView() {
-            return screenView;
-        }
     }
 
-} // admin
+    /** helper functions  */
+
+    /**
+     * @param {object} socket
+     */
+    updateDashboard(socket) {
+        let view = this.getView();
+        let serverOptions = view.serverOptions;
+        let bundleSettings = view.getBundle();
+
+        socket.emit("callback.dashboard.update", {
+            bundleSettings: bundleSettings,
+            allSlides: bundleSettings.allSlides,
+            serverOptions: serverOptions,
+            displayId: this.displayId
+        });
+
+        this.dispatcher.emit("dashboard.update", {displayId: this.displayId, serverOptions: serverOptions});
+
+    }
+
+    static updateSlides(socket, bundlename, bundle) {
+        socket.emit("callback.dashboard.updateSlides", {
+            bundleName: bundlename,
+            bundleSettings: bundle
+        });
+    }
+
+    syncDashboard(socket) {
+        this.previewInstances.push({adminId: socket.id, preview: {}, currentView: {}});
+        let serverOptions = this.getView().serverOptions;
+        let bundleDirs = this.bundleManager.getBundleInfos();
+
+
+        socket.emit("callback.dashboard.sync", {
+            displayId: displayId,
+            bundleDirs: bundleDirs,
+            serverOptions: serverOptions,
+            displays: config.displays
+        });
+    }
+
+    getPreview(socket) {
+        for (let i in this.previewInstances) {
+            if (this.previewInstances[i].adminId === socket.id) {
+                return this.previewInstances[i];
+            }
+        }
+        throw "error";
+    }
+
+    /**
+     * @return infoscreen3/display.serverOptions
+     */
+    getServerOptions() {
+        return this.getView().serverOptions;
+    }
+
+    /**
+     * @return display
+     */
+    getView() {
+        return this.screenView;
+    }
+
+
+    controls(action) {
+        switch (action) {
+            case "previous":
+                let view = this.getView();
+                view.serverOptions.loopIndex -= 2;
+                view.mainLoop();
+                break;
+            case "play":
+                this.getServerOptions().loop = true;
+                this.getView().mainLoop();
+                this.updateDashboard(this.io);
+                break
+            case "pause":
+                this.getView().clearTimers();
+                this.getServerOptions().loop = false;
+                this.updateDashboard(this.io);
+                break;
+            case "next":
+                this.getView().mainLoop();
+                break;
+        }
+
+    } // admin
+}
 
 /**
  * @type {admin}

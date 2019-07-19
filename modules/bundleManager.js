@@ -87,4 +87,7 @@ function getJson(file) {
     return JSON.parse(fs.readFileSync(file).toString());
 }
 
+/**
+ * @type {bundleManager}
+ */
 module.exports = bundleManager;

@@ -17,7 +17,6 @@ module.exports = {
     },
 
     log: function (string) {
-
         console.log(getDateTime() + " " + string);
     }
 };

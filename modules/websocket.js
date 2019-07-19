@@ -6,12 +6,7 @@ let _bundleManager = require(`./bundleManager.js`);
 let chalk = require('chalk');
 let fs = require('fs');
 
-/**
- * @type {display[]}
- */
-let screenView = [];
-/** @type {admin[]} */
-let adminView = [];
+
 
 /**
  * @param server
@@ -21,6 +16,14 @@ let adminView = [];
  * @return {{screenView: display[], adminView: admin[], bundleManager: bundleManager}}
  */
 module.exports = function (server, app, io, dispatcher) {
+    /**
+     * @type {display[]}
+     */
+    let screenView = [];
+
+    /** @type {admin[]} */
+    let adminView = [];
+
     console.log(chalk.green(">> ") + "InfoScreen3" + chalk.green("<<"));
     cli.log("Checking for write permissions...");
 
@@ -59,6 +62,7 @@ module.exports = function (server, app, io, dispatcher) {
 
     let screenId = 0;
 
+    // create screens and admin socket interfaces
     for (let metadata of availableDisplays) {
         let view = new display(io, dispatcher, metadata, screenId, bundleManager);
         screenView.push(view);
@@ -66,7 +70,48 @@ module.exports = function (server, app, io, dispatcher) {
         screenId += 1;
     }
 
+    // create overview admin lobby
+    io.of("/admin").on("connection", function (socket) {
 
+        let arr = [];
+        for (let display of screenView) {
+            arr.push({displayId: display.serverOptions.displayId, serverOptions: display.serverOptions});
+        }
+        socket.emit("callback.serverOptions", arr);
+
+
+        // handle other events
+        cli.info("WS/" + socket.conn.remoteAddress + " connect");
+        socket.on('error', function (error) {
+            cli.error(error, "WS/ error");
+        });
+        socket.on('disconnect', function (reason) {
+            cli.info("WS/ " + reason + " " + socket.conn.remoteAddress);
+        });
+
+        socket.on('controls.previous', function (data) {
+            getAdminView(data.displayId).controls("previous");
+        });
+
+        socket.on('controls.play', function (data) {
+            getAdminView(data.displayId).controls("play");
+        });
+
+        socket.on('controls.next', function (data) {
+            getAdminView(data.displayId).controls("next");
+        });
+
+        socket.on('controls.pause', function (data) {
+            getAdminView(data.displayId).controls("pause");
+        });
+
+        dispatcher.on("dashboard.update", function (data) {
+            socket.emit("callback.serverOptions", [data]);
+        });
+
+    });
+
+    // create lobby
     io.of("/lobby").on("connection", function (socket) {
         cli.info("WS/" + socket.conn.remoteAddress + " connect");
 
@@ -91,5 +136,17 @@ module.exports = function (server, app, io, dispatcher) {
         });
     });
 
+    /**
+     * @return admin
+     */
+    function getAdminView(index) {
+        try {
+            return adminView[index];
+        } catch (err) {
+            cli.log(err);
+        }
+    }
+
     return {screenView: screenView, adminView: adminView, bundleManager: bundleManager};
 };
+
