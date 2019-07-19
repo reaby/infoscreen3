@@ -530,7 +530,7 @@ class admin {
 
 
         socket.emit("callback.dashboard.sync", {
-            displayId: displayId,
+            displayId: this.displayId,
             bundleDirs: bundleDirs,
             serverOptions: serverOptions,
             displays: config.displays
@@ -572,7 +572,7 @@ class admin {
                 this.getServerOptions().loop = true;
                 this.getView().mainLoop();
                 this.updateDashboard(this.io);
-                break
+                break;
             case "pause":
                 this.getView().clearTimers();
                 this.getServerOptions().loop = false;
