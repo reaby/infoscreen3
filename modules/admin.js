@@ -2,6 +2,16 @@ let fs = require("fs");
 let config = require(`../config.js`);
 let cli = require(`./cli.js`);
 
+
+/** Generate an uuid
+ * @url https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript#2117523 **/
+function uuidv4() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        let r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
+}
+
 /**
  *
  */
@@ -50,10 +60,6 @@ class admin {
             });
         });
 
-        /** helper function to call announce easier **/
-        function announce(screens, event, data) {
-            self.dispatcher.emit("announce", {screens: screens, event: event, data: data});
-        }
 
         io.on("connection", function (socket) {
             cli.success("WS " + socket.conn.remoteAddress + " connect with id:" + socket.id);
@@ -88,7 +94,7 @@ class admin {
             });
 
             socket.on('admin.reload', function (data) {
-                announce([data.displayId], "callback.reload", {});
+                self.announce([data.displayId], "callback.reload", {});
             });
 
             // toggle time
@@ -254,7 +260,7 @@ class admin {
                 }
 
                 bundle.save();
-                updateSlides(io, bundle.name, bundle);
+                self.updateSlides(io, bundle.name, bundle);
             });
 
             /** remove slide **/
@@ -262,8 +268,8 @@ class admin {
                 try {
                     let bundle = bundleManager.getBundle(data.bundleName);
                     bundle.removeUuid(data.uuid);
-                    updateSlides(io, bundle.name, bundle);
-                    announce(null, "callback.removeSlide", data);
+                    self.updateSlides(io, bundle.name, bundle);
+                    self.announce(null, "callback.removeSlide", data);
                 } catch (err) {
                     cli.error("error while removing slide", err);
                 }
@@ -380,7 +386,7 @@ class admin {
                 try {
                     let bundle = bundleManager.getBundle(data.bundleName);
                     bundle.setName(data.uuid, data.name);
-                    updateSlides(io, data.bundleName, bundle);
+                    self.updateSlides(io, data.bundleName, bundle);
                 } catch (err) {
                     cli.error("error while renaming slide", err);
                 }
@@ -448,11 +454,11 @@ class admin {
                     cli.success("save new slide data");
                     socket.emit("callback.save", {});
 
-                    announce(null, "callback.reloadImage", {
+                    self.announce(null, "callback.reloadImage", {
                         bundleName: data.bundleName,
                         uuid: filename
                     });
-                    updateSlides(io, data.bundleName, bundle);
+                    self.updateSlides(io, data.bundleName, bundle);
 
                 } catch (err) {
                     cli.error(err, "save new slide date");
@@ -516,7 +522,12 @@ class admin {
 
     }
 
-    static updateSlides(socket, bundlename, bundle) {
+    /** helper function to call announce easier **/
+    announce(screens, event, data) {
+        this.dispatcher.emit("announce", {screens: screens, event: event, data: data});
+    }
+
+    updateSlides(socket, bundlename, bundle) {
         socket.emit("callback.dashboard.updateSlides", {
             bundleName: bundlename,
             bundleSettings: bundle
@@ -583,7 +594,8 @@ class admin {
                 break;
         }
 
-    } // admin
+    } //
+    // admin
 }
 
 /**

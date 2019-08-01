@@ -76,7 +76,7 @@ class display {
         dispatcher.on("announce", function (obj) {
             // if global announce, ie screens is null
             if (obj.screens === null) {
-                console.log("announcing: " + this.displayId);
+                console.log("announcing: " + this.serverOptions.displayId);
                 io.emit(obj.event, obj.data);
             } else {
                 // screens is array
