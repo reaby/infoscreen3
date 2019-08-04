@@ -39,7 +39,7 @@
         </form>
     </div>
     <script>
-        var socket = io.connect("{{ config.serverUrl }}:{{ config.serverListenPort }}/admin");
+        var socket = io.connect("{{ config.serverUrl }}:{{ config.serverListenPort }}/admin-{{ displayId }}");
 
         $(function () {
             $("#time").checkbox();

@@ -359,7 +359,7 @@ class admin {
 
                     cli.success("save web link");
                     socket.emit("callback.saveLink", {});
-                    updateSlides(io, data.bundleName, bundle);
+                    self.updateSlides(io, data.bundleName, bundle);
 
                 } catch (err) {
                     cli.error(err, "save web link");

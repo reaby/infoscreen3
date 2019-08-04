@@ -314,7 +314,6 @@ function checkStream(serverOptions) {
                 showBackgroundOnly();
                 streamStarted = true;
                 return true;
-
             } catch (err) {
                 console.log(err);
                 streamStarted = false;
