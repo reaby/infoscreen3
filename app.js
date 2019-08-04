@@ -44,7 +44,7 @@ passport.use(new LocalStrategy(
     }));
 
 if (config.mediaServer) {
-    const {NodeMediaServer} = require('node-media-server');
+    const NodeMediaServer = require('node-media-server');
 
     const nodeServerConfig = {
         rtmp: {
