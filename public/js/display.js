@@ -251,7 +251,7 @@ function nextSlide(data) {
                     clearIFrame(getWebLayer(1));
                 }, 2500);
 
-//                $("#slider").show();
+                $("#slider").show();
                 window.f.showImageById(serverOptions.currentFile, transition);
                 break;
         }
