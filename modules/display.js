@@ -37,6 +37,8 @@ class display {
          * @property {boolean} blackout - should the blackout be enabled
          * @property {boolean} isStreaming - is media server stream enabled at client
          * @property {string} streamSource - URL for FLV media stream
+         * @property {bool} isAnnounce - if the next slide is announce one
+         * @property {bool} announceMeta - all data needed for announces
          * @property {string} transition values supported: bars,blinds,blinds3d,zip,blocks,blocks2,concentric,warp,cube,tiles3d,tiles3dprev,slide,swipe,dissolve
          */
         this.serverOptions = {
@@ -52,6 +54,7 @@ class display {
             isStreaming: false,
             streamSource: "",
             isAnnounce: false,
+            announceMeta: {},
             transition: "tiles3d",
             displayTime: true
         };

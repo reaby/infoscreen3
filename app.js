@@ -24,7 +24,7 @@ let passport = require('passport');
 let LocalStrategy = require('passport-local').Strategy;
 let User = require("./modules/db.js");
 
-passport.use(new LocalStrategy(
+passport.use("local", new LocalStrategy(
     {
 
     },
@@ -36,7 +36,7 @@ passport.use(new LocalStrategy(
             if (!user) {
                 return cb(null, false);
             }
-            if (user.password != password) {
+            if (user.password !== password) {
                 return cb(null, false);
             }
             return cb(null, user);
@@ -124,8 +124,8 @@ app.use(require('express-session')({ secret: config.sessionKey, resave: false, s
 
 // Initialize Passport and restore authentication state, if any, from the
 // session.
-app.use(passport.initialize());
-app.use(passport.session());
+app.use(passport.initialize({}));
+app.use(passport.session({}));
 
 let websocket = require("./modules/websocket")(server, app, io, eventDispatcher);
 let indexRouter = require('./routes/index.js')(websocket, eventDispatcher);

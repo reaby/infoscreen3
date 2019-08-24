@@ -56,51 +56,74 @@ module.exports = function (websocket, dispatcher) {
     });
 
     router.post('/edit/bundleProperties', function (req, res, next) {
-        let bundleData = {};
+            let bundleData = {};
+            let fields = {};
 
-        var transition = null;
-        if (req.body.transition !== "") {
-            transition = req.body.transition;
+            req.busboy.on('field', function (fieldname, val) {
+                fields[fieldname] = val;
+            });
+
+            req.busboy.on('file', function (fieldname, file, filename, encoding, mimeType) {
+                if (fieldname === "newBackground")
+                    if (filename.length > 0 && (mimeType === "image/jpeg" || mimeType === "video/mp4" || mimeType === "image/png")) {
+                        console.log(filename)
+                        let fstream = fs.createWriteStream('./data/backgrounds/' + filename);
+                        file.pipe(fstream);
+                    } else {
+                        file.resume();
+                    }
+            });
+
+            req.busboy.on('finish', function () {
+
+                if (fields.hasOwnProperty("sUpload")) {
+                    res.redirect("/admin/edit/bundleProperties?bundle=" + fields.bundle);
+                } else {
+                    var transition = null;
+                    if (fields.transition !== "") {
+                        transition = fields.transition;
+                    }
+
+                    var useWebFonts = false;
+                    if (fields.hasOwnProperty('useWebFonts')) {
+                        useWebFonts = true;
+                    }
+
+                    var displayTime = false;
+                    if (fields.hasOwnProperty('displayTime')) {
+                        displayTime = true;
+                    }
+
+                    try {
+                        let bundle = bundleManager.getBundle(fields.bundle);
+                        bundleData = bundle.getBundleData();
+                        bundleData.displayName = fields.displayName;
+                        bundleData.background = fields.background;
+                        bundleData.duration = parseInt(fields.duration);
+                        bundleData.transition = transition;
+                        bundleData.useWebFonts = useWebFonts;
+                        bundleData.displayTime = displayTime;
+                        bundleData.styleHeader.fontFamily = fields.headerFontFamily;
+                        bundleData.styleHeader.fontSize = parseInt(fields.headerFontSize);
+                        bundleData.styleHeader.fill = fields.headerFill;
+                        bundleData.styleHeader.stroke = fields.headerStroke;
+                        bundleData.styleText.fontFamily = fields.textFontFamily;
+                        bundleData.styleText.fontSize = parseInt(fields.textFontSize);
+                        bundleData.styleText.fill = fields.textFill;
+                        bundleData.styleText.stroke = fields.textStroke;
+                        bundle.setBundleData(bundleData);
+                        bundle.save();
+
+                    } catch (err) {
+                        cli.error("error loading bundle", err);
+                    }
+
+                    dispatcher.emit("updateBundles");
+                    res.send("<!doctype HTML><html><head><script>window.close();</script></head><body></body></html>");
+                }
+            });
         }
-
-        var useWebFonts = false;
-        if (req.body.useWebFonts) {
-            useWebFonts = true;
-        }
-
-        var displayTime = false;
-        if (req.body.displayTime) {
-            displayTime = true;
-        }
-
-        try {
-            let bundle = bundleManager.getBundle(req.body.bundle);
-            bundleData = bundle.getBundleData();
-            bundleData.displayName = req.body.displayName;
-            bundleData.background = req.body.background;
-            bundleData.duration = parseInt(req.body.duration);
-            bundleData.transition = transition;
-            bundleData.useWebFonts = useWebFonts;
-            bundleData.displayTime = displayTime;
-            bundleData.styleHeader.fontFamily = req.body.headerFontFamily;
-            bundleData.styleHeader.fontSize = parseInt(req.body.headerFontSize);
-            bundleData.styleHeader.fill = req.body.headerFill;
-            bundleData.styleHeader.stroke = req.body.headerStroke;
-            bundleData.styleText.fontFamily = req.body.textFontFamily;
-            bundleData.styleText.fontSize = parseInt(req.body.textFontSize);
-            bundleData.styleText.fill = req.body.textFill;
-            bundleData.styleText.stroke = req.body.textStroke;
-            bundle.setBundleData(bundleData);
-            bundle.save();
-
-        } catch (err) {
-            cli.error("error loading bundle", err);
-
-        }
-
-        dispatcher.emit("updateBundles");
-        res.send("<!doctype HTML><html><head><script>window.close();</script></head><body></body></html>");
-    });
+    );
 
     router.get('/edit/bundleProperties', function (req, res, next) {
         let bundle = req.query['bundle'];

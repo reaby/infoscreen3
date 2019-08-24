@@ -13,8 +13,8 @@
                 <p>{{ t("admin.editBundleProperties.msg1") }}</p>
             </div>
         </div>
-        <form action="/admin/edit/bundleProperties" method="post" class="ui form">
-            <input name="bundle" value="{{ bundle }}" hidden/>
+        <form action="/admin/edit/bundleProperties" method="post" enctype="multipart/form-data" class="ui form">
+            <input type="text" name="bundle" value="{{ bundle }}" hidden/>
 
             <div class="field">
                 <label>{{ t("admin.editBundleProperties.name") }}</label>
@@ -28,11 +28,16 @@
                     {% endfor %}
                 </select>
             </div>
-
+            <div class="field">
+                <div class="ui action input">
+                    <input type="file" name="newBackground"/>
+                    <button class="ui info button" type="submit" name="sUpload" value="true">{{ t("actions.upload") }}</button>
+                </div>
+            </div>
             <div class="field">
                 <label>{{ t("admin.editBundleProperties.transition") }}</label>
                 <div id="transitions" class="ui selection dropdown">
-                    <input id="inputTransition" name="transition" value="{{ bundleData.transition }}" hidden/>
+                    <input type="text" id="inputTransition" name="transition" value="{{ bundleData.transition }}" hidden/>
                     <div class="ui small breadcrumb">
                         <span id="currentTransition" class="section"></span>
                     </div>
@@ -125,7 +130,7 @@
             </div>
 
             <div class="field">
-                <button type="submit" class="ui basic button">{{ t("actions.save") }}</button>
+                <button name="sNormal" value="true" type="submit" class="ui basic button">{{ t("actions.save") }}</button>
             </div>
         </form>
     </div>

@@ -31,8 +31,7 @@
         <img id="bgimg" class="fsimage" src=""/>
     </div>
 
-    <video muted loop autoplay id="bgvid" class="fsimage" poster="">
-    </video>
+    <video loop autoplay id="bgvid" class="fsimage" poster=""></video>
 
     <script>
         var socket = io.connect("{{ config.serverUrl }}:{{ config.serverListenPort }}/display-{{ displayId }}");

@@ -53,6 +53,8 @@
       "name": "Nimi",
       "background": "Tausta",
       "transition": "Oletussiirtymä",
+      "backgroundfile": "Valitse tiedosto",
+      "msgupload": "Voit ladata uuden taustakuvan  (.jpg or .mp4) alta.",
       "time": "Näytä aika",
       "duration": "Oletusarvo dian pituudelle",
       "msg2title": "Huomio Web-fonteille",

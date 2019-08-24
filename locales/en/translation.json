@@ -51,6 +51,8 @@
       "editBundle": "Edit bundle",
       "msg1": "Most of the changes are applied for live environment at next slide change.",
       "name": "Bundle name",
+      "backgroundfile": "Select a file",
+      "msgupload": "You can upload a new background (.jpg or .mp4) here.",
       "background": "Background",
       "transition": "Default transition (applied on restart)",
       "time": "Display time",
@@ -66,7 +68,7 @@
       "fontName": "Font Name",
       "fontSize": "Size",
       "fontColor": "Color",
-      "fontBorder": "Border Color"
+      "fontBorder": "Border Color",
     },
     "editSlide": {
       "changeColor": "Change Color",
