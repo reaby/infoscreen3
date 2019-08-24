@@ -74,19 +74,27 @@
                     </div>
                 </div>
 
-                <div class="ui buttons">
-                    {% if displayId != null %}
-                        <a href="#" onclick="cueSlide({{ displayId }})"
-                           class="ui basic teal button">{{ t("actions.announce") }}</a>
-                    {% endif %}
+                {% if displayId != null %}
+                    <div class="ui red basic buttons">
+                        <div onclick="cueSlide({{ displayId }})" class="ui button">{{ t("actions.announce") }}</div>
+                        <div class="ui floating dropdown icon button" id="dropdownAnnounce">
+                            <i class="dropdown icon"></i>
+                            <div class="menu">
+                                <div onclick="cueSlide(null)" class="item"><i
+                                            class="exclamation icon"></i> {{ t("actions.announceAll") }}</div>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
                     <a href="#" onclick="cueSlide(null)" class="ui red button">{{ t("actions.announceAll") }}</a>
-                    <a href="#" onclick="window.close()" class="ui button">{{ t("actions.cancel") }}</a>
-                </div>
-
-
+                {% endif %}
+            </div>
+            <div class="item">
+                <a href="#" onclick="window.close()" class="ui button">{{ t("actions.cancel") }}</a>
             </div>
         </div>
     </div>
+
 
     <div class="ui menu" style="margin: 0;">
         <div class="item">

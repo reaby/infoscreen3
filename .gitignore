@@ -65,6 +65,7 @@ typings/
 config.js
 tmp/*.png
 public/assets/
+data/template.json
 data/bundles/*
 !data/bundles/default
 !data/bundles/default/*

@@ -201,7 +201,7 @@ class admin {
                 self.updateDashboard(socket);
             });
 
-            // override
+            // announce
             socket.on('admin.override', function (data) {
                 try {
                     if (data.displayId === null) {
@@ -216,6 +216,19 @@ class admin {
                 } catch (err) {
                     cli.error("error, admin.override", err);
                 }
+            });
+            // announce web
+            socket.on('admin.overrideWebPage', function (data) {
+                if (data.displayId === null) {
+                    if (data.duration == null || data.duration <= 5) {
+                        data.duration = 45;
+                    }
+                    dispatcher.emit("all.override", data);
+                } else {
+                    let view = self.getView();
+                    view.overrideSlide(data.json, data.png, data.duration, data.transition);
+                }
+
             });
 
             socket.on('admin.setBundle', function (data) {

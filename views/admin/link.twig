@@ -34,7 +34,18 @@
                     <label>{{ t("admin.addLink.displayTime") }}</label>
                 </div>
             </div>
-            <div class="ui basic button" onclick="save();">{{ t("actions.save") }}</div>
+            <div class="ui green button" onclick="save();">{{ t("actions.save") }}</div>
+
+            <div class="ui red basic buttons">
+                <div onclick="announce({{ displayId }})" class="ui button">{{ t("actions.announce") }}</div>
+                <div class="ui floating dropdown icon button" id="dropdownAnnounce">
+                    <i class="dropdown icon"></i>
+                    <div class="menu">
+                        <div onclick="announce(null)" class="item"><i
+                                    class="exclamation icon"></i> {{ t("actions.announceAll") }}</div>
+                    </div>
+                </div>
+            </div>
             <div class="ui basic button" onclick="window.close()">{{ t("actions.cancel") }}</div>
         </form>
     </div>
@@ -43,8 +54,35 @@
 
         $(function () {
             $("#time").checkbox();
-
+            $("#dropdownAnnounce").dropdown();
         });
+
+        function announce(dispId) {
+            var duration = null;
+            var zoom = 1.0;
+            if ($.isNumeric($("#duration").val())) {
+                duration = parseInt($("#duration").val());
+
+            }
+            if ($.isNumeric($("#zoom").val())) {
+                zoom = parseFloat($("#zoom").val());
+            }
+
+            var obj = {
+                json: {
+                    type: "webPage",
+                    webUrl: $("#weburl").val(),
+                    zoom: zoom,
+                    displayTime: $("#displaytime").checkbox('is checked')
+                },
+                displayId: dispId,
+                duration: duration,
+                transition: null,
+                png: null,
+
+            };
+            socket.emit("admin.overrideWebPage", obj);
+        }
 
         function save() {
             var duration = null;
@@ -81,8 +119,8 @@
 
             $("#name").val(json.name);
             $("#weburl").val(json.webUrl);
-            $("#zoom").val(json.zoom+"");
-            $("#duration").val(json.duration+"");
+            $("#zoom").val(json.zoom + "");
+            $("#duration").val(json.duration + "");
             if (json.displayTime) {
                 $("#displaytime").checkbox('set checked', true);
             } else {

@@ -188,7 +188,9 @@ class display {
         if (this.serverOptions.loop) {
             this.clearTimers();
         }
+
         this.serverOptions.isAnnounce = false;
+        this.serverOptions.announceMeta = {};
 
         let bundle = this.getBundle();
         let slides = bundle.enabledSlides;
@@ -225,8 +227,10 @@ class display {
             }
         }
 
-        this.displayCurrentSlide();
-        this.serverOptions.loopIndex += 1;
+        if (!this.serverOptions.isStreaming) {
+            this.displayCurrentSlide();
+            this.serverOptions.loopIndex += 1;
+        }
     }
 
     overrideSlide(json, pngData, duration, transition) {
@@ -235,8 +239,11 @@ class display {
         this.serverOptions.transition = transition;
         this.serverOptions.loop = false;
         this.serverOptions.isAnnounce = true;
+        this.serverOptions.announceMeta = json;
         // save temporarily png data...
-        fs.writeFileSync("./tmp/display_" + this.serverOptions.displayId + ".png", pngData.replace(/^data:image\/png;base64,/, ""), "base64");
+        if (json.type === "image") {
+            fs.writeFileSync("./tmp/display_" + this.serverOptions.displayId + ".png", pngData.replace(/^data:image\/png;base64,/, ""), "base64");
+        }
         let that = this;
         if (duration && duration >= 5) {
             this.serverOptions.loop = true;

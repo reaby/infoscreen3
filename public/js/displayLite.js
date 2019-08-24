@@ -157,19 +157,33 @@ function nextSlide(data) {
 
     var elem = document.getElementById("img" + layer);
     if (serverOptions.isAnnounce) {
-        $("#" + getWebLayer()).addClass("fadeOut").removeClass("fadeIn");
-        $("#" + getWebLayer(1)).addClass("fadeOut").removeClass("fadeIn");
-        setTimeout(function () {
-            clearIFrame(getWebLayer());
-            clearIFrame(getWebLayer(1));
-        }, 1500);
+        if (serverOptions.announceMeta.type === "webPage") {
+            $(elem).hide();
+            $("#" + getWebLayer()).css("transform", "scale(" + serverOptions.announceMeta.zoom + ")");
+            $("#" + getWebLayer()).addClass("fadeIn").removeClass("fadeOut");
+            if (serverOptions.announceMeta.displayTime) {
+                $('#time').removeClass('flipOutX').addClass("flipInX");
+            } else {
+                $('#time').addClass('flipOutX').removeClass("flipInX");
+            }
+            displayWebPage(serverOptions.announceMeta.webUrl);
+        }
+        if (serverOptions.announceMeta.type === "image") {
+            $(elem).show();
+            $("#" + getWebLayer()).addClass("fadeOut").removeClass("fadeIn");
+            $("#" + getWebLayer(1)).addClass("fadeOut").removeClass("fadeIn");
+            setTimeout(function () {
+                clearIFrame(getWebLayer());
+                clearIFrame(getWebLayer(1));
+            }, 1500);
 
-        $("#helperLayer").addClass("announce");
-        try {
-            var randomId = uuidv4();
-            elem.src = "/tmp/" + serverOptions.displayId + "/?randomId=" + randomId;
-        } catch (err) {
-            console.log(err);
+            $("#helperLayer").addClass("announce");
+            try {
+                var randomId = uuidv4();
+                elem.src = "/tmp/" + serverOptions.displayId + "/?randomId=" + randomId;
+            } catch (err) {
+                console.log(err);
+            }
         }
     } else {
         $("#helperLayer").removeClass("announce");

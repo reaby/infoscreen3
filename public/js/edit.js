@@ -42,6 +42,7 @@ $(function () {
     });
 
     $('#dropdownSave').dropdown();
+    $('#dropdownAnnounce').dropdown();
 
     $('#order')
         .dropdown({
@@ -218,7 +219,6 @@ socket.on('callback.edit.updateFileList', function (data) {
 socket.on('callback.edit', function (data) {
     bundleData = data.bundleData;
     canvas.clear();
-    console.log(data);
 
     if (data.slideData.name != null) {
         slideName = data.slideData.name;
@@ -572,11 +572,11 @@ function cueSlide(id) {
         }
 
         let obj = {
-            json: canvas.toJSON(['id']),
+            json: {type: "image"},
             png: canvas.toDataURL('png'),
             displayId: id,
             duration: duration,
-            transition: transition
+            transition: transition,
         };
 
         socket.emit("admin.override", obj);

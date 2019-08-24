@@ -208,25 +208,39 @@ function nextSlide(data) {
     checkTimeDisplay();
 
     if (serverOptions.isAnnounce) {
-        $("#" + getWebLayer()).addClass("fadeOut").removeClass("fadeIn");
-        $("#" + getWebLayer(1)).addClass("fadeOut").removeClass("fadeIn");
-        setTimeout(function () {
-            clearIFrame(getWebLayer());
-            clearIFrame(getWebLayer(1));
-        }, 2500);
-        try {
-            var randomId = uuidv4();
-            getDataUri("/tmp/" + serverOptions.displayId + "/?randomId=" + randomId, randomId, function (imageId, dataUrl, image) {
-                image.id = imageId;
-                image.class = "temp";
-                window.f.images.push(image);
-                window.f.imageData.push(dataUrl);
-                $("#slider").show();
-                $("#helperLayer").addClass("announce");
-                window.f.showTempImage(imageId);
-            });
-        } catch (err) {
-            console.log(err);
+        if (serverOptions.announceMeta.type === "webPage") {
+            $("#slider").hide();
+            $("#" + getWebLayer()).css("transform", "scale(" + serverOptions.announceMeta.zoom + ")");
+            $("#" + getWebLayer()).addClass("fadeIn").removeClass("fadeOut");
+            if (serverOptions.announceMeta.displayTime) {
+                $('#time').removeClass('flipOutX').addClass("flipInX");
+            } else {
+                $('#time').addClass('flipOutX').removeClass("flipInX");
+            }
+            displayWebPage(serverOptions.announceMeta.webUrl);
+        }
+
+        if (serverOptions.announceMeta.type === "image") {
+            $("#" + getWebLayer()).addClass("fadeOut").removeClass("fadeIn");
+            $("#" + getWebLayer(1)).addClass("fadeOut").removeClass("fadeIn");
+            setTimeout(function () {
+                clearIFrame(getWebLayer());
+                clearIFrame(getWebLayer(1));
+            }, 2500);
+            try {
+                var randomId = uuidv4();
+                getDataUri("/tmp/" + serverOptions.displayId + "/?randomId=" + randomId, randomId, function (imageId, dataUrl, image) {
+                    image.id = imageId;
+                    image.class = "temp";
+                    window.f.images.push(image);
+                    window.f.imageData.push(dataUrl);
+                    $("#slider").show();
+                    $("#helperLayer").addClass("announce");
+                    window.f.showTempImage(imageId);
+                });
+            } catch (err) {
+                console.log(err);
+            }
         }
     } else {
         $("#helperLayer").removeClass("announce");
@@ -445,6 +459,7 @@ function updateTimeout() {
 function displayWebPage(url) {
     $("#" + getWebLayer()).attr('src', url).addClass("fadeIn").removeClass("fadeOut");
     $("#" + getWebLayer(1)).addClass("fadeOut").removeClass("fadeIn");
+    clearIFrame(getWebLayer(1));
     layer++;
     if (layer > 1) {
         layer = 0;
