@@ -373,6 +373,9 @@ class admin {
                 let bundle = self.bundleManager.getBundle(data.bundleName);
                 let bundleData = bundle.getBundleData();
                 let json = "{}";
+                if (fs.existsSync("./data/template.json")) {
+                    json = fs.readFileSync("./data/template.json").toString();
+                }
                 let slide = {displayTime: null};
                 if (data.fileName) {
                     json = bundle.getSlideJsonFile(data.fileName);
@@ -401,6 +404,14 @@ class admin {
 
                 self.getServerOptions().transition = transition;
                 self.updateDashboard(io);
+            });
+
+            socket.on('edit.saveTemplate', function (data) {
+                try {
+                    fs.writeFileSync("./data/template.json", JSON.stringify(data.json));
+                } catch (e) {
+                    cli.error(e, "save template");
+                }
             });
 
             socket.on('edit.save', function (data) {

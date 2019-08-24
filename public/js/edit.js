@@ -41,6 +41,8 @@ $(function () {
         }
     });
 
+    $('#dropdownSave').dropdown();
+
     $('#order')
         .dropdown({
             action: 'hide',
@@ -583,6 +585,18 @@ function cueSlide(id) {
     }
 }
 
+function saveTemplate() {
+    canvas.setBackgroundImage(null, null, null);
+    var objects = canvas.getObjects('line');
+    for (let i in objects) {
+        canvas.remove(objects[i]);
+    }
+
+    socket.emit("edit.saveTemplate", {json: canvas.toJSON(['id', 'fontSize'])});
+    drawGrid();
+    alert("Template saved.");
+
+}
 
 function save() {
     canvas.setBackgroundImage(null, null, null);

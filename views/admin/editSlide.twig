@@ -63,8 +63,18 @@
         </div>
         <div class="right menu">
             <div class="item">
+                <div class="ui green buttons">
+                    <div onclick="save()" class="ui button">{{ t("actions.save") }}</div>
+                    <div class="ui floating dropdown icon button" id="dropdownSave">
+                        <i class="dropdown icon"></i>
+                        <div class="menu">
+                            <div onclick="saveTemplate()" class="item"><i
+                                        class="save icon"></i> {{ t("actions.savetemplate") }}</div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="ui buttons">
-                    <a href="#" onclick="save()" class="ui green button">{{ t("actions.save") }}</a>
                     {% if displayId != null %}
                         <a href="#" onclick="cueSlide({{ displayId }})"
                            class="ui basic teal button">{{ t("actions.announce") }}</a>
@@ -72,11 +82,13 @@
                     <a href="#" onclick="cueSlide(null)" class="ui red button">{{ t("actions.announceAll") }}</a>
                     <a href="#" onclick="window.close()" class="ui button">{{ t("actions.cancel") }}</a>
                 </div>
+
+
             </div>
         </div>
     </div>
 
-    <div class="ui menu" style="margin-top: 0;">
+    <div class="ui menu" style="margin: 0;">
         <div class="item">
             <div class="ui inverted buttons">
                 <a href="#" onclick="addHeader('header')" class="ui basic icon button"><i
@@ -175,7 +187,7 @@
         </div>
     </div>
 
-    <div class="ui basic segment">
+    <div style="margin:0; padding:0;">
         <div id="matchsize">
             <canvas id="edit" width="1280" height="720" style="position: fixed; z-index:10;"></canvas>
             <div id="bg">
