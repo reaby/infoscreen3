@@ -161,6 +161,7 @@ function nextSlide(data) {
             $(elem).hide();
             $("#" + getWebLayer()).css("transform", "scale(" + serverOptions.announceMeta.zoom + ")");
             $("#" + getWebLayer()).addClass("fadeIn").removeClass("fadeOut");
+            clearIFrame(getWebLayer(1));
             if (serverOptions.announceMeta.displayTime) {
                 $('#time').removeClass('flipOutX').addClass("flipInX");
             } else {
