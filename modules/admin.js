@@ -56,10 +56,9 @@ class admin {
 
         dispatcher.on("updateBundles", function () {
             io.emit("callback.dashboard.updateBundles", {
-                "bundleDirs": self.bundleManager.getBundleInfos()
+                "bundleDirs": bundleManager.getBundleInfos()
             });
         });
-
 
         io.on("connection", function (socket) {
             cli.success("WS " + socket.conn.remoteAddress + " connect with id:" + socket.id);
@@ -143,14 +142,13 @@ class admin {
                 }
                 view.io.emit("callback.load", view.getSlideData());
                 self.updateDashboard(io);
+
+                view = null;
+                serverOptions = null;
             });
 
-
             socket.on('controls.blackout', function () {
-                let view = self.getView();
-                view.serverOptions.blackout = view.serverOptions.blackout === false;
-
-                view.io.emit("callback.blackout", {serverOptions: view.serverOptions});
+                self.screenView.toggleBlackout();
                 self.updateDashboard(io);
             });
 
@@ -173,23 +171,23 @@ class admin {
                 } catch (err) {
                     cli.error("preview instance not found");
                 }
-
+                bundle = null;
             });
 
             socket.on("controls.skipTo", function (data) {
-                let bundleSettings = self.getView().getBundle();
+                let bundleSettings = self.screenView.getBundle();
                 let slides = bundleSettings.enabledSlides;
 
                 let idx = slides.indexOf(data.fileName);
                 if (idx >= 0) {
                     self.getServerOptions().loopIndex = idx;
                 }
-                self.getView().mainLoop();
+                self.screenView.mainLoop();
             });
 
             socket.on('controls.toggle', function (data) {
                 let fileName = data.fileName;
-                let bundleSettings = self.getView().getBundle();
+                let bundleSettings = self.screenView.getBundle();
                 let idx = bundleSettings.disabledSlides.indexOf(fileName);
 
                 if (idx > -1) {
@@ -197,8 +195,8 @@ class admin {
                 } else {
                     bundleSettings.setSlideStatus(fileName, false);
                 }
-
                 self.updateDashboard(socket);
+                bundleSettings = null;
             });
 
             // announce
@@ -210,8 +208,7 @@ class admin {
                         }
                         dispatcher.emit("all.override", data);
                     } else {
-                        let view = self.getView();
-                        view.overrideSlide(data.json, data.png, data.duration, data.transition);
+                        self.screenView.overrideSlide(data.json, data.png, data.duration, data.transition);
                     }
                 } catch (err) {
                     cli.error("error, admin.override", err);
@@ -225,16 +222,12 @@ class admin {
                     }
                     dispatcher.emit("all.override", data);
                 } else {
-                    let view = self.getView();
-                    view.overrideSlide(data.json, data.png, data.duration, data.transition);
+                    self.screenView.overrideSlide(data.json, data.png, data.duration, data.transition);
                 }
-
             });
 
             socket.on('admin.setBundle', function (data) {
-                let view = self.getView();
-                view.changeBundle(data.bundle);
-                view.displayCurrentSlide();
+                self.screenView.changeBundle(data.bundle);
                 self.updateDashboard(io);
             });
 
@@ -253,27 +246,9 @@ class admin {
 
 
             socket.on('admin.reorderSlides', function (data) {
-                let bundle = bundleManager.getBundle(data.bundleName);
-
-                let i = 0;
-                for (let uuid of data.sortedIDs) {
-                    bundle.setIndex(uuid, i);
-                    i += 1;
-                }
-
-                // calculate next slide order for all displays which has the bundle selected
-                let display = screenView;
-                if (display.serverOptions.currentBundle === data.bundleName) {
-                    for (let slide of bundle.allSlides) {
-                        // calculate new index for next slide;
-                        if (slide.uuid === display.serverOptions.currentFile) {
-                            display.serverOptions.loopIndex = slide.index + 1;
-                        }
-                    }
-                }
-
-                bundle.save();
-                self.updateSlides(io, bundle.name, bundle);
+                bundleManager.reorderSlides(data.bundleName, data.sortedIDs);
+                dispatcher.emit("display.recalcBundleData", data.bundleName);
+                self.updateSlides();
             });
 
             /** remove slide **/
@@ -281,7 +256,7 @@ class admin {
                 try {
                     let bundle = bundleManager.getBundle(data.bundleName);
                     bundle.removeUuid(data.uuid);
-                    self.updateSlides(io, bundle.name, bundle);
+                    self.updateSlides();
                     self.announce(null, "callback.removeSlide", data);
                 } catch (err) {
                     cli.error("error while removing slide", err);
@@ -290,8 +265,6 @@ class admin {
 
 
             socket.on("admin.createBundle", function (data) {
-                cli.info("@ create Bundle");
-
                 try {
                     if (!fs.existsSync("data/bundles" + data.dir)) {
                         fs.mkdirSync("data/bundles/" + data.dir);
@@ -372,7 +345,7 @@ class admin {
 
                     cli.success("save web link");
                     socket.emit("callback.saveLink", {});
-                    self.updateSlides(io, data.bundleName, bundle);
+                    self.updateSlides();
 
                 } catch (err) {
                     cli.error(err, "save web link");
@@ -402,7 +375,7 @@ class admin {
                 try {
                     let bundle = bundleManager.getBundle(data.bundleName);
                     bundle.setName(data.uuid, data.name);
-                    self.updateSlides(io, data.bundleName, bundle);
+                    self.updateSlides();
                 } catch (err) {
                     cli.error("error while renaming slide", err);
                 }
@@ -482,8 +455,8 @@ class admin {
                         bundleName: data.bundleName,
                         uuid: filename
                     });
-                    self.updateSlides(io, data.bundleName, bundle);
-
+                    self.updateSlides();
+                    self.dispatcher.emit("lobbyUpdate");
                 } catch (err) {
                     cli.error(err, "save new slide date");
                     socket.emit("callback.save", {error: err});
@@ -521,7 +494,6 @@ class admin {
                     socket.emit("callback.edit.updateFileList", {error: err});
                 }
             });
-
         }); // io
     }
 
@@ -531,19 +503,21 @@ class admin {
      * @param {object} socket
      */
     updateDashboard(socket) {
-        let view = this.getView();
-        let serverOptions = view.serverOptions;
-        let bundleSettings = view.getBundle();
+        let bundleSettings = this.screenView.getBundle();
 
         socket.emit("callback.dashboard.update", {
             bundleSettings: bundleSettings,
             allSlides: bundleSettings.allSlides,
-            serverOptions: serverOptions,
+            serverOptions: this.screenView.serverOptions,
             displayId: this.displayId
         });
 
-        this.dispatcher.emit("dashboard.update", {displayId: this.displayId, serverOptions: serverOptions});
+        this.dispatcher.emit("dashboard.update", {
+            displayId: this.displayId,
+            serverOptions: this.screenView.serverOptions
+        });
 
+        bundleSettings = null;
     }
 
     /** helper function to call announce easier **/
@@ -551,23 +525,21 @@ class admin {
         this.dispatcher.emit("announce", {screens: screens, event: event, data: data});
     }
 
-    updateSlides(socket, bundlename, bundle) {
-        socket.emit("callback.dashboard.updateSlides", {
-            bundleName: bundlename,
-            bundleSettings: bundle
+    updateSlides() {
+        let bundleName = this.getServerOptions().currentBundle;
+        let bundle = this.getView().getBundle();
+        this.io.emit("callback.dashboard.updateSlides", {
+            bundleName: bundleName,
+            bundleSettings: bundle,
         });
     }
 
     syncDashboard(socket) {
         this.previewInstances.push({adminId: socket.id, preview: {}, currentView: {}});
-        let serverOptions = this.getView().serverOptions;
-        let bundleDirs = this.bundleManager.getBundleInfos();
-
-
         socket.emit("callback.dashboard.sync", {
             displayId: this.displayId,
-            bundleDirs: bundleDirs,
-            serverOptions: serverOptions,
+            bundleDirs: this.bundleManager.getBundleInfos(),
+            serverOptions: this.screenView.serverOptions,
             displays: config.displays
         });
     }
@@ -585,7 +557,7 @@ class admin {
      * @return infoscreen3/display.serverOptions
      */
     getServerOptions() {
-        return this.getView().serverOptions;
+        return this.screenView.serverOptions;
     }
 
     /**
@@ -597,28 +569,29 @@ class admin {
 
 
     controls(action) {
+        let view = this.getView();
         switch (action) {
             case "previous":
-                let view = this.getView();
                 view.serverOptions.loopIndex -= 2;
                 view.mainLoop();
                 break;
             case "play":
-                this.getServerOptions().loop = true;
-                this.getView().mainLoop();
+                view.serverOptions.loop = true;
+                view.mainLoop();
                 this.updateDashboard(this.io);
                 break;
             case "pause":
-                this.getView().clearTimers();
-                this.getServerOptions().loop = false;
+                view.clearTimers();
+                view.serverOptions.loop = false;
                 this.updateDashboard(this.io);
                 break;
             case "next":
-                this.getView().mainLoop();
+                view.mainLoop();
                 break;
         }
+        view = null;
+    }
 
-    } //
     // admin
 }
 

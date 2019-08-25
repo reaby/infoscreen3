@@ -1,12 +1,11 @@
 let availableDisplays = require(`../config.js`).displays;
 let display = require(`./display.js`);
 let admin = require(`./admin.js`);
+let adminLobby = require(`./adminLobby.js`);
 let cli = require(`./cli.js`);
 let _bundleManager = require(`./bundleManager.js`);
 let chalk = require('chalk');
 let fs = require('fs');
-
-
 
 /**
  * @param server
@@ -70,46 +69,7 @@ module.exports = function (server, app, io, dispatcher) {
         screenId += 1;
     }
 
-    // create overview admin lobby
-    io.of("/admin").on("connection", function (socket) {
-
-        let arr = [];
-        for (let display of screenView) {
-            arr.push({displayId: display.serverOptions.displayId, serverOptions: display.serverOptions});
-        }
-        socket.emit("callback.serverOptions", arr);
-
-
-        // handle other events
-        cli.info("WS/" + socket.conn.remoteAddress + " connect");
-        socket.on('error', function (error) {
-            cli.error(error, "WS/ error");
-        });
-        socket.on('disconnect', function (reason) {
-            cli.info("WS/ " + reason + " " + socket.conn.remoteAddress);
-        });
-
-        socket.on('controls.previous', function (data) {
-            getAdminView(data.displayId).controls("previous");
-        });
-
-        socket.on('controls.play', function (data) {
-            getAdminView(data.displayId).controls("play");
-        });
-
-        socket.on('controls.next', function (data) {
-            getAdminView(data.displayId).controls("next");
-        });
-
-        socket.on('controls.pause', function (data) {
-            getAdminView(data.displayId).controls("pause");
-        });
-
-        dispatcher.on("dashboard.update", function (data) {
-            socket.emit("callback.serverOptions", [data]);
-        });
-
-    });
+    let adminLobby1 = new adminLobby(io, dispatcher, screenView, adminView, bundleManager);
 
     // create lobby
     io.of("/lobby").on("connection", function (socket) {
@@ -135,17 +95,6 @@ module.exports = function (server, app, io, dispatcher) {
             socket.emit("callback.displays", {displays: availableDisplays, previewImages: previewImages});
         });
     });
-
-    /**
-     * @return admin
-     */
-    function getAdminView(index) {
-        try {
-            return adminView[index];
-        } catch (err) {
-            cli.log(err);
-        }
-    }
 
     return {screenView: screenView, adminView: adminView, bundleManager: bundleManager};
 };

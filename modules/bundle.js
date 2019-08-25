@@ -119,21 +119,15 @@ class bundleClass {
         }
     }
 
-    toJson() {
-        this.sync();
-        return JSON.stringify(this.allSlides, null, "\t");
-    }
-
     save() {
         this.sync();
         try {
-            fs.writeFileSync("./data/bundles/" + this.name + "/slides.json", this.toJson());
+            fs.writeFileSync("./data/bundles/" + this.name + "/slides.json", JSON.stringify(this.allSlides, null, "\t"));
             fs.writeFileSync("./data/bundles/" + this.name + "/bundle.json", JSON.stringify(this.bundleData, null, "\t"));
         } catch (e) {
             cli.error("error while saving file:", e);
         }
     }
-
 }
 
 /**

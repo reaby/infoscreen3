@@ -51,6 +51,16 @@ class bundleManager {
         }
     }
 
+    reorderSlides(bundleName, sortedIDs) {
+        let bundle = this.getBundle(bundleName);
+        let i = 0;
+        for (let uuid of sortedIDs) {
+            bundle.setIndex(uuid, i);
+            i += 1;
+        }
+        bundle.save();
+    }
+
     /**
      *
      * @return {Array}

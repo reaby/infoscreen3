@@ -15,19 +15,16 @@ function symmetricDifference(a1, a2) {
 
 var connectionTimeoutId;
 
+window.f = new flux.slider('#slider', {
+    controls: false,
+    captions: false,
+    autoplay: false,
+    pagination: false,
+    width: $(window).width(),
+    height: $(window).height(),
+});
+
 $(function () {
-    if (!flux.browser.supportsTransitions)
-        alert("Flux Slider requires a browser that supports CSS3 transitions");
-
-    window.f = new flux.slider('#slider', {
-        controls: false,
-        captions: false,
-        autoplay: false,
-        pagination: false,
-        width: $(window).width(),
-        height: $(window).height(),
-    });
-
     $(window).resize(function () {
         if (this.resizeTO) clearTimeout(this.resizeTO);
         this.resizeTO = setTimeout(function () {
@@ -113,15 +110,7 @@ socket.on('callback.time', function (data) {
 socket.on('callback.load', function (data) {
     serverOptions = data.serverOptions;
     bundleData = data.bundleData;
-    preloadImages(data.slides);
-    checkBlackout();
-    setTimeout(function () {
-        setBackground(data.bundleData.background);
-        if (checkStream(serverOptions) === false) {
-            nextSlide(data);
-        }
-    }, 1000);
-
+    preloadImages(data);
 });
 
 
@@ -150,7 +139,6 @@ socket.on('callback.reloadImage', function (data) {
 socket.on('callback.announce', function (data) {
     checkBlackout();
     nextSlide(data);
-
 });
 
 socket.on('callback.forceSlide', function (data) {
@@ -258,15 +246,14 @@ function nextSlide(data) {
                     transition = serverOptions.currentMeta.transition;
                 }
 
-                $("#" + getWebLayer()).addClass("fadeOut").removeClass("fadeIn").contents().empty();
-                $("#" + getWebLayer(1)).addClass("fadeOut").removeClass("fadeIn").contents().empty();
+                $("#" + getWebLayer()).addClass("fadeOut").removeClass("fadeIn");
+                $("#" + getWebLayer(1)).addClass("fadeOut").removeClass("fadeIn");
+                $("#slider").show();
+                window.f.showImageById(serverOptions.currentFile, transition);
                 setTimeout(function () {
                     clearIFrame(getWebLayer());
                     clearIFrame(getWebLayer(1));
                 }, 2500);
-
-                $("#slider").show();
-                window.f.showImageById(serverOptions.currentFile, transition);
                 break;
         }
     }
@@ -348,15 +335,19 @@ function checkStream(serverOptions) {
         }
         return false;
     }
-    return false;
+    return true;
 }
 
 /**
  * preload images
- * @param allSlides
+ * @param data
  */
-function preloadImages(allSlides) {
+function preloadImages(data) {
     window.f.clearImages();
+
+    var allSlides = data.slides;
+    var count = allSlides.length;
+    var counter = 0;
     for (var i in allSlides) {
         try {
             if (allSlides[i].type === "slide") {
@@ -364,6 +355,13 @@ function preloadImages(allSlides) {
                     image.id = imageId;
                     window.f.images.push(image);
                     window.f.imageData.push(imageData);
+                    counter++;
+                    if (counter >= count) {
+                        setBackground(bundleData.background);
+                        if (checkStream(serverOptions) === false) {
+                            nextSlide(data);
+                        }
+                    }
                 });
             }
         } catch (err) {
@@ -484,9 +482,9 @@ function getDataUri(url, imageId, callback) {
         var canvas = document.createElement('canvas');
         canvas.width = this.naturalWidth; // or 'width' if you want a special/scaled size
         canvas.height = this.naturalHeight; // or 'height' if you want a special/scaled size
-
         canvas.getContext('2d').drawImage(this, 0, 0);
         callback(imageId, canvas.toDataURL('image/png'), {src: url});
+        canvas = null;
     };
     image.src = url;
 }

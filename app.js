@@ -5,6 +5,8 @@ let logger = require('morgan');
 let lessMiddleware = require('less-middleware');
 let path = require('path');
 
+require('./modules/profiler.js').init("./tmp");
+
 const EventEmitter = require('events');
 let config = require("./config.js");
 
@@ -25,9 +27,7 @@ let LocalStrategy = require('passport-local').Strategy;
 let User = require("./modules/db.js");
 
 passport.use("local", new LocalStrategy(
-    {
-
-    },
+    {},
     function (username, password, cb) {
         User.findByUsername(username, function (err, user) {
             if (err) {
@@ -64,13 +64,15 @@ if (config.mediaServer) {
     nms.run();
 }
 
-passport.serializeUser(function(user, cb) {
+passport.serializeUser(function (user, cb) {
     cb(null, user.id);
 });
 
-passport.deserializeUser(function(id, cb) {
+passport.deserializeUser(function (id, cb) {
     User.findById(id, function (err, user) {
-        if (err) { return cb(err); }
+        if (err) {
+            return cb(err);
+        }
         cb(null, user);
     });
 });
@@ -103,9 +105,9 @@ i18next
             caches: false, // ['cookie']
 
             // optional expire and domain for set cookie
-          //  cookieExpirationDate: new Date(),
-          //  cookieDomain: 'myDomain',
-          //  cookieSecure: true // if need secure cookie
+            //  cookieExpirationDate: new Date(),
+            //  cookieDomain: 'myDomain',
+            //  cookieSecure: true // if need secure cookie
         }
     });
 
@@ -120,7 +122,7 @@ app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(lessMiddleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(require('express-session')({ secret: config.sessionKey, resave: false, saveUninitialized: true }));
+app.use(require('express-session')({secret: config.sessionKey, resave: false, saveUninitialized: true}));
 
 // Initialize Passport and restore authentication state, if any, from the
 // session.

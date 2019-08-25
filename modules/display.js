@@ -1,3 +1,4 @@
+'use strict'
 let fs = require("fs");
 let cli = require(`./cli.js`);
 let bundleManager = require(`./bundleManager.js`);
@@ -16,16 +17,6 @@ class display {
      */
     constructor(sharedIO, dispatcher, meta, displayId, bundleManager) {
         cli.info("Starting display with id " + displayId + " ...");
-
-        /** @property {Array} timeoutId - holds setTimeout id's for mainLoop */
-        this.timeoutId = [];
-
-        /**
-         * @type {bundleManager|module:infoscreen3/bundleManager}
-         */
-        this.bundleManager = bundleManager;
-        let self = this;
-
         /**
          * @property {number} displayId - this display id
          * @property {number} currentId -  index number @see getBundle()
@@ -59,11 +50,20 @@ class display {
             displayTime: true
         };
 
+        /** @property {Array} timeoutId - holds setTimeout id's for mainLoop */
+        this.timeoutId = null;
+
+        /**
+         * @type {bundleManager|module:infoscreen3/bundleManager}
+         */
+        this.bundleManager = bundleManager;
+
         let io = sharedIO.of("/display-" + displayId.toString());
         this.io = io;
         this.name = meta.name;
         this.dispatcher = dispatcher;
         this.id = displayId;
+        let self = this;
 
         /**
          * helper callback for global announce
@@ -76,10 +76,20 @@ class display {
             self.displayCurrentSlide();
         });
 
+        dispatcher.on("display.recalcBundleData", function (bundleName) {
+            if (self.serverOptions.currentBundle === bundleName) {
+                for (let slide of self.getBundle().allSlides) {
+                    // calculate new index for next slide;
+                    if (slide.uuid === self.serverOptions.currentFile) {
+                        self.serverOptions.loopIndex = slide.index + 1;
+                    }
+                }
+            }
+        });
+
         dispatcher.on("announce", function (obj) {
             // if global announce, ie screens is null
             if (obj.screens === null) {
-                console.log("announcing: " + this.serverOptions.displayId);
                 io.emit(obj.event, obj.data);
             } else {
                 // screens is array
@@ -141,6 +151,7 @@ class display {
         this.serverOptions.transition = bundle.getBundleData().transition;
         this.serverOptions.loop = true;
         this.io.emit("callback.load", this.getSlideData());
+        bundle = null;
         this.mainLoop();
     }
 
@@ -153,10 +164,7 @@ class display {
      * clears timers
      */
     clearTimers() {
-        for (let i in this.timeoutId) {
-            clearTimeout(this.timeoutId[i]);
-            delete this.timeoutId[i];
-        }
+        clearTimeout(this.timeoutId);
     }
 
     /**
@@ -166,6 +174,10 @@ class display {
         return this.bundleManager.getBundle(this.serverOptions.currentBundle);
     }
 
+    toggleBlackout() {
+        this.serverOptions.blackout = this.serverOptions.blackout === false;
+        this.io.emit("callback.blackout", {serverOptions: this.serverOptions});
+    }
 
     /**
      * emits custom event for screens
@@ -208,8 +220,6 @@ class display {
         }
 
         if (this.serverOptions.loop) {
-            let that = this;
-
             // override slide timeout if set by slide
             let slideTimeout = this.serverOptions.slideDuration * 1000;
             if (this.serverOptions.currentMeta.duration > 5) {
@@ -217,11 +227,7 @@ class display {
             }
 
             if (slideTimeout >= 5000) {
-                this.timeoutId.push(
-                    setTimeout(function () {
-                        that.mainLoop();
-                    }, slideTimeout));
-
+                this.timeoutId = setTimeout(this.mainLoop.bind(this), slideTimeout);
             } else {
                 this.serverOptions.loop = false;
             }
@@ -231,6 +237,8 @@ class display {
             this.displayCurrentSlide();
             this.serverOptions.loopIndex += 1;
         }
+
+        bundle = null;
     }
 
     overrideSlide(json, pngData, duration, transition) {
@@ -244,20 +252,17 @@ class display {
         if (json.type === "image") {
             fs.writeFileSync("./tmp/display_" + this.serverOptions.displayId + ".png", pngData.replace(/^data:image\/png;base64,/, ""), "base64");
         }
-        let that = this;
+
         if (duration && duration >= 5) {
             this.serverOptions.loop = true;
-            this.timeoutId.push(
-                setTimeout(function () {
-                    that.mainLoop();
-                }, duration * 1000));
+            this.timeoutId = setTimeout(this.mainLoop.bind(this), duration * 1000);
         }
         this.displayCurrentSlide();
         this.serverOptions.transition = _transition;
     }
 
     displayCurrentSlide() {
-        this.announce([this.serverOptions.displayId, "admin"], "callback.update", this.getSlideData());
+        this.announce([this.id, "admin"], "callback.update", this.getSlideData());
     }
 }
 
