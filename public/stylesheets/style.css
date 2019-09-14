@@ -42,32 +42,6 @@ iframe {
     opacity: 0;
 }
 
-#time {
-    position: absolute;
-    z-index: 10;
-    bottom: 2vw;
-    right: 3vw;
-    font-family: 'Open Sans', sans-serif;
-    font-weight: bolder;
-    font-size: 5vw;
-    color: white;
-    text-shadow: 2px 2px 2px black;
-    text-align: right;
-}
-
-#time2 {
-    position: absolute;
-    z-index: 10;
-    bottom: 2vw;
-    right: 3vw;
-    font-family: 'Open Sans', sans-serif;
-    font-weight: bolder;
-    font-size: 5vw;
-    color: white;
-    text-shadow: 2px 2px 2px black;
-    text-align: right;
-}
-
 #bgvid, #bg, canvas, .fsimage {
     position: absolute;
     top: 0;
@@ -211,4 +185,51 @@ canvas {
     font-smoothing: antialiased;
     text-rendering: geometricPrecision;
     font-smooth: always;
+}
+
+#statusMessageOuter {
+    z-index: 9;
+    width: 100vw;
+    padding-left: 2vw;
+    padding-right: 20vw;
+    height: 15vh;
+    position: absolute;
+    display: flex;
+    align-content: center;
+    bottom: 1vw;
+    left: 0;
+    font-variant: all-small-caps;
+    background: rgba(0, 0, 0,1);
+    font-family: 'Open Sans', sans-serif;
+    font-weight: bolder;
+    font-size: 3vw;
+    color: white;
+    border-top: 2px solid white;
+    border-bottom: 2px solid white;
+}
+
+#time {
+    position: absolute;
+    z-index: 10;
+    bottom: 2vw;
+    right: 2vw;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: bolder;
+    font-size: 5vw;
+    color: white;
+    text-shadow: 2px 2px 2px black;
+    text-align: right;
+}
+
+#time2 {
+    position: absolute;
+    z-index: 10;
+    bottom: 2vw;
+    right: 2vw;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: bolder;
+    font-size: 5vw;
+    color: white;
+    text-shadow: 2px 2px 2px black;
+    text-align: right;
 }

@@ -301,7 +301,12 @@ class admin {
                 socket.emit("callback.webpage", {bundleData: bundleData, json: json});
 
             });
-
+            
+            socket.on("admin.setStatusMessage", function (message) {
+                self.getView().serverOptions.statusMessage = message;
+                self.getView().updateUI();
+            });
+            
             socket.on('edit.saveLink', function (data) {
 
                 let filename = data.filename;

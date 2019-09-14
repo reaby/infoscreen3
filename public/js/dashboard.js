@@ -26,9 +26,9 @@ socket.on("callback.dashboard.sync", function (data) {
     displayId = parseInt(data.displayId);
     serverOptions = data.serverOptions;
     bundleDirs = data.bundleDirs;
-    
+
     allBundlesVue.bundleDirs = bundleDirs;
-    
+
     displayList = data.displays;
     updateControls(data.serverOptions);
 
@@ -50,7 +50,7 @@ socket.on("callback.dashboard.sync", function (data) {
             }
         }).dropdown("set selected", {bundle: serverOptions.currentBundle});
     $('#currentBundle').text(serverOptions.currentBundle);
-
+    $('#statusMessageAdmin').val(serverOptions.statusMessage);
     // update dropdown at menu with bundles
     valueArray = [];
     var x = 0;
@@ -111,7 +111,7 @@ socket.on("callback.dashboard.updateSlides", function (data) {
 });
 
 socket.on("callback.dashboard.updateBundles", function (data) {
-  //  updateBundleData(data.bundleDirs);
+    //  updateBundleData(data.bundleDirs);
 });
 
 socket.on("callback.dashboard.update", function (data) {
@@ -208,6 +208,11 @@ function editSlide(name, type) {
             window.open("/admin/edit/link?bundle=" + serverOptions.currentBundle + "&file=" + name + "&displayId=" + displayId, '_blank', 'location=no,height=400,width=600,scrollbars=no,status=no');
             break;
     }
+}
+
+function setStatusMessage() {
+    emit("admin.setStatusMessage", $('#statusMessageAdmin').val());
+
 }
 
 function createNewBundle() {

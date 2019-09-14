@@ -18,6 +18,7 @@
     "copy": "Copy",
     "paste": "Paste",
     "edit": "Edit",
+    "set": "Set",
     "blackout": "Blackout",
     "displayTime": "Display Time",
     "startStream": "Start stream",
@@ -44,7 +45,8 @@
       "bundleDirName": "Bundle Directory Name",
       "slidesInRotation": "Slides in rotation",
       "preview": "Preview",
-      "program": "Program"
+      "program": "Program",
+      "statusMessage": "Status Message"
     },
     "editBundleSlides": {
       "bundle": "Bundle:"

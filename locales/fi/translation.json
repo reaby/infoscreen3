@@ -18,6 +18,7 @@
     "fill": "Täytä",
     "copy": "Kopio",
     "paste": "Liitä",
+    "set": "Aseta",
     "blackout": "Tummenna",
     "displayTime": "Näytä aika",
     "startStream": "Aloita suoratoisto",
@@ -44,7 +45,8 @@
       "bundleDirName": "Hakemiston Nimi",
       "slidesInRotation": "Diakierto",
       "preview": "Esikatselu",
-      "program": "Ohjelma"
+      "program": "Ohjelma",
+      "statusMessage": "Tilaviesti"
     },
     "editBundleSlides": {
       "bundle": "Diapaketti:"

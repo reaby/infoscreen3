@@ -46,7 +46,12 @@
             </div>
             <i class="dropdown icon"></i>
         </div>
-
+        <div clasS="ui form item">
+            <div class="ui action input">
+                <input id="statusMessageAdmin" value="" placeholder="{{ t("admin.dashboard.statusMessage") }}"/>
+                <div class="ui small green button" onclick="setStatusMessage();">{{ t("actions.set") }}</div>
+            </div>
+        </div>
         <div class="right menu">
             <div class="item">
                 <a href="/logout" class="ui red basic button">{{ t("auth.logout") }}</a>

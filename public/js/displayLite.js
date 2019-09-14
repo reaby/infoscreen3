@@ -54,7 +54,12 @@ $(function () {
         serverOptions.displayTime = data;
         checkTimeDisplay();
     });
-
+    
+    socket.on('callback.updateUI', function (data) {
+        serverOptions = data.serverOptions;
+        bundleData = data.bundleData;
+        updateStatusMessage();
+    });
 
     /** callback Load **/
     socket.on('callback.load', function (data) {
@@ -149,12 +154,22 @@ function checkBlackout() {
         $("#blackoutLayer").css("opacity", 0);
     }
 }
+function updateStatusMessage() {
+    if (serverOptions.statusMessage !== "") {
+        $('#statusMessageOuter').fadeIn();
+        $('#statusMessage').text(serverOptions.statusMessage);
+    } else {
+        $('#statusMessageOuter').fadeOut();
+        $('#statusMessage').text("");
+    }
+}
 
 function nextSlide(data) {
     serverOptions = data.serverOptions;
     bundleData = data.bundleData;
     checkTimeDisplay();
-
+    updateStatusMessage();
+    
     var elem = document.getElementById("img" + layer);
     if (serverOptions.isAnnounce) {
         if (serverOptions.announceMeta.type === "webPage") {

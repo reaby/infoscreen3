@@ -47,7 +47,8 @@ class display {
             isAnnounce: false,
             announceMeta: {},
             transition: "tiles3d",
-            displayTime: true
+            displayTime: true,
+            statusMessage: "",
         };
 
         /** @property {Array} timeoutId - holds setTimeout id's for mainLoop */
@@ -260,7 +261,11 @@ class display {
         this.displayCurrentSlide();
         this.serverOptions.transition = _transition;
     }
-
+    
+    updateUI() {
+        this.io.emit("callback.updateUI", this.getSlideData());
+    }
+    
     displayCurrentSlide() {
         this.announce([this.id, "admin"], "callback.update", this.getSlideData());
     }

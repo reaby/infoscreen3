@@ -124,6 +124,12 @@ socket.on('callback.update', function (data) {
     }
 });
 
+socket.on('callback.updateUI', function (data) {
+    serverOptions = data.serverOptions;
+    bundleData = data.bundleData;
+    updateStatusMessage();
+});
+
 socket.on('callback.removeSlide', function (data) {
     window.f.clearImageById(data.uuid);
 });
@@ -190,11 +196,22 @@ function checkBlackout() {
     }
 }
 
+function updateStatusMessage() {
+    if (serverOptions.statusMessage !== "") {
+        $('#statusMessageOuter').fadeIn();
+        $('#statusMessage').text(serverOptions.statusMessage);
+    } else {
+        $('#statusMessageOuter').fadeOut();
+        $('#statusMessage').text("");
+    }
+}
+
 function nextSlide(data) {
     serverOptions = data.serverOptions;
     bundleData = data.bundleData;
     checkTimeDisplay();
-
+    updateStatusMessage();
+    
     if (serverOptions.isAnnounce) {
         if (serverOptions.announceMeta.type === "webPage") {
             $("#slider").hide();
