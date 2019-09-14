@@ -18,7 +18,7 @@
                 <button class="ui basic inverted button" onclick="createNew();">{{ t("actions.createNew") }}</button>
                 <button class="ui basic inverted button" onclick="addLink();">{{ t("actions.addWebPage") }}</button>
 
-                <div id="bundleSlides" class="ui sortable list">
+                <div id="bundleSlides" class="ui sortable slides list">
                     {% for slide in bundle.allSlides %}
                         <div class="ui green message item" id="{{ slide.uuid }}" style="border: 1px solid black;">
                             <div class="right floated content">

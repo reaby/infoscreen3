@@ -55,6 +55,10 @@ module.exports = function (websocket, dispatcher) {
         res.render('admin/editSlide', {config: config, bundle: bundle, displayId: displayId, file: file});
     });
 
+    router.get('/edit/bundles', function (req, res, next) {
+        res.render('admin/editBundles', {config: config});
+    });
+
     router.post('/edit/bundleProperties', function (req, res, next) {
             let bundleData = {};
             let fields = {};

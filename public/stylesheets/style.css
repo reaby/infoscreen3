@@ -115,17 +115,18 @@ iframe {
     background: white;
 }
 
-#bundleSlides .item, #allBundles .item {
+.slides .ui.item {
     padding: 0.5rem;
     margin: 3px 0;
     box-shadow: none;
 }
 
-#bundleSlides .green, #allBundles .green {
+.slides .ui.green.message {
     background: #08200b;
+    border: 1px solid black;
 }
 
-#bundleSlides .red {
+.slides .ui.red.message {
     background: #200c0c;
 }
 
@@ -187,8 +188,7 @@ iframe {
 
 @keyframes announce {
     from,
-    50%
-    {
+    50% {
         opacity: 1;
     }
 
@@ -207,8 +207,8 @@ iframe {
 canvas {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    -moz-font-smoothing:antialiased;
-    font-smoothing:antialiased;
-    text-rendering:geometricPrecision;
-    font-smooth:always;
+    -moz-font-smoothing: antialiased;
+    font-smoothing: antialiased;
+    text-rendering: geometricPrecision;
+    font-smooth: always;
 }

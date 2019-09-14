@@ -1,6 +1,6 @@
 var serverOptions;
 var bundleSettings;
-var bundleDirs;
+var bundleDirs = [];
 var displayList;
 
 
@@ -26,6 +26,9 @@ socket.on("callback.dashboard.sync", function (data) {
     displayId = parseInt(data.displayId);
     serverOptions = data.serverOptions;
     bundleDirs = data.bundleDirs;
+    
+    allBundlesVue.bundleDirs = bundleDirs;
+    
     displayList = data.displays;
     updateControls(data.serverOptions);
 
@@ -97,7 +100,7 @@ socket.on("callback.dashboard.sync", function (data) {
 
     var preview = document.getElementById('preview');
     preview.src = "/admin/preview?displayId=" + displayId + "&socket=" + encodeURIComponent(socket.id);
-    updateBundleData(bundleDirs);
+    // updateBundleData(bundleDirs);
 });
 
 socket.on("callback.dashboard.updateSlides", function (data) {
@@ -108,7 +111,7 @@ socket.on("callback.dashboard.updateSlides", function (data) {
 });
 
 socket.on("callback.dashboard.updateBundles", function (data) {
-    updateBundleData(data.bundleDirs);
+  //  updateBundleData(data.bundleDirs);
 });
 
 socket.on("callback.dashboard.update", function (data) {
@@ -159,7 +162,7 @@ function updateBundleData(bundleDirs) {
         let bundle = bundleDirs[i];
         output += '<div class="ui green message item" id="bundle_' + simpleHash(bundle.dir) + '">' +
             '<div class="right floated content">' +
-            '<button class="ui small basic inverted icon button" onclick="editBundle(\'' + bundle.dir + '\')"><i class="edit icon"></i></button>' +
+            '<button class="ui small basic inverted icon button" onclick="editBundleProperties(\'' + bundle.dir + '\')"><i class="edit icon"></i></button>' +
             '<button class="ui small basic inverted icon button" onclick="editBundleSlides(\'' + bundle.dir + '\')"><i class="list icon"></i></button>' +
             '<button class="ui small basic inverted icon button" onclick="changeBundle(\'' + bundle.dir + '\')"><i class="play icon"></i></button>' +
             '</div>' +
@@ -196,14 +199,6 @@ function addLink() {
     editSlide("", "webpage");
 }
 
-function changeBundle(name) {
-    emit("admin.setBundle", {bundle: name});
-}
-
-function editBundleSlides(name) {
-    window.open("/admin/edit/bundleSlides?bundle=" + name, '_blank', 'location=no,height=800,width=400,scrollbars=yes,status=no');
-}
-
 function editSlide(name, type) {
     switch (type) {
         case "slide":
@@ -233,8 +228,9 @@ function createNewBundle() {
         .modal('show');
 }
 
-function editBundle(bundleName) {
-    window.open("/admin/edit/bundleProperties?bundle=" + bundleName, '_blank', 'location=no,height=500,width=700,scrollbars=yes,status=no');
+
+function editBundles() {
+    window.open("/admin/edit/bundles", '_blank', 'width=700,height=700,scrollbars=yes,status=no,location=no');
 }
 
 function emit(eventName, data) {

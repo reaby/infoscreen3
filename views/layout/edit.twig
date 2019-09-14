@@ -5,13 +5,9 @@
 
     {% include "assets.twig" %}
     <script src="/js/filereader.js"></script>
-
     {% block header %}{% endblock %}
 </head>
-<body>
-<div class="ui fluid container">
-    {% block body %}{% endblock %}
-</div>
-
+<body style="height: 100%;">
+{% block body %}{% endblock %}
 </body>
 </html>

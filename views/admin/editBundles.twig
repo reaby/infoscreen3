@@ -1,0 +1,52 @@
+{% extends 'layout/edit.twig' %}
+
+{% block header %}
+    <script src="/socket.io/socket.io.js"></script>
+{% endblock %}
+
+{% block body %}
+    <div class="ui inverted basic segment">
+        <h1 class="ui inverted header">Edit bundles</h1>
+
+        <div class="ui slides grid" style="height: 100%;">
+            <div class="ui eight wide column">
+                <div class="connectedSortable" id="sortable1" data-moveto="1">
+                    <div class="ui green message item" data-bundle="" data-uuid="">
+                    </div>
+                    <div class="ui green message item">2</div>
+                    <div class="ui green message item">3</div>
+                </div>
+            </div>
+            <div class="eight wide column">
+                <div class="connectedSortable" id="sortable2" data-moveto="0">
+                    <div class="ui green message item">4</div>
+                    <div class="ui green message item">5</div>
+                    <div class="ui green message item">6</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        var socket = io.connect("{{ config.serverUrl }}:{{ config.serverListenPort }}/admin");
+        var sortableMode = "move";
+
+        $(function () {
+            $("#sortable1").data("moveto", "testing");
+
+            $("#sortable1, #sortable2").sortable({
+                connectWith: ".connectedSortable",
+                stop: function (ev, ui) {
+                    console.log("moveto: ", this.dataset.moveto);
+                    console.log(ui.item[0].dataset);
+                },
+
+            }).disableSelection();
+        });
+
+        socket.on("connect", function () {
+            socket.emit("edit.bundles", {});
+        });
+    </script>
+
+{% endblock %}
+
