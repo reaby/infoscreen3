@@ -119,6 +119,20 @@ class bundleClass {
         }
     }
 
+    getSlideData(uuid) {
+        let slideData = {};
+
+        for (let slide of this.allSlides) {
+            if (slide.uuid === uuid) {
+                slideData = {
+                    settings: slide,
+                    render: fs.readFileSync("./data/bundles/" + this.name + "/slides/" + slide.uuid + ".png")
+                };
+                return slide;
+            }
+        }
+    }
+
     save() {
         this.sync();
         try {

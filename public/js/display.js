@@ -279,7 +279,7 @@ function nextSlide(data) {
 }
 
 function setBackground(background) {
-    background = "/background/" + background;
+    background = encodeURI("/background/" + background);
     if (serverOptions.isStreaming) return;
 
     var video = document.getElementById("bgvid");
