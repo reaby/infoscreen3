@@ -18,8 +18,8 @@ module.exports = {
         {
             "id": 1,
             "displayName": "Administrator",
-            "username": "admin",
-            "password": "admin",
+            "username": process.env.ADMIN_USER || "admin",
+            "password": process.env.ADMIN_PASS || "admin",
             "permissions": {
                 "isAdmin": true,
                 "dashboard": {
