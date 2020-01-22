@@ -12,15 +12,15 @@ class pluginManager {
             try {
                 let pluginclass = require("../plugins/" + pluginName + "/plugin.js").default;
                 let pluginInstance = new pluginclass(pluginName, app, io, eventDispatcher);
-                cli.info("Plugin: " + pluginName, 'plugin');
+                cli.info("" + pluginName, 'plugin');
                 this.plugins[pluginName] = pluginInstance;
             } catch (err) {
-                cli.error("Plugin " + pluginName, err);
+                cli.error(err, pluginName);
             }
         }
     }
-    
-    callMethod(method, params) {       
+
+    callMethod(method, params) {
         this.dispatcher.emit("plugin." + method, params);
     }
 

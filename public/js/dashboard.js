@@ -35,7 +35,7 @@ socket.on("callback.dashboard.sync", function (data) {
     // update dropdown at menu with bundles
     var valueArray = [];
     for (var dir of bundleDirs) {
-        valueArray.push({name: dir.name, value: dir.dir});
+        valueArray.push({ name: dir.name, value: dir.dir });
     }
 
     $('#bundles')
@@ -46,16 +46,16 @@ socket.on("callback.dashboard.sync", function (data) {
                 $('#bundles')
                     .dropdown("hide");
 
-                emit("admin.setBundle", {bundle: _value});
+                emit("admin.setBundle", { bundle: _value });
             }
-        }).dropdown("set selected", {bundle: serverOptions.currentBundle});
+        }).dropdown("set selected", { bundle: serverOptions.currentBundle });
     $('#currentBundle').text(serverOptions.currentBundle);
     $('#statusMessageAdmin').val(serverOptions.statusMessage);
     // update dropdown at menu with bundles
     valueArray = [];
     var x = 0;
     for (var display of data.displays) {
-        valueArray.push({name: display.name, value: x});
+        valueArray.push({ name: display.name, value: x });
         x++;
     }
 
@@ -77,9 +77,9 @@ socket.on("callback.dashboard.sync", function (data) {
     var transitionArray = [];
     var values = ["bars", "blinds", "blinds3d", "zip", "blocks", "blocks2", "concentric", "warp", "cube", "tiles3d", "tiles3dprev", "slide", "swipe", "dissolve"];
 
-    transitionArray.push({name: "random", value: null});
+    transitionArray.push({ name: "random", value: null });
     for (var i in values) {
-        transitionArray.push({name: values[i], value: values[i]});
+        transitionArray.push({ name: values[i], value: values[i] });
     }
 
     $('#transitions')
@@ -90,7 +90,7 @@ socket.on("callback.dashboard.sync", function (data) {
                 $('#transitions').dropdown("hide");
                 $('#transitions').dropdown("set selected", value);
 
-                emit("admin.setTransition", {transition: value});
+                emit("admin.setTransition", { transition: value });
                 $('#currentTransition').text(text);
 
             }
@@ -111,6 +111,7 @@ socket.on("callback.dashboard.updateSlides", function (data) {
 });
 
 socket.on("callback.dashboard.updateBundles", function (data) {
+    bundleSettings = data;
     //  updateBundleData(data.bundleDirs);
 });
 
@@ -133,7 +134,7 @@ socket.on("callback.dashboard.update", function (data) {
 
     $('.editable').editable(function (value, settings) {
         var uuid = $(this).parent().parent().attr("id");
-        emit("admin.renameSlide", {uuid: uuid, name: value, bundleName: serverOptions.currentBundle});
+        emit("admin.renameSlide", { uuid: uuid, name: value, bundleName: serverOptions.currentBundle });
         return (value);
     }, {
         submit: 'rename',
@@ -150,7 +151,7 @@ $(function () {
     $(".sortable").sortable({
         beforeStop: function (event, element) {
             var sortedIDs = $(".sortable").sortable("toArray");
-            emit("admin.reorderSlides", {bundleName: serverOptions.currentBundle, sortedIDs: sortedIDs});
+            emit("admin.reorderSlides", { bundleName: serverOptions.currentBundle, sortedIDs: sortedIDs });
         }
     }).disableSelection();
 });
@@ -224,7 +225,7 @@ function createNewBundle() {
                 return false;
             },
             onApprove: function () {
-                emit("admin.createBundle", {"dir": $("#newBundleDirName").val(), "bundle": $("#newBundleName").val()});
+                emit("admin.createBundle", { "dir": $("#newBundleDirName").val(), "bundle": $("#newBundleName").val() });
                 $("#newBundleDirName").val("");
                 $("#newBundleName").val("");
                 $('#newBundle').modal("hide");
@@ -242,7 +243,7 @@ function emit(eventName, data) {
     if (data === undefined || data === null) {
         data = {};
     }
-    Object.assign(data, {displayId: parseInt(displayId)});
+    Object.assign(data, { displayId: parseInt(displayId) });
     socket.emit(eventName, data);
 }
 
@@ -323,7 +324,7 @@ function updateSlides(settings) {
     $('#' + serverOptions.currentFile).css("border", "1px solid #1ebc30");
     $('.editable').editable(function (value, settings) {
         var uuid = $(this).parent().parent().attr("id");
-        emit("admin.renameSlide", {uuid: uuid, name: value, bundleName: serverOptions.currentBundle});
+        emit("admin.renameSlide", { uuid: uuid, name: value, bundleName: serverOptions.currentBundle });
         return (value);
     }, {
         submit: 'rename',
@@ -338,7 +339,7 @@ function updateSlides(settings) {
 
 
 function remove(uuid) {
-    var obj = {bundleName: serverOptions.currentBundle, uuid: uuid};
+    var obj = { bundleName: serverOptions.currentBundle, uuid: uuid };
 
     if (confirm("Really delete slide?")) {
         emit('admin.removeSlide', obj);

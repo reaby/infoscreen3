@@ -1,10 +1,6 @@
 'use strict'
 let fs = require("fs");
 let cli = require(`./cli.js`);
-let bundleManager = require(`./bundleManager.js`);
-let config = require('../config.js');
-let plugins = {};
-
 
 /**
  * handles one display instance

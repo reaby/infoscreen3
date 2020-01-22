@@ -1,5 +1,3 @@
-"use strict";
-
 const bundle = require(`./bundle.js`);
 let fs = require("fs");
 let cli = require(`./cli.js`);

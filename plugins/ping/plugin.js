@@ -1,32 +1,40 @@
 let plugin = require("../../modules/plugin.js").default;
 let config = require(__dirname + "/config.json");
-var sys = require('util');
-var exec = require('child_process').exec;
+let exec = require('child_process').exec;
+
+function ping_getTime() {
+    let d = new Date();
+    return d.getTime();
+}
+
 
 class myTestPlugin extends plugin {
 
     onInit() {
-
-    }
-
-    onAdminRouter(router) {
-        /* let self = this;
-         router.get("/test", function (req, res, next) {
-              res.send(self.renderPluginView("test", { test: "hello!" }));
-         }); */
+        this.cache = 0;
+        this.lastStamp = ping_getTime()-30000;
     }
 
     onPluginRouter(router) {
+        let self = this;
         router.get("/ajax/ping", function (req, res) {
+
+            if ((ping_getTime() - self.lastStamp) <= 5 * 1000) {                
+                return res.json({ ping: self.cache });
+            }
+
             let cmd = "ping -c 1 ";
             let regex = /=([0-9.]+?) ms/;
             if (/^win/.test(process.platform)) {
                 cmd = "ping -n 1 ";
                 regex = /[><=]([0-9.]+?)ms/;
             }
+
             exec(cmd + config.host, function (err, stdout, stdErr) {
                 var ms = stdout.match(regex);
                 ms = (ms && ms[1]) ? Number(ms[1]) : ms;
+                self.lastStamp = ping_getTime();
+                self.cache = ms;
                 res.json({ ping: ms });
             });
         })
