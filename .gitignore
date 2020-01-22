@@ -62,6 +62,7 @@ typings/
 
 # own additions
 .idea
+.vscode
 config.js
 tmp/*.png
 public/assets/

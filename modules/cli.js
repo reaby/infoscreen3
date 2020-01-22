@@ -1,4 +1,5 @@
 let chalk = require('chalk');
+let lastStamp = "";
 
 module.exports = {
     error: function (error, title) {
@@ -8,8 +9,13 @@ module.exports = {
         this.log(chalk.bold.red("[Error]" + title) + " " + error);
     },
 
-    info: function (string) {
-        this.log(chalk.cyan("[Info] ") + string);
+    info: function (string, category) {
+
+        this.log(chalk.cyan("[" + (category || "Info") + "] ") + string);
+    },
+
+    debug: function (string) {
+        console.log(chalk.bold.black("[Debug] " + string));
     },
 
     success: function (string) {
@@ -17,7 +23,15 @@ module.exports = {
     },
 
     log: function (string) {
-        console.log(getDateTime() + " " + string);
+        let now = getDateTime();
+        if (lastStamp != now) {
+            lastStamp = now;
+            now = "\n" + now + "\n"
+        } else {
+            now = "";
+        }
+
+        console.log(now + string);
     }
 };
 

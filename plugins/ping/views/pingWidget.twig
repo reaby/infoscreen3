@@ -1,0 +1,31 @@
+<style>
+	#bandwidth {
+		position: absolute;
+		z-index: 10;
+		right: 0;
+		width: 15vw;
+		height: 100px;
+		background: whitesmoke;
+		border: 2px black solid;
+		padding: 0.5rem 1rem;
+		text-align: center;
+	}
+</style>
+<div id="bandwidth" class="gpu">
+	<h1 style="margin: 0;padding: 0;">Ping Status</h1>
+	<h2 id="testStatus" style="margin: 0;padding: 0;"></h2>
+</div>
+
+<script>
+
+	ping();
+	setInterval(() => {
+		ping()
+	}, 5000);
+
+	function ping() {
+		$.getJSON("/ajax/ping", function (data) {
+			$('#testStatus').html(data.ping + "ms");
+		});
+	}
+</script>

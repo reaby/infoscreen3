@@ -2,6 +2,9 @@
 let fs = require("fs");
 let cli = require(`./cli.js`);
 let bundleManager = require(`./bundleManager.js`);
+let config = require('../config.js');
+let plugins = {};
+
 
 /**
  * handles one display instance
@@ -17,6 +20,7 @@ class display {
      */
     constructor(sharedIO, dispatcher, meta, displayId, bundleManager) {
         cli.info("Starting display with id " + displayId + " ...");
+
         /**
          * @property {number} displayId - this display id
          * @property {number} currentId -  index number @see getBundle()

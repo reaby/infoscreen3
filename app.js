@@ -4,9 +4,7 @@ let cookieParser = require('cookie-parser');
 let logger = require('morgan');
 let lessMiddleware = require('less-middleware');
 let path = require('path');
-
-require('./modules/profiler.js').init("./tmp");
-
+let PluginManager = require("./modules/pluginManager");
 const EventEmitter = require('events');
 let config = require("./config.js");
 
@@ -128,26 +126,23 @@ app.set('view engine', 'twig');
 app.use(i18nextMiddleware.handle(i18next));
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({extended: false}));
+app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(lessMiddleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(require('express-session')({secret: config.sessionKey, resave: false, saveUninitialized: true}));
-
-// Initialize Passport and restore authentication state, if any, from the
-// session.
+app.use(require('express-session')({ secret: config.sessionKey, resave: false, saveUninitialized: true }));
 app.use(passport.initialize({}));
 app.use(passport.session({}));
 
-let websocket = require("./modules/websocket")(server, app, io, eventDispatcher);
-let indexRouter = require('./routes/index.js')(websocket, eventDispatcher);
-let adminRouter = require('./routes/admin.js')(websocket, eventDispatcher);
+let pluginManager = new PluginManager(app, io, eventDispatcher);
+let websocket = require("./modules/websocket")(pluginManager, io, eventDispatcher);
+let indexRouter = require('./routes/index.js')(pluginManager, websocket, eventDispatcher);
+let adminRouter = require('./routes/admin.js')(pluginManager, websocket, eventDispatcher);
 let authRouter = require('./routes/auth.js')(websocket, eventDispatcher);
 
-
-app.use('/', authRouter);
-app.use('/admin', adminRouter);
 app.use('/', indexRouter);
+app.use('/admin', adminRouter);
+app.use('/', authRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -165,4 +160,4 @@ app.use(function (err, req, res, next) {
     res.render('error');
 });
 
-module.exports = {app: app, server: server, io: io, eventDispatcher: eventDispatcher};
+module.exports = { app: app, server: server, io: io, eventDispatcher: eventDispatcher };

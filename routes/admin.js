@@ -26,7 +26,7 @@ function ensureIsAdmin(req, res, next) {
     next();
 }
 
-module.exports = function (websocket, dispatcher) {
+module.exports = function (pluginManager, websocket, dispatcher) {
     var bundleManager = websocket.bundleManager;
 
     router.use(ensureIsAdmin);
@@ -184,6 +184,8 @@ module.exports = function (websocket, dispatcher) {
 
         res.render('ajax/bundleImageList', {bundleImages: output});
     });
+
+    pluginManager.callMethod('onAdminRouter', router);
 
     return router;
 };

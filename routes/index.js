@@ -14,14 +14,14 @@ function ensureIsAdmin(req, res, next) {
     return next();
 }
 
-module.exports = function (websocket, dispatcher) {
+module.exports = function (pluginManager, websocket, dispatcher) {
     if (config.secureViews) {
         router.use(ensureIsAdmin);
     }
 
     router.get('/', function (req, res, next) {
         res.header('Access-Control-Allow-Origin', '*');
-        res.render('index', {config: config});
+        res.render('index', { config: config });
     });
 
     router.get('/favicon.ico', function (req, res, next) {
@@ -44,7 +44,8 @@ module.exports = function (websocket, dispatcher) {
         res.header('Access-Control-Allow-Origin', '*');
         let idx = parseInt(req.params.id);
         let volume = req.params.videoVolume || 1.;
-        res.render('display', {config: config, display: availableDisplays[idx], displayId: idx, videoVolume: volume});
+        let extra = pluginManager.getDisplayAdditions();
+        res.render('display', { config: config, display: availableDisplays[idx], displayId: idx, videoVolume: volume, extra: extra });
     });
 
     router.get('/images/:dir/:name', function (req, res, next) {
@@ -118,6 +119,7 @@ module.exports = function (websocket, dispatcher) {
             }
         });
     });
+
 
     return router;
 };

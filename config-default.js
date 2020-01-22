@@ -9,6 +9,13 @@ module.exports = {
     "useLocalAssets": false,    // used to load javascript libraries locally from /public/assets
     "mediaServer": false,       // local streaming server for rtmp, see docs how to use
     "defaultLocale": "en",
+    
+    /* 
+     * Plugins 
+     */
+    "plugins": [
+        "profiler"
+    ],
 
     /*
      * Administrators

@@ -1,4 +1,5 @@
-let availableDisplays = require(`../config.js`).displays;
+let config = require(`../config.js`);
+let availableDisplays = config.displays;
 let display = require(`./display.js`);
 let admin = require(`./admin.js`);
 let adminLobby = require(`./adminLobby.js`);
@@ -7,6 +8,8 @@ let _bundleManager = require(`./bundleManager.js`);
 let chalk = require('chalk');
 let fs = require('fs');
 
+
+
 /**
  * @param server
  * @param app
@@ -14,7 +17,7 @@ let fs = require('fs');
  * @param dispatcher
  * @return {{screenView: display[], adminView: admin[], bundleManager: bundleManager}}
  */
-module.exports = function (server, app, io, dispatcher) {
+module.exports = function (pluginManager, io, dispatcher) {
     /**
      * @type {display[]}
      */
@@ -70,7 +73,6 @@ module.exports = function (server, app, io, dispatcher) {
     }
 
     let adminLobby1 = new adminLobby(io, dispatcher, screenView, adminView, bundleManager);
-
     // create lobby
     io.of("/lobby").on("connection", function (socket) {
         cli.info("WS/" + socket.conn.remoteAddress + " connect");
@@ -92,10 +94,10 @@ module.exports = function (server, app, io, dispatcher) {
                     previewImages.push("/img/nopreview.png");
                 }
             }
-            socket.emit("callback.displays", {displays: availableDisplays, previewImages: previewImages});
+            socket.emit("callback.displays", { displays: availableDisplays, previewImages: previewImages });
         });
     });
 
-    return {screenView: screenView, adminView: adminView, bundleManager: bundleManager};
+    return { screenView: screenView, adminView: adminView, bundleManager: bundleManager };
 };
 
