@@ -1,7 +1,6 @@
-let router = require('express').Router();
 let passport = require("passport");
 
-module.exports = function (websocket, dispatcher) {
+module.exports = function (router, websocket, dispatcher) {
 
     router.get('/login', function (req, res, next) {
         res.render('auth/login');

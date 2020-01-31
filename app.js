@@ -138,11 +138,11 @@ let pluginManager = new PluginManager(app, io, eventDispatcher);
 let websocket = require("./modules/websocket")(pluginManager, io, eventDispatcher);
 let indexRouter = require('./routes/index.js')(pluginManager, websocket, eventDispatcher);
 let adminRouter = require('./routes/admin.js')(pluginManager, websocket, eventDispatcher);
-let authRouter = require('./routes/auth.js')(websocket, eventDispatcher);
+let authRouter = require('./routes/auth.js')(app, websocket, eventDispatcher);
 
 app.use('/', indexRouter);
 app.use('/admin', adminRouter);
-app.use('/', authRouter);
+//app.use('/', authRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

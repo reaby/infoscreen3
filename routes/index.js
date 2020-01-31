@@ -6,12 +6,16 @@ let availableDisplays = config.displays;
 const cli = require('../modules/cli.js');
 
 function ensureIsAdmin(req, res, next) {
-    if (!req.isAuthenticated || !req.isAuthenticated()) {
-        console.log(req.originalUrl);
-        req.session.location = req.originalUrl;
-        return res.redirect("/login");
+    let test = req.url.match(/^\/(login|logout|empty)\//);
+    if (test) {
+        next();
+    } else {
+        if (!req.isAuthenticated || !req.isAuthenticated()) {
+            req.session.location = req.originalUrl;
+            return res.redirect("/login");
+        }
     }
-    return next();
+    next();
 }
 
 module.exports = function (pluginManager, websocket, dispatcher) {
