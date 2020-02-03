@@ -96,7 +96,7 @@ i18next
         },
         fallbackLng: config.defaultLocale,
         preload: ['en', 'fi'],
-        saveMissing: true,
+        saveMissing: false,
         detection: {
             // order and from where user language should be detected
             order: [/*'path', 'session', */ 'querystring', 'cookie', 'header'],
