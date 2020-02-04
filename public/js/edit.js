@@ -179,10 +179,45 @@ function undo() {
     canvas.loadFromJSON(json, function () {        
         canvas.requestRenderAll();
         undoActive = true;      
-    }, function (obj, elem) {                
-        if (elem.type == "line") {     
-            elem.selectable = false
+    }, function (obj, object) {                
+        if (object.type == "line") {     
+            object.selectable = false
         }
+
+        if (object.type === "i-text") {
+
+            var fill = object.get("fill");
+            var fontSize = object.get("fontSize");
+
+            if (object.id === "header") {
+                object.setOptions(bundleData.styleHeader);
+                if (bundleData.styleHeader.fontSize !== fontSize) {
+                    object.setOptions({fontSize: fontSize});
+                }
+                if (bundleData.styleHeader.fill !== "") {
+                    object.setShadow({color: "rgba(0,0,0,0.6)", blur: 5, offsetX: 2, offsetY: 2});
+                }
+            } else {
+                object.setOptions(bundleData.styleText);
+                if (bundleData.styleText.fontSize !== fontSize) {
+                    object.setOptions({fontSize: fontSize});
+                }
+                if (bundleData.styleText.fill !== "") {
+                    object.setShadow({color: "rgba(0,0,0,0.6)", blur: 5, offsetX: 2, offsetY: 2});
+                }
+            }
+
+            if (fill != null) {
+                object.setOptions({fill: fill});
+            }
+
+            object.lockRotation = true;
+            object.hasControls = false;
+            object.lockUniScaling = true;
+            object.hasRotatingPoint = false;
+        }
+        object.lockUniScaling = true;
+
     });   
 }
 
@@ -425,10 +460,10 @@ function checkTimeDisplay() {
 function nextSlide(data) {
     undoActive = false;
     canvas.loadFromJSON(data.json, function () {
-        drawGrid();
-        canvas.requestRenderAll();
+        drawGrid();        
         undoActive = true;        
         saveState();   
+        canvas.renderAll();
     }, function (obj, object) {
 
         if (object.type === "i-text") {
@@ -463,7 +498,6 @@ function nextSlide(data) {
             object.lockUniScaling = true;
             object.hasRotatingPoint = false;
         }
-        object.preserveObjectStacking = true;
         object.lockUniScaling = true;
 
     });
