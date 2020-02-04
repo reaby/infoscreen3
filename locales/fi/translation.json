@@ -90,6 +90,26 @@
       "zoom": "Suurennus",
       "duration": "Pituus (sekunneissa), tyhjä on oletusarvo",
       "displayTime": "Näytä aika"
+    },
+    "tooltip": {
+      "header": "Lisää otsikko",
+      "paragraph": "Lisää teksti",
+      "image": "Lisää kuva",
+      "bringToFront": "Tuo edustalle",
+      "bringForward": "Tuo eteenpäin",
+      "sendBackward": "Vie taaksepäin",
+      "sendToBack": "Vie taustalle",
+      "alignLeft": "Tasaa vasemmalle",
+      "alignCenter": "Keskitä",
+      "alignRight": "Tasaa oikealle",
+      "alignUp": "Tasaa yläosat",
+      "alignDown": "Tasaa alaosat",
+      "alignJustify": "Tasaa",
+      "fontPlus": "Lisää kirjaisimen kokoa",
+      "fontMinus": "Vähennä kirjaisimen kokoa",
+      "centerHorizontal": "Keskitä vaakasuunnassa",
+      "centerVertical": "Keskitä pystysuunnassa",
+      "undo": "Kumoa"
     }
   },
   "index": {

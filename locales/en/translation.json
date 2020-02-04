@@ -82,7 +82,12 @@
       "sendToFront": "Send to front",
       "moveForward": "Move forward",
       "moveBackward": "Move backward",
-      "sendToBack": "Send to back"
+      "sendToBack": "Send to back",
+      "centerHorizontal": "Center Horizontal",
+      "centerVertical": "Center Vertical",
+      "copy": "Copy element",
+      "paste": "Paste element",
+      "remove": "Remove element"
     },
     "addLink": {
       "name": "Name",
@@ -90,6 +95,26 @@
       "zoom": "Zoom page by",
       "duration": "Display duration (seconds), leave blank for default",
       "displayTime": "Display time"
+    },
+    "tooltip": {
+      "header": "Insert header",
+      "paragraph": "Insert text",
+      "image": "Insert an image",
+      "bringToFront": "Arrage element topmost",
+      "bringForward": "Brings element forward",
+      "sendBackward": "Send element backward",
+      "sendToBack": "Send element back",
+      "alignLeft": "Align left",
+      "alignCenter": "Align center",
+      "alignRight": "Align right",
+      "alignUp": "Align top",
+      "alignDown": "Align bottom",      
+      "alignJustify": "Justify Align",
+      "fontPlus": "Increase font size",
+      "fontMinus": "Decrease font size",
+      "centerHorizontal":"Center Horizontal",
+      "centerVertical":"Center Vertical",
+      "undo": "Undo last action"
     }
   },
   "index": {

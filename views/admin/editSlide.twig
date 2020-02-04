@@ -1,414 +1,422 @@
 {% extends 'layout/edit.twig' %}
 
 {% block header %}
-    <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
-    <script src="/socket.io/socket.io.js"></script>
-    <script>
-        var bundle = "{{ bundle }}";
-        var file = "{{ file }}";
-        {% if displayId != null %}
-        var displayId = {{ displayId }};
-        {% else %}
-        var displayId = 0;
-        {% endif %}
-    </script>
-    <style>
-        label {
-            color: white;
-        }
+<script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    var bundle = "{{ bundle }}";
+    var file = "{{ file }}";
+    var displayId = {{ displayId }};
+</script>
+<style>
+    label {
+        color: white;
+    }
 
-        canvas {
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            -moz-font-smoothing: antialiased;
-            font-smoothing: antialiased;
-            text-rendering: geometricPrecision;
-            font-smooth: always;
-        }
-    </style>
+    canvas {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        -moz-font-smoothing: antialiased;
+        font-smoothing: antialiased;
+        text-rendering: geometricPrecision;
+        font-smooth: always;
+    }
+</style>
 {% endblock %}
 
 {% block body %}
-    <div class="ui primary pointing menu" style="margin: 0;">
-        <div class="item">
-            <div class="ui input">
-                <label for="duration"></label>
-                <input type="number" id="duration" placeholder="{{ t("navs.duration") }}" min="5"/>
-            </div>
+<div class="ui primary pointing menu" style="margin: 0;">
+    <div class="item">
+        <div class="ui input">
+            <label for="duration"></label>
+            <input type="number" id="duration" placeholder="{{ t("navs.duration") }}" min="5" />
         </div>
-        <div class="item">
-            <div id="override" class="ui checkbox">
-                <input id="lbl2" type="checkbox"/>
-                <label for="lbl2">{{ t("navs.override") }} </label>
-            </div>
+    </div>
+    <div class="item">
+        <div id="override" class="ui checkbox">
+            <input id="lbl2" type="checkbox" />
+            <label for="lbl2">{{ t("navs.override") }} </label>
+        </div>
 
-            <div id="displaytime" class="ui toggle checkbox">
-                <input id="lbl" type="checkbox"/>
-                <label for="lbl">{{ t("navs.time") }}</label>
-            </div>
+        <div id="displaytime" class="ui toggle checkbox">
+            <input id="lbl" type="checkbox" />
+            <label for="lbl">{{ t("navs.time") }}</label>
         </div>
-        <div id="transitions" class="ui dropdown item">
-            <div class="ui small breadcrumb">
-                <span class="section">{{ t("navs.transition") }}</span>
-                <i class="right chevron icon divider"></i>
-                <span id="currentTransition" class="section"></span>
-            </div>
-            <i class="dropdown icon"></i>
+    </div>
+    <div id="transitions" class="ui dropdown item">
+        <div class="ui small breadcrumb">
+            <span class="section">{{ t("navs.transition") }}</span>
+            <i class="right chevron icon divider"></i>
+            <span id="currentTransition" class="section"></span>
         </div>
+        <i class="dropdown icon"></i>
+    </div>
+    <div class="item">
+        <div class="ui labeled input">
+            <label class="ui right pointing label" for="slide_name">{{ t("navs.slideName") }}</label>
+            <input class="ui input" name="slideName" type="text" id="slideName" value="untitled" />
+        </div>
+    </div>
+    <div class="right menu">
         <div class="item">
-            <div class="ui labeled input">
-                <label class="ui right pointing label" for="slide_name">{{ t("navs.slideName") }}</label>
-                <input class="ui input" name="slideName" type="text" id="slideName" value="untitled"/>
-            </div>
-        </div>
-        <div class="right menu">
-            <div class="item">
-                <div class="ui green buttons">
-                    <div onclick="save()" class="ui button">{{ t("actions.save") }}</div>
-                    <div class="ui floating dropdown icon button" id="dropdownSave">
-                        <i class="dropdown icon"></i>
-                        <div class="menu">
-                            <div onclick="saveTemplate()" class="item"><i
-                                        class="save icon"></i> {{ t("actions.savetemplate") }}</div>
-                        </div>
+            <div class="ui green buttons">
+                <div onclick="save()" class="ui button">{{ t("actions.save") }}</div>
+                <div class="ui floating dropdown icon button" id="dropdownSave">
+                    <i class="dropdown icon"></i>
+                    <div class="menu">
+                        <div onclick="saveTemplate()" class="item"><i class="save icon"></i>
+                            {{ t("actions.savetemplate") }}</div>
                     </div>
                 </div>
+            </div>
 
-                {% if displayId != null %}
-                    <div class="ui red basic buttons">
-                        <div onclick="cueSlide({{ displayId }})" class="ui button">{{ t("actions.announce") }}</div>
-                        <div class="ui floating dropdown icon button" id="dropdownAnnounce">
-                            <i class="dropdown icon"></i>
-                            <div class="menu">
-                                <div onclick="cueSlide(null)" class="item"><i
-                                            class="exclamation icon"></i> {{ t("actions.announceAll") }}</div>
-                            </div>
-                        </div>
+            {% if displayId != null %}
+            <div class="ui red basic buttons">
+                <div onclick="cueSlide({{ displayId }})" class="ui button">{{ t("actions.announce") }}</div>
+                <div class="ui floating dropdown icon button" id="dropdownAnnounce">
+                    <i class="dropdown icon"></i>
+                    <div class="menu">
+                        <div onclick="cueSlide(null)" class="item"><i class="exclamation icon"></i>
+                            {{ t("actions.announceAll") }}</div>
                     </div>
-                {% else %}
-                    <a href="#" onclick="cueSlide(null)" class="ui red button">{{ t("actions.announceAll") }}</a>
-                {% endif %}
-            </div>
-            <div class="item">
-                <a href="#" onclick="window.close()" class="ui button">{{ t("actions.cancel") }}</a>
-            </div>
-        </div>
-    </div>
-
-
-    <div class="ui menu" style="margin: 0;">
-        <div class="item">
-            <div class="ui inverted buttons">
-                <a href="#" onclick="addHeader('header')" class="ui basic icon button"><i
-                            class="ui heading icon"></i></a>
-                <a href="#" onclick="addText('paragraph text')" class="ui basic icon button"><i
-                            class="ui paragraph icon"></i></a>
-                <a href="#" onclick="openImageBrowser()" class="ui basic icon button"><i
-                            class="ui image icon"></i></a>
-            </div>
-        </div>
-        <div class="item">
-            <div class="ui inverted buttons">
-                <a class="ui basic icon button"
-                   onclick="setZindex('bringToFront');">
-                    <i class="ui level up icon"></i>
-                </a>
-                <a class="ui basic icon button"
-                   onclick="setZindex('bringForward');">
-                    <i class="ui arrow up icon"></i>
-
-                </a>
-                <a class="ui basic icon button"
-                   onclick="setZindex('sendBackwards>');">
-                    <i class="ui arrow down icon"></i>
-                </a>
-                <a class="ui basic icon button"
-                   onclick="setZindex('sendToBack');">
-                    <i class="ui level down icon"></i>
-                </a>
-            </div>
-        </div>
-
-        <div class="item">
-            <div class="ui inverted buttons">
-                <a href="#" onclick="setAlign('left')" class="ui basic icon button"><i
-                            class="ui align left icon"></i></a>
-                <a href="#" onclick="setAlign('center')" class="ui basic icon button"><i
-                            class="ui align center icon"></i></a>
-                <a href="#" onclick="setAlign('right')" class="ui basic icon button"><i
-                            class="ui align right icon"></i></a>
-                <a href="#" onclick="setAlign('justify')" class="ui basic icon button"><i
-                            class="ui align justify icon"></i></a>
-            </div>
-        </div>
-        <div class="item">
-            <div onclick="fontSize(1);" class="ui basic icon button">
-                <i class="icons">
-                    <i class="plus icon"></i>
-                    <i class="corner font icon"></i>
-                </i>
-            </div>
-            <div onclick="fontSize(-1);" class="ui basic icon button">
-                <i class="icons">
-                    <i class="minus icon"></i>
-                    <i class="corner font icon"></i>
-                </i>
-            </div>
-        </div>
-        <div class="item">
-            <div id="colorPicker" class="ui basic button">{{ t("admin.editSlide.changeColor") }} </div>
-
-            <div class="ui popup" style="display: none; min-width: 500px;">
-                <div onclick="changeColor(this);" class="ui white basic icon button"></div>
-                <div onclick="changeColor(this);" class="ui grey icon button"></div>
-                <div onclick="changeColor(this);" style="background:black;" class="ui black icon button"></div>
-                <div onclick="changeColor(this);" class="ui red icon icon button"></div>
-                <div onclick="changeColor(this);" class="ui orange icon button"></div>
-                <div onclick="changeColor(this);" class="ui yellow icon button"></div>
-                <div onclick="changeColor(this);" class="ui olive icon button"></div>
-                <div onclick="changeColor(this);" class="ui green icon button"></div>
-                <div onclick="changeColor(this);" class="ui teal icon button"></div>
-                <div onclick="changeColor(this);" class="ui blue icon button"></div>
-                <div onclick="changeColor(this);" class="ui violet icon button"></div>
-                <div onclick="changeColor(this);" class="ui purple icon button"></div>
-                <div onclick="changeColor(this);" class="ui pink icon button"></div>
-                <div onclick="changeColor(this);" class="ui brown icon button"></div>
-            </div>
-        </div>
-        <div class="item">
-            <div class="ui basic icon button" onclick="setCenter('h')"><i class="arrows alternate horizontal icon"></i>
-            </div>
-            <div class="ui basic icon button" onclick="setCenter('v')"><i class="arrows alternate vertical icon"></i>
-            </div>
-        </div>
-
-        <div class="right menu">
-            <div class="item">
-                <div class="ui inverted buttons"><a href="#" onclick="copyObject()" class="ui basic icon button"><i
-                                class="ui copy icon"></i></a>
-                    <a href="#" onclick="pasteObject()" class="ui basic icon button"><i
-                                class="ui paste icon"></i></a>
-                    <a href="#" onclick="removeSelectedObjects()" class="ui basic  icon button"><i
-                                class="ui remove icon"></i></a>
                 </div>
             </div>
+            {% else %}
+            <a href="#" onclick="cueSlide(null)" class="ui red button">{{ t("actions.announceAll") }}</a>
+            {% endif %}
+        </div>
+        <div class="item">
+            <a href="#" onclick="window.close()" class="ui button">{{ t("actions.cancel") }}</a>
+        </div>
+    </div>
+</div>
+
+
+<div class="ui menu" style="margin: 0;">
+    <div class="item">
+        <div class="ui inverted buttons">
+            <a href="#" onclick="addHeader('header')" class="ui basic icon button" data-content="{{ t("admin.tooltip.header")}}"><i class="ui heading icon"></i></a>
+            <a href="#" onclick="addText('paragraph text')" class="ui basic icon button" data-content="{{t("admin.tooltip.paragraph")}}"><i class="ui paragraph icon"></i></a>
+            <a href="#" onclick="openImageBrowser()" class="ui basic icon button" data-content="{{t("admin.tooltip.image")}}"><i class="ui image icon"></i></a>
+        </div>
+    </div>
+    <div class="item">
+        <div class="ui inverted buttons">
+            <a class="ui basic icon button" onclick="setZindex('bringToFront');" data-content="{{t("admin.tooltip.bringToFront")}}">
+                <i class="ui level up icon"></i>
+            </a>
+            <a class="ui basic icon button" onclick="setZindex('bringForward');" data-content="{{t("admin.tooltip.bringForward")}}">
+                <i class="ui arrow up icon"></i>
+
+            </a>
+            <a class="ui basic icon button" onclick="setZindex('sendBackwards>');" data-content="{{t("admin.tooltip.sendBackward")}}">
+                <i class="ui arrow down icon"></i>
+            </a>
+            <a class="ui basic icon button" onclick="setZindex('sendToBack');" data-content="{{t("admin.tooltip.sendToBack")}}">
+                <i class="ui level down icon"></i>
+            </a>
         </div>
     </div>
 
-    <div style="margin:0; padding:0;">
-        <div id="matchsize">
-            <canvas id="edit" width="1280" height="720" style="position: fixed; z-index:10;"></canvas>
-            <div id="bg">
-                <img id="bgimg" class="fsimage" src=""/>
+    <div class="item">
+        <div class="ui inverted buttons">
+            <a href="#" onclick="setAlign('left')" class="ui basic icon button" data-content="{{t("admin.tooltip.alignLeft")}}"><i class="ui align left icon"></i></a>
+            <a href="#" onclick="setAlign('center')" class="ui basic icon button" data-content="{{t("admin.tooltip.alignCenter")}}"><i
+                    class="ui align center icon"></i></a>
+            <a href="#" onclick="setAlign('right')" class="ui basic icon button" data-content="{{t("admin.tooltip.alignRight")}}"><i class="ui align right icon"></i></a>
+            <a href="#" onclick="setAlign('justify')" class="ui basic icon button" data-content="{{t("admin.tooltip.alignJustify")}}"><i
+                    class="ui align justify icon"></i></a>
+        </div>
+    </div>
+    <div class="item">
+        <div onclick="fontSize(1);" class="ui basic icon button"  data-content="{{t("admin.tooltip.fontPlus")}}">
+            <i class="icons">
+                <i class="plus icon"></i>
+                <i class="corner font icon"></i>
+            </i>
+        </div>
+        <div onclick="fontSize(-1);" class="ui basic icon button"  data-content="{{t("admin.tooltip.fontMinus")}}">
+            <i class="icons">
+                <i class="minus icon"></i>
+                <i class="corner font icon"></i>
+            </i>
+        </div>
+    </div>
+    <div class="item">
+        <div id="colorPicker" class="ui basic button">{{ t("admin.editSlide.changeColor") }} </div>
+
+        <div class="ui popup" style="display: none; min-width: 500px;">
+            <div onclick="changeColor(this);" class="ui white basic icon button"></div>
+            <div onclick="changeColor(this);" class="ui grey icon button"></div>
+            <div onclick="changeColor(this);" style="background:black;" class="ui black icon button"></div>
+            <div onclick="changeColor(this);" class="ui red icon icon button"></div>
+            <div onclick="changeColor(this);" class="ui orange icon button"></div>
+            <div onclick="changeColor(this);" class="ui yellow icon button"></div>
+            <div onclick="changeColor(this);" class="ui olive icon button"></div>
+            <div onclick="changeColor(this);" class="ui green icon button"></div>
+            <div onclick="changeColor(this);" class="ui teal icon button"></div>
+            <div onclick="changeColor(this);" class="ui blue icon button"></div>
+            <div onclick="changeColor(this);" class="ui violet icon button"></div>
+            <div onclick="changeColor(this);" class="ui purple icon button"></div>
+            <div onclick="changeColor(this);" class="ui pink icon button"></div>
+            <div onclick="changeColor(this);" class="ui brown icon button"></div>
+        </div>
+    </div>
+    <div class="item">
+        <div class="ui basic icon button" onclick="setCenter('h')" data-content="{{t("admin.tooltip.centerHorizontal")}}"><i class="arrows alternate horizontal icon"></i></div>
+        <div class="ui basic icon button" onclick="setCenter('v')" data-content="{{t("admin.tooltip.centerVertical")}}"><i class="arrows alternate vertical icon"></i></div>
+        <div class="ui basic icon button" onclick="alignObject('left')" data-content="{{t("admin.tooltip.alignLeft")}}"><i class="arrow alternate circle left outline icon"></i></div>
+        <div class="ui basic icon button" onclick="alignObject('right')" data-content="{{t("admin.tooltip.alignRight")}}"><i class="arrow alternate circle right outline icon"></i></div>
+        <div class="ui basic icon button" onclick="alignObject('top')" data-content="{{t("admin.tooltip.alignUp")}}"><i class="arrow alternate circle up outline icon"></i></div>
+        <div class="ui basic icon button" onclick="alignObject('bottom')" data-content="{{t("admin.tooltip.alignDown")}}"><i class="arrow alternate circle down outline icon"></i></div>
+
+    </div>
+
+    <div class="right menu">
+        <div class="item">
+        <div class="ui inverted buttons">        
+            <a href="#" onclick="undo()" class="ui basic icon button" data-content="{{ t("admin.tooltip.undo") }}"><i
+                        class="ui undo icon"></i> {{ t("admin.tooltip.undo") }}</a>                        
+            <a href="#" onclick="copyObject()" class="ui basic icon button" data-content="{{t("admin.tooltip.copy")}}"><i
+                        class="ui copy icon"></i></a>
+                <a href="#" onclick="pasteObject()" class="ui basic icon button"><i class="ui paste icon" data-content="{{t("admin.tooltip.paste")}}"></i></a>
+                <a href="#" onclick="removeSelectedObjects()" class="ui basic icon button" data-content="{{t("admin.tooltip.remove")}}"><i
+                        class="ui remove icon"></i></a>
             </div>
-            <video muted loop autoplay id="bgvid2" poster="">
-            </video>
-            <div id="time2" class="noselect delay animated">00:00</div>
         </div>
     </div>
+</div>
 
-    <div id="contextmenu" class="ui small vertical menu" style="display: none; position: absolute; z-index: 1000;">
-        <a class="item" data-action="copy">
-            {{ t("actions.copy") }}
-        </a>
-        <a class="item" data-action="paste">
-            {{ t("actions.paste") }}
-        </a>
-        <div class="ui dropdown item">
-            <i class="dropdown icon"></i>
-            {{ t("admin.editSlide.order") }}
-            <div class="menu">
-                <div class="item" data-action="bringToFront">{{ t("admin.editSlide.sendToFront") }}</div>
-                <div class="item" data-action="bringForward">{{ t("admin.editSlide.moveForward") }}</div>
-                <div class="item" data-action="sendBackwards">{{ t("admin.editSlide.moveBackward") }}</div>
-                <div class="item" data-action="sendToBack">{{ t("admin.editSlide.sendToBack") }}</div>
-            </div>
+<div style="margin:0; padding:0;">
+    <div id="matchsize">
+        <canvas id="edit" width="1280" height="720" style="position: fixed; z-index:10;"></canvas>
+        <div id="bg">
+            <img id="bgimg" class="fsimage" src="" />
         </div>
-        <a class="item" data-action="delete">
-            {{ t("actions.delete") }}
-        </a>
+        <video muted loop autoplay id="bgvid2" poster="">
+        </video>
+        <div id="time2" class="noselect delay animated">00:00</div>
     </div>
+</div>
 
-    <div id="imageLayer" class="ui modal">
-        <div class="header">{{ t("admin.editSlide.insertImage") }}</div>
-        <div id="dropzone" class="scrolling content">
-            <div class="ui info message">{{ t("admin.editSlide.dropToUpload") }}</div>
-            <div id="imageList" class="ui three stackable cards">
-
-            </div>
-        </div>
-        <div class="actions">
-            <div class="ui cancel button">{{ t("actions.cancel") }}</div>
+<div id="contextmenu" class="ui small vertical menu" style="display: none; position: absolute; z-index: 1000;">
+    <a class="item" data-action="copy">
+        {{ t("actions.copy") }}
+    </a>
+    <a class="item" data-action="paste">
+        {{ t("actions.paste") }}
+    </a>
+    <div class="ui dropdown item">
+        <i class="dropdown icon"></i>
+        {{ t("admin.editSlide.order") }}
+        <div class="menu">
+            <div class="item" data-action="bringToFront">{{ t("admin.editSlide.sendToFront") }}</div>
+            <div class="item" data-action="bringForward">{{ t("admin.editSlide.moveForward") }}</div>
+            <div class="item" data-action="sendBackwards">{{ t("admin.editSlide.moveBackward") }}</div>
+            <div class="item" data-action="sendToBack">{{ t("admin.editSlide.sendToBack") }}</div>
         </div>
     </div>
+    <a class="item" data-action="delete">
+        {{ t("actions.delete") }}
+    </a>
+</div>
 
-    <canvas id="tempCanvas" width="1280" height="720" style="display: none"></canvas>
+<div id="imageLayer" class="ui modal">
+    <div class="header">{{ t("admin.editSlide.insertImage") }}</div>
+    <div id="dropzone" class="scrolling content">
+        <div class="ui info message">{{ t("admin.editSlide.dropToUpload") }}</div>
+        <div id="imageList" class="ui three stackable cards">
 
-    <script>
-        var socket = io.connect("{{ config.serverUrl }}:{{ config.serverListenPort }}/admin-" + displayId);
-    </script>
-    <script>
-        var images = {};
+        </div>
+    </div>
+    <div class="actions">
+        <div class="ui cancel button">{{ t("actions.cancel") }}</div>
+    </div>
+</div>
 
-        $(function () {
-            var opts = {
-                dragClass: "active",
-                on: {
-                    load: function (e, file) {
-                        // check file type
-                        var imageType = /image.(jpeg|png)/;
-                        if (!file.type.match(imageType)) {
-                            //  alert("File \"" + file.name + "\" is not a valid image file, only jpeg and png are supported");
-                            return false;
-                        }
+<canvas id="tempCanvas" width="1280" height="720" style="display: none"></canvas>
 
-                        // check file size
-                        if (parseInt(file.size / 1024) > 2050) {
-                            alert("File \"" + file.name + "\" is too big. Max allowed size is 2 MB.");
-                            return false;
-                        }
-
-                        createBox(e, file);
-                    },
-                }
-            };
-
-            FileReaderJS.setupDrop(document.getElementById('dropzone'), opts);
-            FileReaderJS.setupClipboard(document.body, opts);
+<script>
+    var socket = io.connect("{{ config.serverUrl }}:{{ config.serverListenPort }}/admin-" + displayId);
+</script>
+<script>
+    var images = {};
+    $('.ui.button').popup({
+            delay: {
+                show: 1000,
+                hide: 0
+            },            
+            position: "bottom left"
         });
+    $(function () {
+        
+        var opts = {
+            dragClass: "active",
+            on: {
+                load: function (e, file) {
+                    // check file type
+                    var imageType = /image.(jpeg|png)/;
+                    if (!file.type.match(imageType)) {
+                        //  alert("File \"" + file.name + "\" is not a valid image file, only jpeg and png are supported");
+                        return false;
+                    }
+
+                    // check file size
+                    if (parseInt(file.size / 1024) > 2050) {
+                        alert("File \"" + file.name + "\" is too big. Max allowed size is 2 MB.");
+                        return false;
+                    }
+
+                    createBox(e, file);
+                },
+            }
+        };
+
+        FileReaderJS.setupDrop(document.getElementById('dropzone'), opts);
+        FileReaderJS.setupClipboard(document.body, opts);
+    });
 
 
-        function createBox(e, file) {
-            var uid = uuidv4();
-            var imgName = file.name;
+    function createBox(e, file) {
+        var uid = uuidv4();
+        var imgName = file.name;
 
-            var src = e.target.result;
-            var tempCanvas = new fabric.StaticCanvas("tempCanvas", {width: 1280, height: 720});
-            tempCanvas.backgroundColor = null;
-            tempCanvas.backgroundImage = null;
+        var src = e.target.result;
+        var tempCanvas = new fabric.StaticCanvas("tempCanvas", {
+            width: 1280,
+            height: 720
+        });
+        tempCanvas.backgroundColor = null;
+        tempCanvas.backgroundImage = null;
 
-            fabric.Image.fromURL(src, function (bgImage) {
+        fabric.Image.fromURL(src, function (bgImage) {
 
-                var canvasAspect = tempCanvas.width / tempCanvas.height;
-                var imgAspect = bgImage.width / bgImage.height;
-                var left, top, scaleFactor;
+            var canvasAspect = tempCanvas.width / tempCanvas.height;
+            var imgAspect = bgImage.width / bgImage.height;
+            var left, top, scaleFactor;
 
-                if (canvasAspect >= imgAspect) {
-                    scaleFactor = tempCanvas.width / bgImage.width;
-                    left = 0;
-                    top = -((bgImage.height * scaleFactor) - tempCanvas.height) / 2;
-                } else {
-                    scaleFactor = tempCanvas.height / bgImage.height;
-                    top = 0;
-                    left = -((bgImage.width * scaleFactor) - tempCanvas.width) / 2;
-                }
+            if (canvasAspect >= imgAspect) {
+                scaleFactor = tempCanvas.width / bgImage.width;
+                left = 0;
+                top = -((bgImage.height * scaleFactor) - tempCanvas.height) / 2;
+            } else {
+                scaleFactor = tempCanvas.height / bgImage.height;
+                top = 0;
+                left = -((bgImage.width * scaleFactor) - tempCanvas.width) / 2;
+            }
 
-                bgImage.set({
-                    top: top,
-                    left: left,
-                    originX: 'left',
-                    originY: 'top',
-                    scaleX: scaleFactor,
-                    scaleY: scaleFactor
-                });
-
-                bgImage.lockUniScaling = true;
-                tempCanvas.add(bgImage);
-                tempCanvas.renderAll();
-
-                images[uid] = {data: src, crop: tempCanvas.toDataURL(), name: imgName, type: file.type};
-
-                var template = ` <div class="ui card" id="${uid}">
-        <div class="image">
-            <img class="" src="${src}" alt="image">
-        </div>
-        <div class="content">
-            <div class="center aligned header">${imgName}</div>
-        </div>
-        <div class="extra content">
-            <div class="ui tiny basic button" onclick="upload('${uid}', 'original');">{{ t("actions.upload") }}</div>
-            <div class="ui tiny basic button" onclick="upload('${uid}', 'scale');">{{ t("actions.uploadScale") }}</div>
-            <div class="ui tiny basic button" onclick="upload('${uid}', 'createSlide');">{{ t("actions.createNewSlide") }}</div>
-            <div class="ui tiny basic button" onclick="cancelUpload('${uid}');">{{ t("actions.cancel") }}</div>
-        </div>
-    </div>`;
-                $("#imageList").append(template);
+            bgImage.set({
+                top: top,
+                left: left,
+                originX: 'left',
+                originY: 'top',
+                scaleX: scaleFactor,
+                scaleY: scaleFactor
             });
 
-        }
+            bgImage.lockUniScaling = true;
+            tempCanvas.add(bgImage);
+            tempCanvas.renderAll();
+
+            images[uid] = {
+                data: src,
+                crop: tempCanvas.toDataURL(),
+                name: imgName,
+                type: file.type
+            };
+
+            var template = `
+            <div class="ui card" id="${uid}">
+                <div class="image">
+                    <img class="" src="${src}" alt="image">
+                </div>
+                <div class="content">
+                    <div class="center aligned header">${imgName}</div>
+                </div>
+                <div class="extra content">
+                    <div class="ui tiny basic button" onclick="upload('${uid}', 'original');">{{ t("actions.upload") }}</div>
+                    <div class="ui tiny basic button" onclick="upload('${uid}', 'scale');">{{ t("actions.uploadScale") }}</div>
+                    <div class="ui tiny basic button" onclick="upload('${uid}', 'createSlide');">{{ t("actions.createNewSlide") }}</div>
+                    <div class="ui tiny basic button" onclick="cancelUpload('${uid}');">{{ t("actions.cancel") }}</div>
+                </div>
+            </div>`;
+            $("#imageList").append(template);
+        });
+
+    }
 
 
-        function upload(uid, type) {
+    function upload(uid, type) {
 
-            if (images[uid] !== null) {
-                var busyTemplate = `<div class="card">
-                                    <div class="ui active dimmer">
-                                        <div class="ui text loader">Uploading</div>
-                                    </div>
-                            </div>`;
+        if (images[uid] !== null) {
+            var busyTemplate = `
+            <div class="card">
+                <div class="ui active dimmer">
+                    <div class="ui text loader">Uploading</div>
+                </div>
+            </div>`;
 
-                let filename = images[uid].name.replace(/\.[^/.]+$/, "");
+            let filename = images[uid].name.replace(/\.[^/.]+$/, "");
 
-                switch (type) {
-                    case "original":
-                        $("#" + uid).html(busyTemplate);
-                        socket.emit("edit.uploadImage", {
-                            bundleName: bundle,
-                            name: filename,
-                            imageData: images[uid].data,
-                            type: images[uid].type,
-                        });
-                        delete (images[uid]);
-                        break;
-                    case "scale":
-                        $("#" + uid).html(busyTemplate);
-                        socket.emit("edit.uploadImage", {
-                            bundleName: bundle,
-                            name: filename + "_crop",
-                            imageData: images[uid].crop,
-                            type: "image/png",
-                        });
-                        delete (images[uid]);
-                        break;
-                    case "createSlide":
-                        saveAsFullScreenImage(filename, images[uid].data);
-                        $("#" + uid).remove();
-                        delete (images[uid]);
-                        break;
-                }
-
+            switch (type) {
+                case "original":
+                    $("#" + uid).html(busyTemplate);
+                    socket.emit("edit.uploadImage", {
+                        bundleName: bundle,
+                        name: filename,
+                        imageData: images[uid].data,
+                        type: images[uid].type,
+                    });
+                    delete(images[uid]);
+                    break;
+                case "scale":
+                    $("#" + uid).html(busyTemplate);
+                    socket.emit("edit.uploadImage", {
+                        bundleName: bundle,
+                        name: filename + "_crop",
+                        imageData: images[uid].crop,
+                        type: "image/png",
+                    });
+                    delete(images[uid]);
+                    break;
+                case "createSlide":
+                    saveAsFullScreenImage(filename, images[uid].data);
+                    $("#" + uid).remove();
+                    delete(images[uid]);
+                    break;
             }
-        }
 
-        function addImagesFromUploadQueue() {
-
-            for (var i in images) {
-                var uid = i;
-                var image = images[i];
-                var template = ` <div class="ui card" id="${uid}">
-        <div class="image">
-            <img class="" src="${image.data}" alt="image">
-        </div>
-        <div class="content">
-            <div class="center aligned header">${image.name}</div>
-        </div>
-        <div class="extra content">
-            <div class="ui tiny basic button" onclick="upload('${uid}', 'original');">{{ t("actions.upload") }}</div>
-            <div class="ui tiny basic button" onclick="upload('${uid}', 'scale');">{{ t("actions.uploadScale") }}</div>
-            <div class="ui tiny basic button" onclick="upload('${uid}', 'createSlide');">{{ t("actions.createNewSlide") }}</div>
-            <div class="ui tiny basic button" onclick="cancelUpload('${uid}');">{{ t("actions.cancel") }}</div>
-        </div>
-    </div>`;
-                $("#imageList").append(template);
-            }
         }
+    }
 
-        function cancelUpload(uid) {
-            delete images[uid];
-            $("#" + uid).remove();
+    function addImagesFromUploadQueue() {
+
+        for (var i in images) {
+            var uid = i;
+            var image = images[i];
+            var template = `
+            <div class="ui card" id="${uid}">
+                <div class="image">
+                    <img class="" src="${image.data}" alt="image">
+                </div>
+                <div class="content">
+                    <div class="center aligned header">${image.name}</div>
+                </div>
+                <div class="extra content">
+                    <div class="ui tiny basic button" onclick="upload('${uid}', 'original');">{{ t("actions.upload") }}</div>
+                    <div class="ui tiny basic button" onclick="upload('${uid}', 'scale');">{{ t("actions.uploadScale") }}</div>
+                    <div class="ui tiny basic button" onclick="upload('${uid}', 'createSlide');">{{ t("actions.createNewSlide") }}</div>
+                    <div class="ui tiny basic button" onclick="cancelUpload('${uid}');">{{ t("actions.cancel") }}</div>
+                </div>
+            </div>`;
+            $("#imageList").append(template);
         }
-    </script>
-    <script src="/js/edit.js"></script>
+    }
+
+    function cancelUpload(uid) {
+        delete images[uid];
+        $("#" + uid).remove();
+    }
+</script>
+<script src="/js/edit.js"></script>
 {% endblock %}
-
-

@@ -5,6 +5,9 @@ var grid = 1280 / 32;
 
 var _clipboard = null;
 var slideName = "untitled";
+var undoData = [];
+
+var undoActive = false;
 
 bundleData = {
     background: "",
@@ -19,7 +22,7 @@ $(function () {
     canvas.includeDefaultValues = false;
     canvas.preserveObjectStacking = true;
     canvas.antialias = true;
-
+    
     canvas.on('object:moving', function (options) {
         if (Math.round(options.target.left / grid * 4) % 4 === 0) {
             options.target.set({
@@ -29,6 +32,19 @@ $(function () {
 
         if (Math.round(options.target.top / grid * 4) % 4 === 0) {
             options.target.set({top: Math.round(options.target.top / grid) * grid}).setCoords();
+        }
+    });
+
+    canvas.on("object:added", function() {
+        if (undoActive) {
+            saveState();
+        }
+    });
+
+    
+    canvas.on("object:modified", function() {
+        if (undoActive) {
+            saveState();
         }
     });
 
@@ -63,7 +79,7 @@ $(function () {
             hoverable: true,
             position: 'bottom center',
             delay: {
-                show: 200,
+                show: 50,
                 hide: 800
             }
         });
@@ -140,6 +156,36 @@ $("#contextmenu .item").click(function () {
     // Hide it AFTER the action was triggered
     $("#contextmenu").hide(100);
 });
+
+function saveState() {
+    if (undoData.length >= 10) {
+        undoData.shift();
+    }
+    undoData.push(canvas.toJSON(['id', 'fontSize']));
+}
+
+function undo() {
+    let json = {};
+    if (undoData.length > 1) {              
+        undoData.pop();
+        json = undoData[undoData.length-1];
+    } 
+
+    if (undoData.length == 1) {
+        json = undoData[undoData.length-1];
+    }
+
+    undoActive = false;
+    canvas.loadFromJSON(json, function () {        
+        canvas.requestRenderAll();
+        undoActive = true;      
+    }, function (obj, elem) {                
+        if (elem.type == "line") {     
+            elem.selectable = false
+        }
+    });   
+}
+
 
 /**
  * Displays the local time for bottom of screen
@@ -347,14 +393,14 @@ function drawGrid() {
             strokeDashArray: [w, w],
             opacity: 0.5,
             selectable: false,
-            zIndex: 0
+            zIndex: -1
         }));
         canvas.add(new fabric.Line([0, i * grid, 1280, i * grid], {
             stroke: '#ccc',
             strokeDashArray: [w, w],
             opacity: 0.5,
             selectable: false,
-            zIndex: 0
+            zIndex: -1
         }))
     }
     canvas.renderAll();
@@ -377,10 +423,12 @@ function checkTimeDisplay() {
 }
 
 function nextSlide(data) {
+    undoActive = false;
     canvas.loadFromJSON(data.json, function () {
         drawGrid();
-        canvas.renderAll();
-
+        canvas.requestRenderAll();
+        undoActive = true;        
+        saveState();   
     }, function (obj, object) {
 
         if (object.type === "i-text") {
@@ -415,7 +463,7 @@ function nextSlide(data) {
             object.lockUniScaling = true;
             object.hasRotatingPoint = false;
         }
-
+        object.preserveObjectStacking = true;
         object.lockUniScaling = true;
 
     });
@@ -753,6 +801,68 @@ function setCenter(direction) {
             break;
     }
 }
+
+function alignObject(direction) {
+    let objects = canvas.getActiveObjects();
+    let active = canvas.getActiveObject();    
+    let first = true;
+    for (var obj of objects) {
+        if (first) {
+            first = false;
+            active = obj;            
+        }
+        switch(direction) {
+            case "top":  
+                 if (obj.top < active.top) active = obj;
+                break;    
+            case "bottom":  
+                if ((obj.top + obj.height) > (active.top + active.height)) active = obj;
+                break;
+            case "left":  {
+                if (obj.left < active.left) active = obj;
+                break;
+            }
+            case "right":  {
+                if ((obj.left + obj.width) > (active.left + active.width)) active = obj;
+                break;
+            }
+        }
+    }
+
+    for (var obj of objects) {
+        if (direction == "top") {
+            obj.set(
+                { 
+                    top: parseFloat(active.top)
+                });
+        }
+        if (direction == "bottom") {            
+            obj.set(
+                {
+                    top: parseFloat(active.top + active.height - obj.height)
+                });            
+        }
+        if (direction == "left") {
+            obj.set(
+                { 
+                    left: parseFloat(active.left)
+            
+                });
+        }
+        if (direction == "right") {            
+            obj.set(
+                {
+                    left: parseFloat(active.left + active.width - obj.width)
+            
+                });            
+        }
+        obj.setCoords();
+    }
+    
+    canvas.discardActiveObject(null);
+    canvas.requestRenderAll(); 
+}
+
 
 function fontSize(direction) {
     for (var obj of canvas.getActiveObjects()) {
