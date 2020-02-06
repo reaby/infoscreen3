@@ -55,7 +55,6 @@ Later it is possible to define other stream names/keys too, but for now only thi
 |ADMIN_PASS|admin|Password for the admin interface|
 
 # Dockerfile
-> Notice: This feature does not work currently, please contribute help to project!
 
 Dockerfile is provided for building a docker container. Docker container accepts the same ENV variables as the standard setup (see them above).
 
