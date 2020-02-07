@@ -13,15 +13,17 @@
 {% endblock %}
 
 {% block body %}
-    <div id="blackoutLayer" class="animated"></div>
+    <div id="blackoutLayer" class="animated" onClick="toggleFullScreen()"></div>
 
     {{ extra }}
     
+    <div id="time" class="noselect animated">00:00</div>
+
     <div id="statusMessageOuter" class="noselect animated">
         <span id="statusMessage"></span>
     </div>
     
-    <div id="time" class="noselect animated">00:00</div>
+
     <div id="networkstatus" class="noselect animated"><i class="spinner loading icon"></i></div>
 
     <div id="helperLayer" class="gpu animated"></div>
@@ -42,6 +44,7 @@
     <script>
         var socket = io.connect("{{ config.serverUrl }}:{{ config.serverListenPort }}/display-{{ displayId }}");
         var videoVolume = {{ videoVolume }};
+        var isPreview = {{ isPreview }};
     </script>
 
     <script src="/js/display.js"></script>

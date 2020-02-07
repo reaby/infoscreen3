@@ -35,11 +35,13 @@ module.exports = function (pluginManager, websocket, dispatcher) {
     router.get('/display/:id/lite', function (req, res, next) {
         res.header('Access-Control-Allow-Origin', '*');
         let idx = parseInt(req.params.id);
-        let volume = req.params.videoVolume || 1.;
+        let volume = req.query['videoVolume'] || 1.;
+        let extra = pluginManager.getDisplayAdditions();
         res.render('liteDisplay', {
             config: config,
             display: availableDisplays[idx],
             displayId: idx,
+            extra: extra,
             videoVolume: volume
         });
     });
@@ -47,9 +49,17 @@ module.exports = function (pluginManager, websocket, dispatcher) {
     router.get('/display/:id', function (req, res, next) {
         res.header('Access-Control-Allow-Origin', '*');
         let idx = parseInt(req.params.id);
-        let volume = req.params.videoVolume || 1.;
+        let preview = parseInt(req.query['isPreview']) || 0;
+        let volume = parseFloat(req.query['videoVolume']) || 1.;
         let extra = pluginManager.getDisplayAdditions();
-        res.render('display', { config: config, display: availableDisplays[idx], displayId: idx, videoVolume: volume, extra: extra });
+        res.render('display', { 
+            config: config, 
+            display: availableDisplays[idx], 
+            displayId: idx, 
+            videoVolume: volume, 
+            extra: extra, 
+            isPreview: preview
+        });
     });
 
     router.get('/images/:dir/:name', function (req, res, next) {

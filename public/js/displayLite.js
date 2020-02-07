@@ -94,9 +94,26 @@ $(function () {
 
 });
 
+
 $(window).bind("resize", function () {
     fixImageSizes();
 });
+
+function toggleFullScreen() {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen(); 
+      }
+    }
+  }
+  
+  document.addEventListener("keydown", function(e) {
+    if (e.keyCode == 13) {
+      toggleFullScreen();
+    }
+  }, false);
 
 
 function getLayer(offset) {

@@ -15,13 +15,16 @@
 
 {% block body %}
 
-    <div id="blackoutLayer" class="gpu opacity"></div>
+    <div id="blackoutLayer" class="gpu opacity" onclick="toggleFullScreen();"></div>
+    
+    {{ extra }}
 
+    <div id="time" class="noselect delay animated">00:00</div>
+    
     <div id="statusMessageOuter" class="noselect animated">
         <span id="statusMessage"></span>
     </div>
     
-    <div id="time" class="noselect delay animated">00:00</div>
     <div id="networkstatus" class="noselect animated"><i class="spinner loading icon"></i></div>
     
     <div id="helperLayer" class="gpu animated"></div>

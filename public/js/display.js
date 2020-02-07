@@ -71,6 +71,27 @@ $(window).bind("resize", function () {
     fixImageSizes();
 });
 
+if (isPreview === 0) {
+    document.addEventListener("keydown", function(e) {
+        if (e.keyCode == 13) {
+            toggleFullScreen();
+        }
+    }, false);
+}
+
+function toggleFullScreen() {  
+    if (isPreview === 0) {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen();
+        } else {
+            if (document.exitFullscreen) {
+                document.exitFullscreen(); 
+            }
+        }
+    }
+}
+  
+  
 
 function getLayer(offset) {
     if (offset === undefined) offset = 0;
