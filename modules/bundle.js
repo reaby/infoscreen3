@@ -17,13 +17,13 @@ class bundleClass {
     }
 
     getBundleData() {
-        this.bundleData['bundleName'] = this.name;  // to ensure backwards compatibility
+        this.bundleData['bundleName'] = this.name; // to ensure backwards compatibility
         return this.bundleData;
     }
 
     setBundleData(data) {
         this.bundleData = data;
-        this.bundleData['bundleName'] = this.name;  // to ensure backwards compatibility
+        this.bundleData['bundleName'] = this.name; // to ensure backwards compatibility
     }
 
     getSlideJsonFile(fileName) {
@@ -41,6 +41,59 @@ class bundleClass {
             }
         }
         return {};
+    }
+
+    duplicateUuid(uuid) {
+        for (let slide of this.allSlides) {
+            if (slide.uuid === uuid) {
+                if (slide.type === "slide") {
+                    let newId = uuidv4();
+                    let path = "./data/bundles/" + this.name;
+                    try {
+                        // duplicate at filesystem
+                        if (fs.existsSync(path + "/render/" + uuid + ".png")) {
+                            fs.copyFileSync(path + "/render/" + uuid + ".png", path + "/render/" + newId + ".png");
+                        }
+                        if (fs.existsSync(path + "/slides/" + uuid)) {
+                            fs.copyFileSync(path + "/slides/" + uuid, path + "/slides/" + newId);
+                        }
+
+                        // duplicate at json
+                        let newSlide = clone(slide);
+                        newSlide.uuid = newId;
+                        this.allSlides.push(newSlide);
+                        this.save();
+                    } catch (err) {
+                        cli.error("error while duplicating file:" + uuid, err);
+                    }
+                }
+            }
+        }
+    }
+
+    moveTo(bundleDir, uuid) {
+        let toPath = "./data/bundles/" + bundleDir;
+        let path = "./data/bundles/" + this.name;
+        for (let slide of this.allSlides) {
+            if (slide.uuid === uuid) {
+                try {
+                    // duplicate at filesystem
+                    if (fs.existsSync(path + "/render/" + uuid + ".png")) {
+                        fs.renameSync(path + "/render/" + uuid + ".png", toPath + "/render/" + uuid + ".png");
+                    }
+
+                    if (fs.existsSync(path + "/slides/" + uuid)) {
+                        fs.renameSync(path + "/slides/" + uuid, toPath + "/slides/" + uuid);
+                    }
+                    let slideData = clone(slide);                    
+                    this.removeUuid(uuid);
+                    return slideData;
+                } catch (err) {
+                    cli.error("error while moving file:" + uuid, err);                    
+                    return null;
+                }
+            }
+        }
     }
 
     removeUuid(uuid) {
@@ -121,7 +174,6 @@ class bundleClass {
 
     getSlideData(uuid) {
         let slideData = {};
-
         for (let slide of this.allSlides) {
             if (slide.uuid === uuid) {
                 slideData = {
@@ -168,6 +220,16 @@ function sortByProperty(property) {
         let result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
         return result * sortOrder;
     }
+}
+
+/** Generate an uuid
+ * @url https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript#2117523 **/
+function uuidv4() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        let r = Math.random() * 16 | 0,
+            v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
 }
 
 /**

@@ -49,6 +49,17 @@ class bundleManager {
         }
     }
 
+    moveSlide(fromBundle, toBundle, uuid, position) {        
+        let slideData = this.getBundle(fromBundle).moveTo(toBundle, uuid);       
+        let bundle = this.getBundle(toBundle);
+        slideData.index = position;
+        if (slideData) {
+            bundle.allSlides.push(slideData);
+            bundle.save();
+        }
+        
+    }
+
     reorderSlides(bundleName, sortedIDs) {
         let bundle = this.getBundle(bundleName);
         let i = 0;

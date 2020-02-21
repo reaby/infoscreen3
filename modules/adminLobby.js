@@ -48,9 +48,32 @@ class adminLobby {
                     let bundle = bundleManager.getBundle(data.bundleName);
                     bundle.removeUuid(data.uuid);
                     updateSlides(data.bundleName, bundle);
+                    socket.emit("callback.updateBundleData");
                     self.announce(null, "callback.removeSlide", data);
                 } catch (err) {
                     cli.error("error while removing slide", err);
+                }
+            });
+
+            socket.on('admin.duplicateSlide', function (data) {
+                try {
+                    let bundle = bundleManager.getBundle(data.bundleName);
+                    bundle.duplicateUuid(data.uuid);
+                    socket.emit("callback.updateBundleData");
+                    dispatcher.emit("display.recalcBundleData", data.bundleName);
+                    updateSlides(data.bundleName, bundle);
+                } catch (err) {
+                    cli.error("error while duplicating slide", err);
+                }
+            });
+            
+            socket.on('admin.moveSlide', function (data) {
+                try {                 
+                    let bundle = bundleManager.moveSlide(data.from, data.to, data.uuid, data.position);                    
+                    socket.emit("callback.updateBundleData");                    
+                    updateSlides(data.from, bundle);
+                } catch (err) {
+                    cli.error("error while moving slide", err);
                 }
             });
 
@@ -60,6 +83,7 @@ class adminLobby {
                     let bundle = bundleManager.getBundle(data.bundleName);
                     bundle.setName(data.uuid, data.name);
                     updateSlides(data.bundleName, bundle);
+                    socket.emit("callback.updateBundleData"); 
                 } catch (err) {
                     cli.error("error while renaming slide", err);
                 }
