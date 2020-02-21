@@ -46,12 +46,14 @@
       "slidesInRotation": "Slides in rotation",
       "preview": "Preview",
       "program": "Program",
-      "statusMessage": "Status Message"
+      "statusMessage": "Status Message",
+      "askChangeBundle": "Really change bundle?"
     },
     "editBundleSlides": {
+      "bundle": "Bundle",
       "editBundles": "Edit Bundles",
       "askDelete": "Really delete slide?",
-      "askDuplicate": "Really duplcate slide?"
+      "askDuplicate": "Really duplicate slide?"
     },
     "editBundleProperties": {
       "editBundle": "Edit bundle",

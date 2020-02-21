@@ -46,7 +46,8 @@
       "slidesInRotation": "Diakierto",
       "preview": "Esikatselu",
       "program": "Ohjelma",
-      "statusMessage": "Tilaviesti"
+      "statusMessage": "Tilaviesti",
+      "askChangeBundle": "Vaida diapaketti?"
     },
     "editBundleSlides": {
       "bundle": "Diapaketti",

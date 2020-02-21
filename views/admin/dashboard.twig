@@ -219,7 +219,10 @@
                     window.open("/admin/edit/bundleSlides?bundle=" + name, '_blank', 'width=400,height=800,scrollbars=yes,status=no,location=no');
                 },
                 changeBundle: function (name) {
-                    emit("admin.setBundle", {bundle: name});
+                    if (confirm('{{ t("admin.dashboard.askChangeBundle") }}') == true) {
+                        emit("admin.setBundle", {bundle: name});
+                    }
+                    return true;
                 }
             }
         });
