@@ -45,12 +45,7 @@
             </div>
             <i class="dropdown icon"></i>
         </div>
-        <div clasS="ui form item">
-            <div class="ui action input">
-                <input id="statusMessageAdmin" value="" placeholder="{{ t("admin.dashboard.statusMessage") }}"/>
-                <div class="ui small green button" onclick="setStatusMessage();">{{ t("actions.set") }}</div>
-            </div>
-        </div>
+       
         <div class="right menu">
             <div class="item">
                 <a href="/logout" class="ui red basic button">{{ t("auth.logout") }}</a>
@@ -81,7 +76,7 @@
             </div>
 
             <div class="ui five wide column">
-                <div class="ui inverted basic segment" style="height: 95vh; overflow-y: auto">
+                <div class="ui inverted basic segment" style="height: 90vh; overflow-y: auto">
                     <h1 class="ui inverted header">
                         {{ t("admin.dashboard.slidesInRotation") }}
                     </h1>
@@ -121,9 +116,15 @@
     </div>
 
     <!-- menu -->
-    <div class="ui primary bottom fixed pointing menu" style="height: 5vh;">
-
-        <div class="right menu">
+    <div class="ui primary bottom fixed two item pointing menu" style="height: 5vh;">
+        <div class="item">
+            <div class="ui basic text"> {{ t("admin.dashboard.statusMessage") }}</div>
+            <div class="ui fluid action input">
+                <input id="statusMessageAdmin" value="" placeholder=""/>
+                <div class="ui small basic green button" onclick="setStatusMessage();">{{ t("actions.set") }}</div>
+            </div>
+        </div>
+        <div class="item">
             <div class="ui inverted buttons">
                 <button class="ui icon button" onclick="emit('controls.previous');">
                     <i class="step backward icon"></i>
@@ -141,7 +142,9 @@
                     <i class="step forward icon"></i>
                 </button>
             </div>
+            <div style="width: 1rem;"></div>
 
+            <div class="ui buttons">
             <button id="blackout" class="ui black basic button" onclick="emit('controls.blackout');">
                 {{ t("actions.blackout") }}
             </button>
@@ -158,6 +161,7 @@
                     onclick="forceReload()">
                 {{ t("actions.forceReload") }}
             </button>
+            </div>
         </div>
     </div>
     <!-- menu -->
