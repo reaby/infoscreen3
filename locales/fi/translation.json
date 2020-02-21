@@ -49,6 +49,7 @@
       "statusMessage": "Tilaviesti"
     },
     "editBundleSlides": {
+      "bundle": "Diapaketti",
       "editBundles": "Muokkaa Diapaketteja",
       "askDelete": "Poista Dia?",
       "askDuplicate": "Kahdenna Dia?"

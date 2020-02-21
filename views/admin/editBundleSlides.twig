@@ -14,7 +14,7 @@
     <div class="column">
         <div class="ui one column very padded grid">
             <div class=" column">
-                <h1 class="ui inverted header">{{ t("admin.editBundleSlides.bundle") }} {{ bundle.name }}</h1>
+                <h1 class="ui inverted header">{{ t("admin.editBundleSlides.bundle") }} {{ bundle.bundleData.displayName }}</h1>
                 <button class="ui basic inverted button" onclick="createNew();">{{ t("actions.createNew") }}</button>
                 <button class="ui basic inverted button" onclick="addLink();">{{ t("actions.addWebPage") }}</button>
 
@@ -25,9 +25,11 @@
                                 <button class="ui small basic inverted icon button"
                                         onclick="editSlide('{{ slide.uuid }}', '{{ slide.type }}');"><i
                                             class="edit outline icon"></i></button>
+                                <div onclick="duplicateSlide('{{bundle.name}}','{{slide.uuid}}')" class="ui small basic inverted icon button"><i class="ui copy icon"></i></div>                                
                                 <button class="ui small basic inverted icon button"
                                         onclick="remove('{{ slide.uuid }}');"><i class="delete icon"></i>
                                 </button>
+                                
                             </div>
                             <div class="content">
                                 <div class="editable">{{ slide.name }} </div>
@@ -64,6 +66,13 @@
             }
         }
 
+      function duplicateSlide(bundleDir, uuid) {
+                if (confirm('{{ t("admin.editBundleSlides.askDuplicate")}}') == true) {
+                    socket.emit("admin.duplicateSlide", {bundleName: bundleDir, uuid: uuid});
+                }
+                return true;
+            }
+
         function emit(eventName, data) {
             socket.emit(eventName, data);
         }
@@ -94,6 +103,10 @@
                 emit('admin.removeSlide', obj);
             }
         }
+
+        socket.on("callback.updateBundleData", function() {    
+             document.location.reload(true);
+        });
 
         socket.on("callback.dashboard.updateSlides", function (data) {
             if (bundleName === data.bundleName) {

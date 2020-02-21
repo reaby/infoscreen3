@@ -47,9 +47,19 @@
 	</div>
 	<script>
         var socket = io.connect("{{ config.serverUrl }}:{{ config.serverListenPort }}/admin");
-        
+ 
+        function editSlide(bundleName, uuid, type) {
+            switch (type) {
+                case "slide":
+                    window.open("/admin/edit/slide?bundle=" + bundleName + "&file=" + uuid, '_blank', 'location=no,height=800,width=1304,scrollbars=no,status=no');
+                    break;
+                case "webpage":
+                    window.open("/admin/edit/link?bundle=" + bundleName + "&file=" + uuid, '_blank', 'location=no,height=400,width=600,scrollbars=no,status=no');
+                    break;
+            }
+        }
+
         function duplicateSlide(bundleDir, uuid) {
-                console.log("rok");
                 if (confirm('{{ t("admin.editBundleSlides.askDuplicate")}}') == true) {
                     socket.emit("admin.duplicateSlide", {bundleName: bundleDir, uuid: uuid});
                 }
@@ -73,15 +83,18 @@
             $.getJSON("/admin/ajax/getSlides?bundle="+bundleDir, function (data) {
                 var htmlData = "";
                            
-                for(var elem of data.allSlides) {                    
-                    htmlData +=`<div class="ui green message item" data-uuid="${elem.uuid}" data-bundle="${bundleDir}">                                        
+                for(var slide of data.allSlides) {                    
+                    htmlData +=`<div class="ui green message item" data-uuid="${slide.uuid}" data-bundle="${bundleDir}">                                        
                     <div class="ui right floated content" style="width: fit-content;">            
-                        <div onclick="duplicateSlide('${bundleDir}','${elem.uuid}')" class="ui small basic inverted icon button"><i class="ui copy icon"></i></div>
-                        <div onclick="removeSlide('${bundleDir}','${elem.uuid}')" class="ui small basic inverted icon button"><i class="ui delete icon"></i></div>
+                        <button class="ui small basic inverted icon button"
+                                        onclick="editSlide('${bundleDir}','${ slide.uuid }', '${ slide.type }');"><i
+                                            class="edit outline icon"></i></button>
+                        <div onclick="duplicateSlide('${bundleDir}','${slide.uuid}')" class="ui small basic inverted icon button"><i class="ui copy icon"></i></div>
+                        <div onclick="removeSlide('${bundleDir}','${slide.uuid}')" class="ui small basic inverted icon button"><i class="ui delete icon"></i></div>
                     </div>
                     <div class="content">
                     <i class="ui icon move"></i>
-                    <span class="editable">${elem.name}</span>
+                    <span class="editable">${slide.name}</span>
                         
                     </div>                    
                     </div>`;
