@@ -4,6 +4,24 @@ let fs = require("fs");
 let config = require("../config.js");
 let availableDisplays = config.displays;
 const cli = require('../modules/cli.js');
+const {RateLimiterMemory} = require('rate-limiter-flexible');
+
+const rateLimiter = new RateLimiterMemory({
+    points: 100, // Number of points
+    duration: 1, // Per second
+    blockDuration: 60 // one minute
+});
+
+const rateLimit = (req, res, next) => {
+    rateLimiter.consume(req.ip)
+        .then(() => {
+            next();
+        })
+        .catch(_ => {
+            console.log(`Blocked ${req.ip}, due too many requests`);
+            res.status(429).send('Too Many Requests');
+        });
+};
 
 function ensureIsAdmin(req, res, next) {
     let test = req.url.match(/^\/(login|logout|empty)\//);
@@ -22,10 +40,13 @@ module.exports = function (pluginManager, websocket, dispatcher) {
     if (config.secureViews) {
         router.use(ensureIsAdmin);
     }
+    router.use(rateLimit);
 
     router.get('/', function (req, res, next) {
         res.header('Access-Control-Allow-Origin', '*');
-        res.render('index', { config: config });
+        res.render('index', {
+            config: config
+        });
     });
 
     router.get('/favicon.ico', function (req, res, next) {
@@ -52,12 +73,12 @@ module.exports = function (pluginManager, websocket, dispatcher) {
         let preview = parseInt(req.query['isPreview']) || 0;
         let volume = parseFloat(req.query['videoVolume']) || 1.;
         let extra = pluginManager.getDisplayAdditions();
-        res.render('display', { 
-            config: config, 
-            display: availableDisplays[idx], 
-            displayId: idx, 
-            videoVolume: volume, 
-            extra: extra, 
+        res.render('display', {
+            config: config,
+            display: availableDisplays[idx],
+            displayId: idx,
+            videoVolume: volume,
+            extra: extra,
             isPreview: preview
         });
     });

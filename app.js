@@ -24,19 +24,24 @@ let passport = require('passport');
 let LocalStrategy = require('passport-local').Strategy;
 let User = require("./modules/db.js");
 
-passport.serializeUser(function (user, done) {
-    done(null, user.id);
+passport.serializeUser(function (user, cb) {
+    cb(null, user.id);
 });
 
-passport.deserializeUser(function (id, done) {
+passport.deserializeUser(function (id, cb) {
     User.findById(id, function (err, user) {
-        done(err, user);
+        if (err) {
+            return cb(err);
+        }
+        cb(null, user);
     });
 });
 
 passport.use("local", new LocalStrategy(
-    {},
-    function (username, password, cb) {
+    {
+        passReqToCallback: true
+    },
+    function (req, username, password, cb) {
         User.findByUsername(username, function (err, user) {
             if (err) {
                 return cb(err);
@@ -72,18 +77,7 @@ if (config.mediaServer) {
     nms.run();
 }
 
-passport.serializeUser(function (user, cb) {
-    cb(null, user.id);
-});
 
-passport.deserializeUser(function (id, cb) {
-    User.findById(id, function (err, user) {
-        if (err) {
-            return cb(err);
-        }
-        cb(null, user);
-    });
-});
 
 
 i18next
