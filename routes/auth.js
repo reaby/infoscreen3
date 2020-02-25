@@ -6,7 +6,7 @@ const maxConsecutiveFailsByUsernameAndIP = 5;
 const limiterSlowBruteByIP = new RateLimiterMemory({
     points: maxWrongAttemptsByIPperDay,
     duration: 60 * 60 * 24,
-    blockDuration: 60 * 60 * 24, // Block for 1 day, if 100 wrong attempts per day
+    blockDuration: 60 * 60 * 24, // Block for 1 day, if 30 wrong attempts per day
 });
 
 const limiterConsecutiveFailsByUsernameAndIP = new RateLimiterMemory({

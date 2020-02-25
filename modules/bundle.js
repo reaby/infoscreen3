@@ -133,7 +133,7 @@ class bundleClass {
         for (let i in this.allSlides) {
             if (this.allSlides[i].uuid === uuid) {
                 this.allSlides[i].enabled = status;
-                this.sync();
+                this.save();
                 break;
             }
         }
