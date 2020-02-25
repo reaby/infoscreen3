@@ -37,9 +37,7 @@ function ensureIsAdmin(req, res, next) {
 }
 
 module.exports = function (pluginManager, websocket, dispatcher) {
-    if (config.secureViews) {
-        router.use(ensureIsAdmin);
-    }
+    router.use(ensureIsAdmin);
     router.use(rateLimit);
 
     router.get('/', function (req, res, next) {

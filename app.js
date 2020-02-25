@@ -1,15 +1,15 @@
+let config = require("./config.js");
 let express = require('express');
 let createError = require('http-errors');
-let cookieParser = require('cookie-parser');
 let logger = require('morgan');
 let lessMiddleware = require('less-middleware');
 let path = require('path');
 let PluginManager = require("./modules/pluginManager");
 const EventEmitter = require('events');
-let config = require("./config.js");
 
-class Dispatcher extends EventEmitter {
-}
+let cookieParser = require('cookie-parser')(config.sessionKey);
+
+class Dispatcher extends EventEmitter {}
 
 const eventDispatcher = new Dispatcher();
 
@@ -37,8 +37,7 @@ passport.deserializeUser(function (id, cb) {
     });
 });
 
-passport.use("local", new LocalStrategy(
-    {
+passport.use("local", new LocalStrategy({
         passReqToCallback: true
     },
     function (req, username, password, cb) {
@@ -93,7 +92,7 @@ i18next
         saveMissing: false,
         detection: {
             // order and from where user language should be detected
-            order: [/*'path', 'session', */ 'querystring', 'cookie', 'header'],
+            order: [ /*'path', 'session', */ 'querystring', 'cookie', 'header'],
 
             // keys or params to lookup language from
             lookupQuerystring: 'lng',
@@ -113,6 +112,7 @@ i18next
         }
     });
 
+
 // view engine setup
 app.set('port', parseInt(config.serverListenPort));
 app.set('views', path.join(__dirname, 'views'));
@@ -120,13 +120,64 @@ app.set('view engine', 'twig');
 app.use(i18nextMiddleware.handle(i18next));
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
+app.use(express.urlencoded({
+    extended: false
+}));
+
+app.use(cookieParser);
 app.use(lessMiddleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(require('express-session')({ secret: config.sessionKey, resave: false, saveUninitialized: true }));
+
+var expressSession = require('express-session');
+var SQLiteStore = require('connect-sqlite3')(expressSession);
+var sessionStore = new SQLiteStore({
+    dir: "./data",
+    db: "sessions.db"
+
+});
+
+app.use(expressSession({
+    key: 'express.sid',
+    secret: config.sessionKey,
+    store: sessionStore,
+    resave: false,
+    saveUninitialized: true
+}));
+
 app.use(passport.initialize({}));
 app.use(passport.session({}));
+
+
+
+// default socket.io config
+var passportSocketIo = require('passport.socketio');
+io.use(passportSocketIo.authorize({
+    key: 'express.sid', // the name of the cookie where express/connect stores its session_id
+    secret: config.sessionKey, // the session_secret to parse the cookie
+    store: sessionStore,
+    cookieParser: require('cookie-parser'),
+    //  success:      onAuthorizeSuccess,  // *optional* callback on success - read more below
+    // fail: onAuthorizeFail, // *optional* callback on fail/error - read more below
+}));
+
+/* function onAuthorizeFail(data, message, error, accept) {
+    if (error)
+        throw new Error(message);
+    console.log('failed connection to socket.io:', message);
+
+    // We use this callback to log all of our failed connections.
+    accept(null, false);
+
+    // OR
+
+    // If you use socket.io@1.X the callback looks different
+    // If you don't want to accept the connection
+    if (error)
+        accept(new Error(message));
+    // this error will be sent to the user as a special error-package
+    // see: http://socket.io/docs/client-api/#socket > error-object
+} */
+
 
 let pluginManager = new PluginManager(app, io, eventDispatcher);
 let websocket = require("./modules/websocket")(pluginManager, io, eventDispatcher);
@@ -154,4 +205,9 @@ app.use(function (err, req, res, next) {
     res.render('error');
 });
 
-module.exports = { app: app, server: server, io: io, eventDispatcher: eventDispatcher };
+module.exports = {
+    app: app,
+    server: server,
+    io: io,
+    eventDispatcher: eventDispatcher
+};

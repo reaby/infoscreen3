@@ -5,7 +5,6 @@ module.exports = {
     "serverHost": process.env.HOST || "127.0.0.1",
     "serverUrl": "http://" + (process.env.HOST || "127.0.0.1"),  // used for web client
     "sessionKey": "generateRandomStringForSecret",
-    "secureViews": false,        // set true to use password also for viewing info screen content
     "useLocalAssets": false,    // used to load javascript libraries locally from /public/assets
     "mediaServer": false,       // local streaming server for rtmp, see docs how to use
     "defaultLocale": "en",
