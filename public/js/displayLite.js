@@ -26,6 +26,7 @@ $(function () {
     fixImageSizes();
     displayTime();
     setInterval(displayTime, 1000);
+    $('#blackoutLayer').dblclick(toggleFullScreen);
 
 // socketio callbacks
     /** when connected **/

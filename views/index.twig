@@ -55,6 +55,10 @@
             $('#displayList').html(output);
         });
 
+        socket.on('error', (error) => {
+            alert(error);
+        });
+
         window.onError = function (e) {
             console.log(e);
         };

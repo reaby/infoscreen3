@@ -65,6 +65,7 @@ $(function () {
     fixImageSizes();
     displayTime();
     setInterval(displayTime, 1000);
+    $('#blackoutLayer').dblclick(toggleFullScreen);
 });
 
 $(window).bind("resize", function () {
@@ -103,6 +104,7 @@ function getLayer(offset) {
 socket.on('connect', function () {
     socket.emit("sync");
     doNext = true;
+    $("#networkstatus").css("opacity", 0);
 });
 
 socket.on('callback.blackout', function (data) {

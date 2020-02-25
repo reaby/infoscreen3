@@ -157,26 +157,23 @@ io.use(passportSocketIo.authorize({
     store: sessionStore,
     cookieParser: require('cookie-parser'),
     //  success:      onAuthorizeSuccess,  // *optional* callback on success - read more below
-    // fail: onAuthorizeFail, // *optional* callback on fail/error - read more below
+    fail: onAuthorizeFail, // *optional* callback on fail/error - read more below
 }));
 
-/* function onAuthorizeFail(data, message, error, accept) {
-    if (error)
-        throw new Error(message);
-    console.log('failed connection to socket.io:', message);
+function onAuthorizeFail(data, message, error, accept) {
+    if (message) {        
+        console.log("Websocket error: " + message);
+        if (message === "No session found") {
+            message += ", logout and try login again.";
+        }
+        return accept(new Error(message));
+    }
 
-    // We use this callback to log all of our failed connections.
-    accept(null, false);
-
-    // OR
-
-    // If you use socket.io@1.X the callback looks different
-    // If you don't want to accept the connection
-    if (error)
-        accept(new Error(message));
-    // this error will be sent to the user as a special error-package
-    // see: http://socket.io/docs/client-api/#socket > error-object
-} */
+    if (error) {
+        console.log("Websocket error: " + message);        
+        return accept(new Error(message));
+    }
+}
 
 
 let pluginManager = new PluginManager(app, io, eventDispatcher);
