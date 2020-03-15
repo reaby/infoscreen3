@@ -194,7 +194,7 @@ function undo() {
                 if (bundleData.styleHeader.fontSize !== fontSize) {
                     object.setOptions({fontSize: fontSize});
                 }
-                if (bundleData.styleHeader.fill !== "") {
+                if (bundleData.styleHeader.stroke !== "") {
                     object.setShadow({color: "rgba(0,0,0,0.6)", blur: 5, offsetX: 2, offsetY: 2});
                 }
             } else {
@@ -202,7 +202,7 @@ function undo() {
                 if (bundleData.styleText.fontSize !== fontSize) {
                     object.setOptions({fontSize: fontSize});
                 }
-                if (bundleData.styleText.fill !== "") {
+                if (bundleData.styleText.stroke !== "") {
                     object.setShadow({color: "rgba(0,0,0,0.6)", blur: 5, offsetX: 2, offsetY: 2});
                 }
             }
@@ -476,7 +476,7 @@ function nextSlide(data) {
                 if (bundleData.styleHeader.fontSize !== fontSize) {
                     object.setOptions({fontSize: fontSize});
                 }
-                if (bundleData.styleHeader.fill !== "") {
+                if (bundleData.styleHeader.stroke !== "") {
                     object.setShadow({color: "rgba(0,0,0,0.6)", blur: 5, offsetX: 2, offsetY: 2});
                 }
             } else {
@@ -484,7 +484,7 @@ function nextSlide(data) {
                 if (bundleData.styleText.fontSize !== fontSize) {
                     object.setOptions({fontSize: fontSize});
                 }
-                if (bundleData.styleText.fill !== "") {
+                if (bundleData.styleText.stroke !== "") {
                     object.setShadow({color: "rgba(0,0,0,0.6)", blur: 5, offsetX: 2, offsetY: 2});
                 }
             }
@@ -558,10 +558,12 @@ function addText(content, isHeader) {
         y = 30;
     }
 
+    var needShadow = bundleData.styleText.stroke === "" ? true : false;
     if (isHeader) {
         text.id = "header";
         text.setOptions(bundleData.styleHeader);
         text.setOptions({top: y + 10, left: 150});
+        needShadow = bundleData.styleHeader.stroke === "" ? true : false;
     } else {
         text.setOptions(bundleData.styleText);
         text.setOptions({top: y + 10, left: 250});
@@ -571,8 +573,9 @@ function addText(content, isHeader) {
     text.hasControls = false;
     text.lockUniScaling = true;
     text.hasRotatingPoint = false;
-
-    text.setShadow({color: "#000", blur: 5, offsetX: 2, offsetY: 2});
+    if (needShadow) {
+        text.setShadow({color: "#000", blur: 5, offsetX: 2, offsetY: 2});
+    }
     canvas.add(text);
 }
 
@@ -785,8 +788,8 @@ function saveAsFullScreenImage(name = "untitled", imageData) {
                 objects: [{
                     type: "image",
                     version: "2.6.0",
-                    width: 1280,
-                    height: 720,
+                    width: 1920,
+                    height: 1080,
                     crossOrigin: "",
                     src: dataurl,
                     filters: []

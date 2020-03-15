@@ -27,13 +27,17 @@ Usage is very easy after you have setup the server at local network. The viewer 
 5. run `npm start`
 
 # Default usage
-Viewer is located at: http://localhost:8000 <br/>
-Admin interface is located at: http://localhost:8000/admin<br/>
+Viewer is located at: http://127.0.0.1:8000 <br/>
+Admin interface is located at: http://127.0.0.1:8000/admin<br/>
 Defaults to user: `admin`, pass: `admin`<br/>
 It's highly encouraged to change the defaults to something else!
 
 # Local stream support for OBS
-> Works only when config has `mediaServer` set to `true` 
+> Works only when config has `mediaServer` set to `true`
+> if you have changed the default port from 8000, the admin interface can be found port +1
+
+Stream admin interface is located at: http://127.0.0.1:8001/admin
+Defaults to same admin username and password, which you connect to admin interface as well.
 
 at OBS go to: `Settings` -> `Stream`<br/>
 set following options:<br/>
@@ -41,16 +45,14 @@ set following options:<br/>
 |Setting|Value|
 |:---|:---|
 |Stream Type:| Custom Streaming Server|
-|URL:| `rtmp://localhost/live`|
+|URL:| `rtmp://127.0.0.1/live`|
 |Stream key:|`STREAM_NAME`|
-
-Later it is possible to define other stream names/keys too, but for now only this one is supported.
 
 # Environment variables
 |ENV|default|Usage|
 |:---|:---|:---|
 |PORT|8000|Server listen port|
-|HOST|localhost|Host or ip from where to server is externally accessible|
+|HOST|127.0.0.1|Host or ip from where to server is externally accessible|
 |ADMIN_USER|admin|Username to access admin interface|
 |ADMIN_PASS|admin|Password for the admin interface|
 

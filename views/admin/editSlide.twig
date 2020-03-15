@@ -13,10 +13,7 @@
         color: white;
     }
 
-    canvas {
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-        -moz-font-smoothing: antialiased;
+    canvas {        
         font-smoothing: antialiased;
         text-rendering: geometricPrecision;
         font-smooth: always;
@@ -189,7 +186,7 @@
 
 <div style="margin:0; padding:0;">
     <div id="matchsize">
-        <canvas id="edit" width="1280" height="720" style="position: fixed; z-index:10;"></canvas>
+        <canvas id="edit" width="1920" height="1080" style="position: fixed; z-index:10;"></canvas>
         <div id="bg">
             <img id="bgimg" class="fsimage" src="" />
         </div>
@@ -234,7 +231,7 @@
     </div>
 </div>
 
-<canvas id="tempCanvas" width="1280" height="720" style="display: none"></canvas>
+<canvas id="tempCanvas" width="1920" height="1080" style="display: none"></canvas>
 
 <script>
     var socket = io.connect("{{ config.serverUrl }}:{{ config.serverListenPort }}/admin-" + displayId);
@@ -283,8 +280,8 @@
 
         var src = e.target.result;
         var tempCanvas = new fabric.StaticCanvas("tempCanvas", {
-            width: 1280,
-            height: 720
+            width: 1920,
+            height: 1080
         });
         tempCanvas.backgroundColor = null;
         tempCanvas.backgroundImage = null;
