@@ -138,7 +138,7 @@ function fixCanvas() {
         width = con.innerWidth(),
         height = Math.floor(width * aspect);
 
-    canvas.setWidth(1920).setHeight(1080);
+    canvas.setWidth(1280).setHeight(720);
     $("#c").css("width", width + "px").css("height", height + "px");
     canvas.calcOffset();
 }

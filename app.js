@@ -10,8 +10,8 @@ const EventEmitter = require('events');
 let cookieParser = require('cookie-parser')(config.sessionKey);
 
 class Dispatcher extends EventEmitter {}
+
 const eventDispatcher = new Dispatcher();
-const cli = require('./modules/cli');
 
 let app = express();
 let server = require('http').Server(app);
@@ -59,7 +59,6 @@ if (config.mediaServer) {
     const NodeMediaServer = require('node-media-server');
 
     const nodeServerConfig = {
-        logType: 2,
         rtmp: {
             port: 1935,
             chunk_size: 60000,
@@ -70,17 +69,14 @@ if (config.mediaServer) {
         http: {
             port: (parseInt(config.serverListenPort) + 1),
             allow_origin: '*'
-        },
-        auth: {
-            api : true,
-            api_user: config.admins[0].username,
-            api_pass: config.admins[0].password              
         }
     };
 
     let nms = new NodeMediaServer(nodeServerConfig);
-    nms.run();    
+    nms.run();
 }
+
+
 
 
 i18next
