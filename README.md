@@ -44,7 +44,10 @@ set following options:<br/>
 |URL:| `rtmp://localhost/live`|
 |Stream key:|`STREAM_NAME`|
 
-Later it is possible to define other stream names/keys too, but for now only this one is supported.
+# Mediaserver status and adminpanel
+Admin interface is located at: http://localhost:8001/admin
+You can use same crendetials as configured at main app
+
 
 # Environment variables
 |ENV|default|Usage|

@@ -153,7 +153,7 @@
             </button>
             {% if config.mediaServer %}
                 <button id="stream" class="ui blue basic button"
-                        onclick="emit('controls.startStream', {streamName: 'STREAM_NAME' });">
+                        onclick="emit('controls.startStream');">
                     {{ t("actions.startStream") }}
                 </button>
             {% endif %}

@@ -74,11 +74,12 @@ if (config.mediaServer) {
         http: {
             port: (parseInt(config.serverListenPort) + 1),
             allow_origin: '*',
-            auth: {
-                api: true,
-                api_user: config.admins[0].username,
-                api_pass: config.admins[0].password
-            }
+        },
+        auth: {
+            api: true,
+            api_user: config.admins[0].username,
+            api_pass: config.admins[0].password,
+            
         }
     };
 

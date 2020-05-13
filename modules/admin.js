@@ -124,17 +124,16 @@ class admin {
             });
 
 
-            socket.on('controls.startStream', function (data) {
+            socket.on('controls.startStream', function () {
                 let view = self.getView();
                 let serverOptions = self.getServerOptions();
 
                 if (serverOptions.isStreaming === false) {
                     serverOptions.loop = false;
-                    serverOptions.streamSource = "http://" + config.serverHost + ":" + (config.serverListenPort + 1) + "/live/" + data.streamName + ".flv";
+                    serverOptions.streamSource = "http://" + config.serverHost + ":" + (config.serverListenPort + 1) + "/live/" + config.streamKey + ".flv";
                     serverOptions.isStreaming = true;
                     cli.success("start stream");
                 } else {
-
                     serverOptions.loop = true;
                     serverOptions.isStreaming = false;
                     serverOptions.streamSource = "";
