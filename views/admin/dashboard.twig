@@ -203,7 +203,7 @@
     </template>
 
     <script>
-        var socket = io.connect("{{ config.serverUrl }}:{{ config.serverListenPort }}/admin-{{ displayId }}");
+        var socket = io("{{ config.serverUrl }}:{{ config.serverListenPort }}/admin-{{ displayId }}");
         var displayId = {{ displayId }};
     </script>
     <script src="/js/dashboard.js"></script>

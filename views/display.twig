@@ -14,7 +14,6 @@
 
 {% block body %}
     <div id="blackoutLayer" class="animated"></div>
-
     {{ extra }}
     
     <div id="time" class="noselect animated">00:00</div>
@@ -42,7 +41,7 @@
     <video loop autoplay id="bgvid" class="fsimage" poster=""></video>
 
     <script>
-        var socket = io.connect("{{ config.serverUrl }}:{{ config.serverListenPort }}/display-{{ displayId }}");
+        var socket = io("{{ config.serverUrl }}:{{ config.serverListenPort }}/display-{{ displayId }}");
         var videoVolume = {{ videoVolume }};
         var isPreview = {{ isPreview }};
     </script>

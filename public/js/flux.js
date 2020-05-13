@@ -72,7 +72,7 @@ window.flux = {
         this.options.transitions = newTrans;
 
         this.images = [];
-        this["imageData"] = [];
+        this.imageData = [];
         this.imageLoadedCount = 0;
         this.currentImageIndex = 0;
         this.nextImageIndex = 1;
@@ -386,9 +386,10 @@ window.flux = {
         },
         setupImages: function () {
 
-            var img1 = this.getImageData(this.currentImageIndex);
+            var img1 = this.getImage(this.currentImageIndex);
             css1 = {
-                'background-image': 'url("' + img1.replace(/(\r\n|\n|\r)/gm, "") + '")',
+            //    'background-image': 'url("' + img1.replace(/(\r\n|\n|\r)/gm, "") + '")',
+                'background-image': 'url("' + img1.src + '")',
                 'z-index': 101,
                 'cursor': 'auto',
                 'background-repeat': 'no-repeat',
@@ -396,9 +397,9 @@ window.flux = {
             };
 
             this.image1.css(css1).children().remove();
-            var img2 = this.getImageData(this.nextImageIndex);
+            var img2 = this.getImage(this.nextImageIndex);
             this.image2.css({
-                'background-image': 'url("' + img2.replace(/(\r\n|\n|\r)/gm, "")  + '")',
+                'background-image': 'url("' + img2.src  + '")',
                 'z-index': 100,
                 'background-repeat': 'no-repeat',
                 'background-size': this.options.width + "px " + this.options.height + "px",
@@ -725,7 +726,7 @@ window.flux = {
                     rowRemainder = imgHeight - (this.options.rows * rowHeight),
                     rowAddPerLoop = Math.floor(rowRemainder / this.options.rows),
 
-                    delayBetweenBars = 150,
+                    delayBetweenBars = 300,
                     height = this.slider.options.height;
                 totalLeft = 0,
                     totalTop = 0,
@@ -802,7 +803,7 @@ window.flux = {
         return new flux.transition_grid(fluxslider, $.extend({
             columns: 10,
             rows: 1,
-            delayBetweenBars: 40,
+            delayBetweenBars: 80,
             renderTile: function (elem, colIndex, rowIndex, colWidth, rowHeight, leftOffset, topOffset) {
                 $(elem).css({
                     'background-image': this.slider.image1.css('background-image'),

@@ -416,6 +416,8 @@ function reloadImage(data) {
             var found = false;
             for (var i in window.f.images) {
                 if (window.f.images[i].id === data.uuid) {
+                    image.id = imageId;
+                    window.f.images[i] = image;
                     window.f.imageData[i] = imageData;
                     found = true;
                 }
@@ -463,7 +465,7 @@ function checkImages(allSlides) {
                     getDataUri("/render/" + serverOptions.currentBundle + "/" + allIds[i] + ".png", allIds[i], function (imageId, imageData, image) {
                         image.id = imageId;
                         window.f.images.push(image);
-                        window.f.imageData.push(imageData);
+                       // window.f.imageData.push(imageData);
                     });
                     return true;
                 }
@@ -519,12 +521,13 @@ function clearIFrame(id) {
 function getDataUri(url, imageId, callback) {
     var image = new Image();
     image.onload = function () {
-        var canvas = document.createElement('canvas');
-        canvas.width = this.naturalWidth; // or 'width' if you want a special/scaled size
-        canvas.height = this.naturalHeight; // or 'height' if you want a special/scaled size
-        canvas.getContext('2d').drawImage(this, 0, 0);
-        callback(imageId, canvas.toDataURL('image/png'), {src: url});
-        canvas = null;
+      //  let canvas = document.createElement('canvas');
+      //  canvas.width = 1920; // or 'width' if you want a special/scaled size
+      //  canvas.height = 1080; // or 'height' if you want a special/scaled size
+      //  canvas.getContext('2d').drawImage(this, 0, 0);
+        //callback(imageId, canvas.toDataURL('image/png'), this);
+        callback(imageId, null, this);
+      //  canvas = null;
     };
     image.src = url;
 }

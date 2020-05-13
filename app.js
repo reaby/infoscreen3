@@ -9,13 +9,17 @@ const EventEmitter = require('events');
 
 let cookieParser = require('cookie-parser')(config.sessionKey);
 
-class Dispatcher extends EventEmitter {}
+class Dispatcher extends EventEmitter { }
 
 const eventDispatcher = new Dispatcher();
 
 let app = express();
 let server = require('http').Server(app);
-let io = require('socket.io')(server);
+let io = require('socket.io')(server, {
+    cookieHttpOnly: true,
+    cookieSecure: false,
+    cookie: false
+});
 let i18next = require("i18next");
 let FilesystemBackend = require("i18next-node-fs-backend");
 let i18nextMiddleware = require("i18next-express-middleware");
@@ -38,8 +42,8 @@ passport.deserializeUser(function (id, cb) {
 });
 
 passport.use("local", new LocalStrategy({
-        passReqToCallback: true
-    },
+    passReqToCallback: true
+},
     function (req, username, password, cb) {
         User.findByUsername(username, function (err, user) {
             if (err) {
@@ -59,6 +63,7 @@ if (config.mediaServer) {
     const NodeMediaServer = require('node-media-server');
 
     const nodeServerConfig = {
+        logtype: 2,
         rtmp: {
             port: 1935,
             chunk_size: 60000,
@@ -68,7 +73,12 @@ if (config.mediaServer) {
         },
         http: {
             port: (parseInt(config.serverListenPort) + 1),
-            allow_origin: '*'
+            allow_origin: '*',
+            auth: {
+                api: true,
+                api_user: config.admins[0].username,
+                api_pass: config.admins[0].password
+            }
         }
     };
 
@@ -108,7 +118,7 @@ i18next
             // optional expire and domain for set cookie
             //  cookieExpirationDate: new Date(),
             //  cookieDomain: 'myDomain',
-            //  cookieSecure: true // if need secure cookie
+            cookieSecure: false // if need secure cookie
         }
     });
 
@@ -140,8 +150,12 @@ app.use(expressSession({
     key: 'express.sid',
     secret: config.sessionKey,
     store: sessionStore,
-    resave: false,
-    saveUninitialized: true
+    resave: true,
+    saveUninitialized: true,
+    cookie: {
+        sameSite: true,
+        secure: false
+    }
 }));
 
 app.use(passport.initialize({}));
@@ -150,7 +164,7 @@ app.use(passport.session({}));
 
 
 // default socket.io config
-var passportSocketIo = require('passport.socketio');
+/* var passportSocketIo = require('passport.socketio');
 io.use(passportSocketIo.authorize({
     key: 'express.sid', // the name of the cookie where express/connect stores its session_id
     secret: config.sessionKey, // the session_secret to parse the cookie
@@ -161,7 +175,7 @@ io.use(passportSocketIo.authorize({
 }));
 
 function onAuthorizeFail(data, message, error, accept) {
-    if (message) {        
+    if (message) {
         console.log("Websocket error: " + message);
         if (message === "No session found") {
             message += ", logout and try login again.";
@@ -170,11 +184,11 @@ function onAuthorizeFail(data, message, error, accept) {
     }
 
     if (error) {
-        console.log("Websocket error: " + message);        
+        console.log("Websocket error: " + message);
         return accept(new Error(message));
     }
 }
-
+*/
 
 let pluginManager = new PluginManager(app, io, eventDispatcher);
 let websocket = require("./modules/websocket")(pluginManager, io, eventDispatcher);

@@ -1,7 +1,7 @@
 var canvas;
 var bundleData;
 
-var grid = 1280 / 32;
+var grid = 1920 / 32;
 
 var _clipboard = null;
 var slideName = "untitled";
@@ -194,7 +194,7 @@ function undo() {
                 if (bundleData.styleHeader.fontSize !== fontSize) {
                     object.setOptions({fontSize: fontSize});
                 }
-                if (bundleData.styleHeader.fill !== "") {
+                if (bundleData.styleHeader.stroke !== "") {
                     object.setShadow({color: "rgba(0,0,0,0.6)", blur: 5, offsetX: 2, offsetY: 2});
                 }
             } else {
@@ -202,7 +202,7 @@ function undo() {
                 if (bundleData.styleText.fontSize !== fontSize) {
                     object.setOptions({fontSize: fontSize});
                 }
-                if (bundleData.styleText.fill !== "") {
+                if (bundleData.styleText.stroke !== "") {
                     object.setShadow({color: "rgba(0,0,0,0.6)", blur: 5, offsetX: 2, offsetY: 2});
                 }
             }
@@ -419,20 +419,22 @@ function parseUrl(url) {
 }
 
 function drawGrid() {
-    var w = 1280 / 32 / 8;
+    var w = 1920 / 32 / 8;
 
     // Grid display part
-    for (var i = 1; i <= (1280 / grid); i++) {
-        canvas.add(new fabric.Line([i * grid, 0, i * grid, 1280], {
+    for (var i = 1; i <= (1920 / grid); i++) {
+        canvas.add(new fabric.Line([i * grid, 0, i * grid, 1920], {
             stroke: '#ccc',
             strokeDashArray: [w, w],
+            strokeWidth: 2,                    
             opacity: 0.5,
             selectable: false,
             zIndex: -1
         }));
-        canvas.add(new fabric.Line([0, i * grid, 1280, i * grid], {
+        canvas.add(new fabric.Line([0, i * grid, 1920, i * grid], {
             stroke: '#ccc',
             strokeDashArray: [w, w],
+            strokeWidth: 2,
             opacity: 0.5,
             selectable: false,
             zIndex: -1
@@ -785,8 +787,8 @@ function saveAsFullScreenImage(name = "untitled", imageData) {
                 objects: [{
                     type: "image",
                     version: "2.6.0",
-                    width: 1280,
-                    height: 720,
+                    width: 1920,
+                    height: 1080,
                     crossOrigin: "",
                     src: dataurl,
                     filters: []
