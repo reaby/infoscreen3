@@ -7,7 +7,7 @@ class overlayPlugin extends plugin {
         html, body {
             background: none;
         }
-        video, #bg {
+        #bg, #bgvid {
             visibility: hidden !important;
         }
         </style>`;

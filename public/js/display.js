@@ -340,9 +340,10 @@ function showBackgroundOnly() {
 }
 
 function checkStream(serverOptions) {
-    if (serverOptions.isStreaming && streamStarted === false) {
+    if (serverOptions.isStreaming) {
         if (flvjs.isSupported()) {
-            var videoElement = document.getElementById('bgvid');
+            $("#stream").show();
+            var videoElement = document.getElementById('stream');        
             flvPlayer = flvjs.createPlayer({
                 type: 'flv',
                 url: serverOptions.streamSource
@@ -352,10 +353,10 @@ function checkStream(serverOptions) {
                 flvPlayer.volume = videoVolume;
                 flvPlayer.load();
                 flvPlayer.play();
-                showBackgroundOnly();
                 streamStarted = true;
                 return true;
             } catch (err) {
+                $('#stream').hide();
                 console.log(err);
                 streamStarted = false;
                 return false;
@@ -373,6 +374,7 @@ function checkStream(serverOptions) {
             }
             return false;
         }
+        $("#stream").hide();
         return false;
     }
     return true;
