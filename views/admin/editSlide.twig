@@ -21,11 +21,16 @@
         text-rendering: geometricPrecision;
         font-smooth: always;
     }
+
     #matchsize {
         transform-origin: top left;
         scale: 0.5;
     }
-    
+
+    textarea {
+        top: 0px !important;
+        left: 0px !important;
+    }
 
 </style>
 {% endblock %}
@@ -75,6 +80,13 @@
                     </div>
                 </div>
             </div>
+            <div id="templates" class="ui teal basic icon button dropdown">
+                    {{ t('actions.loadTemplate') }}
+                    <i class="dropdown icon"></i>
+                    <div class="menu">
+                    </div>
+            </div>
+
 
             {% if displayId != null %}
             <div class="ui red basic buttons">
@@ -89,11 +101,9 @@
             </div>
             {% else %}
             <a href="#" onclick="cueSlide(null)" class="ui red button">{{ t("actions.announceAll") }}</a>
-            {% endif %}
-        </div>
-        <div class="item">
-            <a href="#" onclick="window.close()" class="ui button">{{ t("actions.cancel") }}</a>
-        </div>
+            {% endif %}    
+            <a href="#" onclick="window.close()" class="ui small basic button">{{ t("actions.cancel") }}</a>        
+        </div>       
     </div>
 </div>
 
@@ -193,16 +203,14 @@
     </div>
 </div>
 
-<div style="margin:0; padding:0;">
-    <div id="matchsize">
-        <canvas id="edit" width="1920" height="1080" style="position: fixed; z-index:10;"></canvas>
+<div id="matchsize" style="margin:0; padding:0; position: absolute;">    
+        <canvas id="edit" width="1920" height="1080" style="position: absolute; z-index:10;"></canvas>
         <div id="bg">
             <img id="bgimg" class="fsimage" src="" />
         </div>
         <video muted loop autoplay id="bgvid2" poster="">
         </video>
-        <div id="time2" class="noselect delay animated">00:00</div>
-    </div>
+        <div id="time2" class="noselect delay animated">00:00</div>    
 </div>
 
 <div id="contextmenu" class="ui small vertical menu" style="display: none; position: absolute; z-index: 1000;">

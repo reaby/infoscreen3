@@ -8,6 +8,7 @@ var slideName = "untitled";
 var undoData = [];
 
 var undoActive = false;
+var templates = {};
 
 bundleData = {
     background: "",
@@ -158,7 +159,7 @@ $("#contextmenu .item").click(function () {
 });
 
 function saveState() {
-    if (undoData.length >= 10) {
+    if (undoData.length >= 15) {
         undoData.shift();
     }
     undoData.push(canvas.toJSON(['id', 'fontSize']));
@@ -299,6 +300,7 @@ socket.on('callback.edit.updateFileList', function (data) {
 
 socket.on('callback.edit', function (data) {
     bundleData = data.bundleData;
+    templates = data.templates;
     canvas.clear();
 
     if (data.slideData.name != null) {
@@ -306,6 +308,26 @@ socket.on('callback.edit', function (data) {
         $("#slideName").val(slideName);
     }
 
+    let vals = [{
+        name: "Empty",
+        value: "empty"
+    }];
+    for (let i in templates) {
+        vals.push({name: i, value: i});
+    }
+
+    $('#templates').dropdown({    
+        values: vals,
+        action: function (text, value) {
+            $('#templates').dropdown("hide");
+            if (value === "empty") {
+                nextSlide({});
+            }
+            else {
+                nextSlide(templates[value]);
+            }
+        }
+    })
     $("#duration").val(data.slideData.duration || "");
 
     if (data.slideData.displayTime !== null) {
@@ -348,14 +370,14 @@ socket.on('callback.edit', function (data) {
             },
             timeout: 2000,
             active: function () {
-                nextSlide(data, true);
+                nextSlide(data.json);
             },
             inactive: function () {
-                nextSlide(data, true);
+                nextSlide(data.json);
             }
         });
     } else {
-        nextSlide(data, true);
+        nextSlide(data.json);
     }
     checkTimeDisplay();
     setBackground(bundleData.background);
@@ -459,9 +481,9 @@ function checkTimeDisplay() {
     }
 }
 
-function nextSlide(data) {
+function nextSlide(jsonData) {
     undoActive = false;
-    canvas.loadFromJSON(data.json, function () {
+    canvas.loadFromJSON(jsonData, function () {
         drawGrid();        
         undoActive = true;        
         saveState();   
@@ -676,7 +698,21 @@ function saveTemplate() {
         canvas.remove(objects[i]);
     }
 
-    socket.emit("edit.saveTemplate", {json: canvas.toJSON(['id', 'fontSize'])});
+    let name = $("#slideName").val();
+    if (name === "untitled") {
+        var texts = canvas.getObjects('i-text');
+        for (let i in texts) {
+            if (texts[i].id == "header") {
+                name = texts[i].text;
+                break;
+            }
+        }
+    }
+
+    socket.emit("edit.saveTemplate", {
+        name: name,
+        json: canvas.toJSON(['id', 'fontSize'])
+    });
     drawGrid();
     alert("Template saved.");
 

@@ -36,7 +36,7 @@ module.exports = function (pluginManager, io, dispatcher) {
         cli.error("data directory (./data) is not writable", err);
         process.exit(1);
     }
-
+    
     try {
         fs.accessSync("./tmp", fs.W_OK);
         cli.success("temp directory (./tmp) is writable ");

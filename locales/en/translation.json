@@ -11,6 +11,7 @@
     "uploadScale": "Upload and scale 16:9",
     "save": "Save",
     "savetemplate": "Save as template",
+    "loadTemplate": "Template",    
     "cancel": "Cancel",
     "insert": "Insert",
     "delete": "Delete",
@@ -25,6 +26,7 @@
     "forceReload": "Force reload",
     "createNew": "Create New",
     "createNewSlide": "Create New Slide",
+    "addVideo": "Add Video",
     "addWebPage": "Add Web page",
     "announce": "Fast Announce",
     "announceAll": "Global Announce"
@@ -99,6 +101,13 @@
       "zoom": "Zoom page by",
       "duration": "Display duration (seconds), leave blank for default",
       "displayTime": "Display time"
+    },
+    "addVideo": {
+      "name": "Name",
+      "url": "url",
+      "displayTime": "Display time",
+      "mute": "Mute video",
+      "loop": "Loop video"
     },
     "tooltip": {
       "header": "Insert header",

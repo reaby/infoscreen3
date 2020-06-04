@@ -439,16 +439,17 @@ class admin {
             socket.on('admin.editSlide', function (data) {
                 let bundle = self.bundleManager.getBundle(data.bundleName);
                 let bundleData = bundle.getBundleData();
+                let templateData = {};
                 let json = "{}";
                 if (fs.existsSync("./data/template.json")) {
-                    json = fs.readFileSync("./data/template.json").toString();
+                    templateData = JSON.parse(fs.readFileSync("./data/template.json").toString());
                 }
-                let slide = {displayTime: null};
+                let slide = { displayTime: null };
                 if (data.fileName) {
                     json = bundle.getSlideJsonFile(data.fileName);
                     slide = bundle.findSlideByUuid(data.fileName);
                 }
-                socket.emit("callback.edit", {bundleData: bundleData, slideData: slide, json: json});
+                socket.emit("callback.edit", {bundleData: bundleData, slideData: slide, json: json, templates: templateData});
             });
 
             /** rename **/
@@ -474,8 +475,15 @@ class admin {
             });
 
             socket.on('edit.saveTemplate', function (data) {
+                let templates = {};
+                console.log(data.name);
+
+                if (fs.existsSync("./data/template.json")) {
+                    templates = JSON.parse(fs.readFileSync("./data/template.json").toString());
+                }                
+                templates[data.name] = data.json;
                 try {
-                    fs.writeFileSync("./data/template.json", JSON.stringify(data.json));
+                    fs.writeFileSync("./data/template.json", JSON.stringify(templates));
                 } catch (e) {
                     cli.error(e, "save template");
                 }

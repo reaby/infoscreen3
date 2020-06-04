@@ -244,8 +244,10 @@ function nextSlide(data) {
     bundleData = data.bundleData;
     checkTimeDisplay();
     updateStatusMessage();
+    $("#helperLayer").removeClass("announce");
 
     if (serverOptions.isAnnounce) {
+
         if (serverOptions.announceMeta.type === "webPage") {
             $("#slider").hide();
             $("#" + getWebLayer()).css("transform", "scale(" + serverOptions.announceMeta.zoom + ")");
@@ -289,8 +291,7 @@ function nextSlide(data) {
                 console.log(err);
             }
         }
-    } else {
-        $("#helperLayer").removeClass("announce");
+    } else {    
         switch (serverOptions.currentMeta.type) {
             case "webpage":
                 $("#slider").hide();
