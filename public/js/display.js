@@ -73,26 +73,26 @@ $(window).bind("resize", function () {
 });
 
 if (isPreview === 0) {
-    document.addEventListener("keydown", function(e) {
+    document.addEventListener("keydown", function (e) {
         if (e.keyCode == 13) {
             toggleFullScreen();
         }
     }, false);
 }
 
-function toggleFullScreen() {  
+function toggleFullScreen() {
     if (isPreview === 0) {
         if (!document.fullscreenElement) {
             document.documentElement.requestFullscreen();
         } else {
             if (document.exitFullscreen) {
-                document.exitFullscreen(); 
+                document.exitFullscreen();
             }
         }
     }
 }
-  
-  
+
+
 
 function getLayer(offset) {
     if (offset === undefined) offset = 0;
@@ -228,13 +228,23 @@ function updateStatusMessage() {
         $('#statusMessage').text("");
     }
 }
+function displayVideo(url, loop, mute) {
+    if (serverOptions.isStreaming) return;
+    $("#stream").show();
+    let video = document.getElementById("stream");
+    video.src = url;
+    video.loop = loop;
+    video.volume = mute ? 0.0 : 1.0;
+    video.load();
+    video.play();
+}
 
 function nextSlide(data) {
     serverOptions = data.serverOptions;
     bundleData = data.bundleData;
     checkTimeDisplay();
     updateStatusMessage();
-    
+
     if (serverOptions.isAnnounce) {
         if (serverOptions.announceMeta.type === "webPage") {
             $("#slider").hide();
@@ -246,6 +256,15 @@ function nextSlide(data) {
                 $('#time').addClass('flipOutX').removeClass("flipInX");
             }
             displayWebPage(serverOptions.announceMeta.webUrl);
+        }
+
+        if (serverOptions.announceMeta.type === "video") {
+            if (serverOptions.announceMeta.displayTime) {
+                $('#time').removeClass('flipOutX').addClass("flipInX");
+            } else {
+                $('#time').addClass('flipOutX').removeClass("flipInX");
+            }
+            displayVideo(serverOptions.announceMeta.url, serverOptions.announceMeta.loop, serverOptions.announceMeta.mute);
         }
 
         if (serverOptions.announceMeta.type === "image") {
@@ -275,10 +294,19 @@ function nextSlide(data) {
         switch (serverOptions.currentMeta.type) {
             case "webpage":
                 $("#slider").hide();
+                let video = document.getElementById("stream");
+                video.pause();
+                $("#stream").hide();
                 $("#" + getWebLayer()).css("transform", "scale(" + serverOptions.currentMeta.zoom + ")");
                 $("#" + getWebLayer()).addClass("fadeIn").removeClass("fadeOut");
-
                 displayWebPage(serverOptions.currentMeta.webUrl);
+                break;
+            case "video":
+                displayVideo(serverOptions.currentMeta.url, serverOptions.currentMeta.loop, serverOptions.currentMeta.mute);
+                setTimeout(function () {
+                    clearIFrame(getWebLayer());
+                    clearIFrame(getWebLayer(1));
+                }, 2500);
                 break;
             default:
                 var transition = serverOptions.transition;
@@ -288,9 +316,12 @@ function nextSlide(data) {
 
                 $("#" + getWebLayer()).addClass("fadeOut").removeClass("fadeIn");
                 $("#" + getWebLayer(1)).addClass("fadeOut").removeClass("fadeIn");
+                $("#stream").fadeOut();
                 $("#slider").show();
                 window.f.showImageById(serverOptions.currentFile, transition);
                 setTimeout(function () {
+                    let video = document.getElementById("stream");
+                    video.pause();
                     clearIFrame(getWebLayer());
                     clearIFrame(getWebLayer(1));
                 }, 2500);
@@ -300,6 +331,7 @@ function nextSlide(data) {
 
     setBackground(bundleData.background);
 }
+
 
 function setBackground(background) {
     background = encodeURI("/background/" + background);
@@ -343,7 +375,7 @@ function checkStream(serverOptions) {
     if (serverOptions.isStreaming) {
         if (flvjs.isSupported()) {
             $("#stream").show();
-            var videoElement = document.getElementById('stream');        
+            var videoElement = document.getElementById('stream');
             flvPlayer = flvjs.createPlayer({
                 type: 'flv',
                 url: serverOptions.streamSource
@@ -467,7 +499,7 @@ function checkImages(allSlides) {
                     getDataUri("/render/" + serverOptions.currentBundle + "/" + allIds[i] + ".png", allIds[i], function (imageId, imageData, image) {
                         image.id = imageId;
                         window.f.images.push(image);
-                       // window.f.imageData.push(imageData);
+                        // window.f.imageData.push(imageData);
                     });
                     return true;
                 }
@@ -523,13 +555,13 @@ function clearIFrame(id) {
 function getDataUri(url, imageId, callback) {
     var image = new Image();
     image.onload = function () {
-      //  let canvas = document.createElement('canvas');
-      //  canvas.width = 1920; // or 'width' if you want a special/scaled size
-      //  canvas.height = 1080; // or 'height' if you want a special/scaled size
-      //  canvas.getContext('2d').drawImage(this, 0, 0);
+        //  let canvas = document.createElement('canvas');
+        //  canvas.width = 1920; // or 'width' if you want a special/scaled size
+        //  canvas.height = 1080; // or 'height' if you want a special/scaled size
+        //  canvas.getContext('2d').drawImage(this, 0, 0);
         //callback(imageId, canvas.toDataURL('image/png'), this);
         callback(imageId, null, this);
-      //  canvas = null;
+        //  canvas = null;
     };
     image.src = url;
 }

@@ -221,9 +221,19 @@ class admin {
                     }
                     dispatcher.emit("all.override", data);
                 } else {
-                    self.screenView.overrideSlide(data.json, data.png, data.duration, data.transition);
+                    self.screenView.overrideSlide(data.json, null, data.duration, data.transition);
                 }
             });
+
+            socket.on('admin.overrideVideo', function (data) {
+                if (data.displayId === null) {                    
+                    dispatcher.emit("all.override", data);
+                } else {     
+                    self.screenView.overrideSlide(data.json, null, data.json.duration, null);
+                }
+            });
+
+
 
             socket.on('admin.setBundle', function (data) {
                 self.screenView.changeBundle(data.bundle);
@@ -288,6 +298,11 @@ class admin {
                 }
             });
 
+            socket.on("admin.setStatusMessage", function (message) {
+                self.getView().serverOptions.statusMessage = message;
+                self.getView().updateUI();
+            });
+
 
             /** edit web links **/
             socket.on('admin.editLink', function (data) {
@@ -298,13 +313,8 @@ class admin {
                     json = bundle.findSlideByUuid(data.fileName);
                 }
                 socket.emit("callback.webpage", {bundleData: bundleData, json: json});
-
             });
             
-            socket.on("admin.setStatusMessage", function (message) {
-                self.getView().serverOptions.statusMessage = message;
-                self.getView().updateUI();
-            });
             
             socket.on('edit.saveLink', function (data) {
 
@@ -354,6 +364,73 @@ class admin {
                 } catch (err) {
                     cli.error(err, "save web link");
                     socket.emit("callback.saveLink", {error: err});
+                }
+            });
+
+            /** video **/
+
+            socket.on('admin.editVideo', function (data) {
+                let bundle = self.bundleManager.getBundle(data.bundleName);
+                let bundleData = bundle.getBundleData();
+                let json = "{}";
+                if (data.fileName) {
+                    json = bundle.findSlideByUuid(data.fileName);
+                }
+                socket.emit("callback.video", {bundleData: bundleData, json: json});
+            });
+            
+            
+            socket.on('edit.saveVideo', function (data) {
+
+                let filename = data.filename;
+                if (filename === "") {
+                    filename = uuidv4();
+                }
+                
+                if (data.duration === "") {                    
+                    socket.emit("callback.saveVideo", {erro: "Video duration is not known. Remember to load metadata!"});
+                    return;
+                }
+
+                try {
+                    let bundle = self.bundleManager.getBundle(data.bundleName);
+
+                    let template = {
+                        uuid: filename,
+                        name: data.name,  
+                        duration: data.duration,                      
+                        enabled: true,
+                        displayTime: data.displayTime,
+                        type: "video",
+                        webUrl: data.url,
+                        mute: data.mute,
+                        loop: data.loop,
+                        index: bundle.allSlides.length,
+                        transition: null
+                    };
+
+                    let obj = bundle.findSlideByUuid(filename);
+                    if (Object.keys(obj).length === 0 && obj.constructor === Object) {
+                        bundle.allSlides.push(template);
+                    } else {
+                        obj.url = data.url;
+                        obj.name = data.name;      
+                        obj.duration = data.duration;                  
+                        obj.displayTime = data.displayTime;
+                        obj.mute = data.mute;
+                        obj.loop = data.loop;
+                        obj.transition = null;
+                    }
+
+                    bundle.save();
+
+                    cli.success("save video link");
+                    socket.emit("callback.saveVideo", {});
+                    self.updateSlides();
+
+                } catch (err) {
+                    cli.error(err, "save video link");
+                    socket.emit("callback.saveVideo", {error: err});
                 }
             });
 

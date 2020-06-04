@@ -158,7 +158,7 @@ class display {
 
     getSlideData() {
         let bundle = this.getBundle();
-        return {bundleData: bundle.getBundleData(), slides: bundle.allSlides, serverOptions: this.serverOptions};
+        return { bundleData: bundle.getBundleData(), slides: bundle.allSlides, serverOptions: this.serverOptions };
     }
 
     /**
@@ -177,7 +177,7 @@ class display {
 
     toggleBlackout() {
         this.serverOptions.blackout = this.serverOptions.blackout === false;
-        this.io.emit("callback.blackout", {serverOptions: this.serverOptions});
+        this.io.emit("callback.blackout", { serverOptions: this.serverOptions });
     }
 
     /**
@@ -191,7 +191,7 @@ class display {
         /**
          * @event event:announce
          */
-        this.dispatcher.emit("announce", {screens: screens, event: event, data: data});
+        this.dispatcher.emit("announce", { screens: screens, event: event, data: data });
     }
 
     /**
@@ -254,18 +254,20 @@ class display {
             fs.writeFileSync("./tmp/display_" + this.serverOptions.displayId + ".png", pngData.replace(/^data:image\/png;base64,/, ""), "base64");
         }
 
-        if (duration && duration >= 5) {
+        if (duration && duration >= 5 &&
+            (json.type === "video" && json.loop === false)
+        ) {
             this.serverOptions.loop = true;
             this.timeoutId = setTimeout(this.mainLoop.bind(this), duration * 1000);
         }
         this.displayCurrentSlide();
         this.serverOptions.transition = _transition;
     }
-    
+
     updateUI() {
         this.io.emit("callback.updateUI", this.getSlideData());
     }
-    
+
     displayCurrentSlide() {
         this.announce([this.id, "admin"], "callback.update", this.getSlideData());
     }

@@ -192,12 +192,16 @@ $(window).bind("resize", function () {
     fixPreview();
 });
 
-function createNew() {
+function createNewSlide() {
     editSlide("", "slide");
 }
 
 function addLink() {
     editSlide("", "webpage");
+}
+
+function createNewVideo() {
+    editSlide("", "video");    
 }
 
 function editSlide(name, type) {
@@ -207,6 +211,9 @@ function editSlide(name, type) {
             break;
         case "webpage":
             window.open("/admin/edit/link?bundle=" + serverOptions.currentBundle + "&file=" + name + "&displayId=" + displayId, '_blank', 'location=no,height=400,width=600,scrollbars=no,status=no');
+            break;
+        case "video":
+            window.open("/admin/edit/video?bundle=" + serverOptions.currentBundle + "&file=" + name + "&displayId=" + displayId, '_blank', 'location=no,height=600,width=600,scrollbars=no,status=no');
             break;
     }
 }

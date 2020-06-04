@@ -181,6 +181,17 @@ module.exports = function (pluginManager, websocket, dispatcher) {
         });
     });
 
+    router.get('/edit/video', function (req, res, next) {
+        let bundle = req.query['bundle'];
+        let file = req.query['file'];
+        let displayId = req.query['displayId'] || 0;
+        res.render('admin/video', {
+            config: config,
+            bundle: bundle,
+            displayId: displayId,
+            file: file
+        });
+    });
 
     router.get('/edit/bundleSlides', function (req, res, next) {
         var bundle = {};

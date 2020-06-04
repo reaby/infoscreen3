@@ -81,7 +81,9 @@
                         {{ t("admin.dashboard.slidesInRotation") }}
                     </h1>
                     {% if permission.dashboard.addSlides %}
-                        <button class="ui basic inverted button" onclick="createNew();">{{ t("actions.createNew") }}
+                        <button class="ui basic inverted button" onclick="createNewSlide();">{{ t("actions.createNew") }}
+                        </button>
+                        <button class="ui basic inverted button" onclick="createNewVideo();">{{ t("actions.addVideo") }}
                         </button>
                     {% endif %}
                     {% if permission.dashboard.addWebPage %}
