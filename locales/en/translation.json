@@ -76,9 +76,11 @@
       "header": "Header",
       "text": "Normal Text",
       "fontName": "Font Name",
+      "fontWeight": "Weight",
       "fontSize": "Size",
       "fontColor": "Color",
-      "fontBorder": "Border Color"
+      "fontBorder": "Border Color",
+      "fontBorderWidth": "Border Width"
     },
     "editSlide": {
       "changeColor": "Change Color",

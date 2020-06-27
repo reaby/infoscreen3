@@ -76,9 +76,11 @@
       "header": "Otsakkeet",
       "text": "Teksti",
       "fontName": "Fontin nimi",
+      "fontWeight": "Kirjaiten paksuus",
       "fontSize": "Kirjainten koko",
       "fontColor": "Kirjainten väri",
-      "fontBorder": "Rajan väri"
+      "fontBorder": "Rajan väri",
+      "fontBorderWidth": "Rajan koko"
     },
     "editSlide": {
       "changeColor": "Vaihda väriä",

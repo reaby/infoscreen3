@@ -7,14 +7,18 @@
   "transition": "blocks2",
   "styleHeader": {
     "fill": "#fff",
-    "fontSize": 56,
+    "fontSize": 64,
     "fontWeight": 900,
-    "fontFamily": "Arial"
+    "fontFamily": "Arial",
+    "stroke": "",
+    "strokeWidth": 0
   },
   "styleText": {
     "fill": "#fff",
     "fontFamily": "Arial",
-    "fontSize": 42,
-    "fontWeight": 900
+    "fontSize": 52,
+    "fontWeight": 900,
+    "stroke": "",
+    "strokeWidth": 0
   }
 }

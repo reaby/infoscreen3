@@ -130,12 +130,17 @@ module.exports = function (pluginManager, websocket, dispatcher) {
                     bundleData.displayTime = displayTime;
                     bundleData.styleHeader.fontFamily = fields.headerFontFamily;
                     bundleData.styleHeader.fontSize = parseInt(fields.headerFontSize);
+                    bundleData.styleHeader.fontWeight= parseInt(fields.headerFontWeight) || 400;
                     bundleData.styleHeader.fill = fields.headerFill;
                     bundleData.styleHeader.stroke = fields.headerStroke;
+                    bundleData.styleHeader.strokeWidth = parseInt(fields.headerStrokeSize) || 0;
                     bundleData.styleText.fontFamily = fields.textFontFamily;
                     bundleData.styleText.fontSize = parseInt(fields.textFontSize);
+                    bundleData.styleText.fontWeight= parseInt(fields.textFontWeight) || 400;
                     bundleData.styleText.fill = fields.textFill;
                     bundleData.styleText.stroke = fields.textStroke;
+                    bundleData.styleText.strokeWidth = parseInt(fields.textStrokeSize) || 0;
+                    
                     bundle.setBundleData(bundleData);
                     bundle.save();
 

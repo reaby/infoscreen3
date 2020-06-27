@@ -23,7 +23,7 @@ $(function () {
     canvas.includeDefaultValues = false;
     canvas.preserveObjectStacking = true;
     canvas.antialias = true;
-    
+
     canvas.on('object:moving', function (options) {
         if (Math.round(options.target.left / grid * 4) % 4 === 0) {
             options.target.set({
@@ -32,18 +32,18 @@ $(function () {
         }
 
         if (Math.round(options.target.top / grid * 4) % 4 === 0) {
-            options.target.set({top: Math.round(options.target.top / grid) * grid}).setCoords();
+            options.target.set({ top: Math.round(options.target.top / grid) * grid }).setCoords();
         }
     });
 
-    canvas.on("object:added", function() {
+    canvas.on("object:added", function () {
         if (undoActive) {
             saveState();
         }
     });
 
-    
-    canvas.on("object:modified", function() {
+
+    canvas.on("object:modified", function () {
         if (undoActive) {
             saveState();
         }
@@ -102,10 +102,10 @@ $(document).bind("contextmenu", function (event) {
     if (objects.length > 0) {
         // Show contextmenu
         $("#contextmenu").finish().toggle(100).// In the right position (the mouse)
-        css({
-            top: event.pageY + "px",
-            left: event.pageX + "px"
-        });
+            css({
+                top: event.pageY + "px",
+                left: event.pageX + "px"
+            });
     }
 
 });
@@ -167,21 +167,21 @@ function saveState() {
 
 function undo() {
     let json = {};
-    if (undoData.length > 1) {              
+    if (undoData.length > 1) {
         undoData.pop();
-        json = undoData[undoData.length-1];
-    } 
+        json = undoData[undoData.length - 1];
+    }
 
     if (undoData.length == 1) {
-        json = undoData[undoData.length-1];
+        json = undoData[undoData.length - 1];
     }
 
     undoActive = false;
-    canvas.loadFromJSON(json, function () {        
+    canvas.loadFromJSON(json, function () {
         canvas.requestRenderAll();
-        undoActive = true;      
-    }, function (obj, object) {                
-        if (object.type == "line") {     
+        undoActive = true;
+    }, function (obj, object) {
+        if (object.type == "line") {
             object.selectable = false
         }
 
@@ -193,23 +193,23 @@ function undo() {
             if (object.id === "header") {
                 object.setOptions(bundleData.styleHeader);
                 if (bundleData.styleHeader.fontSize !== fontSize) {
-                    object.setOptions({fontSize: fontSize});
+                    object.setOptions({ fontSize: fontSize });
                 }
-                if (bundleData.styleHeader.stroke !== "") {
-                    object.setShadow({color: "rgba(0,0,0,0.6)", blur: 5, offsetX: 2, offsetY: 2});
+                if (bundleData.styleText['stroke-width'] != 0) {
+                    object.setShadow({ color: "rgba(0,0,0,0.6)", blur: 5, offsetX: 2, offsetY: 2 });
                 }
             } else {
                 object.setOptions(bundleData.styleText);
                 if (bundleData.styleText.fontSize !== fontSize) {
-                    object.setOptions({fontSize: fontSize});
+                    object.setOptions({ fontSize: fontSize });
                 }
-                if (bundleData.styleText.stroke !== "") {
-                    object.setShadow({color: "rgba(0,0,0,0.6)", blur: 5, offsetX: 2, offsetY: 2});
+                if (bundleData.styleText['stroke-width'] != 0) {
+                    object.setShadow({ color: "rgba(0,0,0,0.6)", blur: 5, offsetX: 2, offsetY: 2 });
                 }
             }
 
             if (fill != null) {
-                object.setOptions({fill: fill});
+                object.setOptions({ fill: fill });
             }
 
             object.lockRotation = true;
@@ -219,7 +219,7 @@ function undo() {
         }
         object.lockUniScaling = true;
 
-    });   
+    });
 }
 
 
@@ -278,7 +278,7 @@ var canvasWidth = document.getElementById('edit').width,
 var edgedetection = 20;
 
 socket.on('connect', function () {
-    socket.emit('admin.editSlide', {bundleName: bundle, fileName: file});
+    socket.emit('admin.editSlide', { bundleName: bundle, fileName: file });
 });
 
 socket.on('callback.save', function (data) {
@@ -313,10 +313,10 @@ socket.on('callback.edit', function (data) {
         value: "empty"
     }];
     for (let i in templates) {
-        vals.push({name: i, value: i});
+        vals.push({ name: i, value: i });
     }
 
-    $('#templates').dropdown({    
+    $('#templates').dropdown({
         values: vals,
         action: function (text, value) {
             $('#templates').dropdown("hide");
@@ -344,9 +344,9 @@ socket.on('callback.edit', function (data) {
     var transitionArray = [];
     var values = ["bars", "blinds", "blinds3d", "zip", "blocks", "blocks2", "concentric", "warp", "cube", "tiles3d", "tiles3dprev", "slide", "swipe", "dissolve"];
 
-    transitionArray.push({name: "default", value: null});
+    transitionArray.push({ name: "default", value: null });
     for (var i in values) {
-        transitionArray.push({name: values[i], value: values[i]});
+        transitionArray.push({ name: values[i], value: values[i] });
     }
 
     $('#transitions')
@@ -366,7 +366,10 @@ socket.on('callback.edit', function (data) {
     if (data.bundleData.useWebFonts) {
         WebFont.load({
             google: {
-                families: [data.bundleData.styleHeader.fontFamily + ":700,900", data.bundleData.styleText.fontFamily + ":700,900"]
+                families: [
+                    `${data.bundleData.styleHeader.fontFamily}:${data.bundleData.styleHeader.fontWidth}`,
+                    `${data.bundleData.styleText.fontFamily}:${data.bundleData.styleText.fontWidth}`
+                ]
             },
             timeout: 2000,
             active: function () {
@@ -420,7 +423,7 @@ function setStyle(object, styleName, value) {
     if (object.setSelectionStyles && object.isEditing) {
         object.setSelectionStyles(style);
     } else {
-        object.setOptions({styles: {}});
+        object.setOptions({ styles: {} });
         object.setOptions(style);
     }
 }
@@ -448,7 +451,7 @@ function drawGrid() {
         canvas.add(new fabric.Line([i * grid, 0, i * grid, 1920], {
             stroke: '#ccc',
             strokeDashArray: [w, w],
-            strokeWidth: 2,                    
+            strokeWidth: 2,
             opacity: 0.5,
             selectable: false,
             zIndex: -1
@@ -484,9 +487,9 @@ function checkTimeDisplay() {
 function nextSlide(jsonData) {
     undoActive = false;
     canvas.loadFromJSON(jsonData, function () {
-        drawGrid();        
-        undoActive = true;        
-        saveState();   
+        drawGrid();
+        undoActive = true;
+        saveState();
         canvas.renderAll();
     }, function (obj, object) {
 
@@ -498,23 +501,23 @@ function nextSlide(jsonData) {
             if (object.id === "header") {
                 object.setOptions(bundleData.styleHeader);
                 if (bundleData.styleHeader.fontSize !== fontSize) {
-                    object.setOptions({fontSize: fontSize});
+                    object.setOptions({ fontSize: fontSize });
                 }
-                if (bundleData.styleHeader.fill !== "") {
-                    object.setShadow({color: "rgba(0,0,0,0.6)", blur: 5, offsetX: 2, offsetY: 2});
+                if (bundleData.styleHeader.strokeWidth == 0) {
+                    object.setShadow({ color: "rgba(0,0,0,0.6)", blur: 5, offsetX: 2, offsetY: 2 });
                 }
             } else {
                 object.setOptions(bundleData.styleText);
                 if (bundleData.styleText.fontSize !== fontSize) {
-                    object.setOptions({fontSize: fontSize});
+                    object.setOptions({ fontSize: fontSize });
                 }
-                if (bundleData.styleText.fill !== "") {
-                    object.setShadow({color: "rgba(0,0,0,0.6)", blur: 5, offsetX: 2, offsetY: 2});
+                if (bundleData.styleText.strokeWidth == 0) {
+                    object.setShadow({ color: "rgba(0,0,0,0.6)", blur: 5, offsetX: 2, offsetY: 2 });
                 }
             }
 
             if (fill != null) {
-                object.setOptions({fill: fill});
+                object.setOptions({ fill: fill });
             }
 
             object.lockRotation = true;
@@ -585,10 +588,16 @@ function addText(content, isHeader) {
     if (isHeader) {
         text.id = "header";
         text.setOptions(bundleData.styleHeader);
-        text.setOptions({top: y + 10, left: 150});
+        text.setOptions({ top: y + 10, left: 150 });
+        if (bundleData.styleHeader.strokeWidth == 0) {
+            text.setShadow({ color: "#000", blur: 5, offsetX: 2, offsetY: 2 });
+        }
     } else {
         text.setOptions(bundleData.styleText);
-        text.setOptions({top: y + 10, left: 250});
+        text.setOptions({ top: y + 10, left: 250 });
+        if (bundleData.styleText.strokeWidth == 0) {
+            text.setShadow({ color: "#000", blur: 5, offsetX: 2, offsetY: 2 });
+        }
     }
 
     text.lockRotation = true;
@@ -596,7 +605,6 @@ function addText(content, isHeader) {
     text.lockUniScaling = true;
     text.hasRotatingPoint = false;
 
-    text.setShadow({color: "#000", blur: 5, offsetX: 2, offsetY: 2});
     canvas.add(text);
 }
 
@@ -678,7 +686,7 @@ function cueSlide(id) {
         }
 
         let obj = {
-            json: {type: "image"},
+            json: { type: "image" },
             png: canvas.toDataURL('png'),
             displayId: id,
             duration: duration,
@@ -818,18 +826,18 @@ function saveAsFullScreenImage(name = "untitled", imageData) {
         var dataurl = canvas.toDataURL('png');
 
         var json =
-            {
+        {
+            version: "2.6.0",
+            objects: [{
+                type: "image",
                 version: "2.6.0",
-                objects: [{
-                    type: "image",
-                    version: "2.6.0",
-                    width: 1920,
-                    height: 1080,
-                    crossOrigin: "",
-                    src: dataurl,
-                    filters: []
-                }]
-            };
+                width: 1920,
+                height: 1080,
+                crossOrigin: "",
+                src: dataurl,
+                filters: []
+            }]
+        };
 
         var obj = {
             bundleName: bundle,
@@ -876,25 +884,25 @@ function setCenter(direction) {
 
 function alignObject(direction) {
     let objects = canvas.getActiveObjects();
-    let active = canvas.getActiveObject();    
+    let active = canvas.getActiveObject();
     let first = true;
     for (var obj of objects) {
         if (first) {
             first = false;
-            active = obj;            
+            active = obj;
         }
-        switch(direction) {
-            case "top":  
-                 if (obj.top < active.top) active = obj;
-                break;    
-            case "bottom":  
+        switch (direction) {
+            case "top":
+                if (obj.top < active.top) active = obj;
+                break;
+            case "bottom":
                 if ((obj.top + obj.height) > (active.top + active.height)) active = obj;
                 break;
-            case "left":  {
+            case "left": {
                 if (obj.left < active.left) active = obj;
                 break;
             }
-            case "right":  {
+            case "right": {
                 if ((obj.left + obj.width) > (active.left + active.width)) active = obj;
                 break;
             }
@@ -904,41 +912,41 @@ function alignObject(direction) {
     for (var obj of objects) {
         if (direction == "top") {
             obj.set(
-                { 
+                {
                     top: parseFloat(active.top)
                 });
         }
-        if (direction == "bottom") {            
+        if (direction == "bottom") {
             obj.set(
                 {
                     top: parseFloat(active.top + active.height - obj.height)
-                });            
+                });
         }
         if (direction == "left") {
             obj.set(
-                { 
+                {
                     left: parseFloat(active.left)
-            
+
                 });
         }
-        if (direction == "right") {            
+        if (direction == "right") {
             obj.set(
                 {
                     left: parseFloat(active.left + active.width - obj.width)
-            
-                });            
+
+                });
         }
         obj.setCoords();
     }
-    
+
     canvas.discardActiveObject(null);
-    canvas.requestRenderAll(); 
+    canvas.requestRenderAll();
 }
 
 
 function fontSize(direction) {
     for (var obj of canvas.getActiveObjects()) {
-        var sizes = [20, 28, 32, 36, 40, 44, 48, 50, 54, 58, 64, 72, 96];
+        var sizes = [20, 28, 32, 36, 40, 44, 48, 50, 54, 58, 64, 72, 96, 108, 116, 120, 128, 132, 140, 144, 148];
         if (obj.type === "i-text") {
             var idx = closest(sizes, getStyle(obj, "fontSize"));
 

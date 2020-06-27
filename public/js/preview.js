@@ -67,7 +67,10 @@ socket.on('callback.preview', function (data) {
             if (bundleData.styleHeader.fontFamily != data.bundleData.styleHeader.fontFamily || bundleData.styleText.fontFamily != data.bundleData.styleText.fontFamily) {
                 WebFont.load({
                     google: {
-                        families: [data.bundleData.styleHeader.fontFamily, data.bundleData.styleText.fontFamily]
+                        families: [
+                            `${data.bundleData.styleHeader.fontFamily}:${data.bundleData.styleHeader.fontWidth}`,
+                            `${data.bundleData.styleText.fontFamily}:${data.bundleData.styleText.fontWidth}`
+                        ]
                     },
                     timeout: 2000,
                     active: function () {

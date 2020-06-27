@@ -91,11 +91,16 @@
                 <label> {{ t("admin.editBundleProperties.fontName") }}</label>
                 <input type="text" value="{{ bundleData.styleHeader.fontFamily }}" name="headerFontFamily"/>
             </div>
+            <div class="field">
+                <label>{{ t("admin.editBundleProperties.fontWeight") }}</label>
+                <input type="number" value="{{ bundleData.styleHeader.fontWeight }}" name="headerFontWeight"/>
+            </div>
 
             <div class="field">
                 <label>{{ t("admin.editBundleProperties.fontSize") }}</label>
                 <input type="number" value="{{ bundleData.styleHeader.fontSize }}" name="headerFontSize"/>
             </div>
+         
             <div class="field">
                 <label>{{ t("admin.editBundleProperties.fontColor") }}</label>
                 <input id="headerFill" type="text" value="{{ bundleData.styleHeader.fill }}" name="headerFill"
@@ -107,11 +112,21 @@
                        onchange="previewColor(this)"/>
             </div>
 
+            <div class="field">
+                <label>{{ t("admin.editBundleProperties.fontBorderWidth") }}</label>
+                <input type="number" value="{{ bundleData.styleHeader.strokeWidth }}" name="headerStrokeSize"/>
+            </div>
+
             <h2> {{ t("admin.editBundleProperties.text") }}</h2>
 
             <div class="field">
                 <label> {{ t("admin.editBundleProperties.fontName") }}</label>
                 <input type="text" value="{{ bundleData.styleText.fontFamily }}" name="textFontFamily"/>
+            </div>
+            
+            <div class="field">
+                <label>{{ t("admin.editBundleProperties.fontWeight") }}</label>
+                <input type="number" value="{{ bundleData.styleText.fontWeight }}" name="textFontWeight"/>
             </div>
 
             <div class="field">
@@ -127,6 +142,11 @@
                 <label>{{ t("admin.editBundleProperties.fontBorder") }}</label>
                 <input id="textStroke" type="text" value="{{ bundleData.styleText.stroke }}" name="textStroke"
                        onchange="previewColor(this)"/>
+            </div>
+            
+            <div class="field">
+                <label>{{ t("admin.editBundleProperties.fontBorderWidth") }}</label>
+                <input type="number" value="{{ bundleData.styleText.strokeWidth }}" name="textStrokeSize"/>
             </div>
 
             <div class="field">
