@@ -367,8 +367,8 @@ socket.on('callback.edit', function (data) {
         WebFont.load({
             google: {
                 families: [
-                    `${data.bundleData.styleHeader.fontFamily}:${data.bundleData.styleHeader.fontWidth}`,
-                    `${data.bundleData.styleText.fontFamily}:${data.bundleData.styleText.fontWidth}`
+                    `${data.bundleData.styleHeader.fontFamily}:${data.bundleData.styleHeader.fontWeight}`,
+                    `${data.bundleData.styleText.fontFamily}:${data.bundleData.styleText.fontWeight}`
                 ]
             },
             timeout: 2000,
