@@ -1,0 +1,14 @@
+#!/usr/bin/env node
+
+var fs = require('fs');
+var stdoutFd = fs.openSync('./data/output.log', 'a');
+var stderrFd = fs.openSync('./data/errors.log', 'a');
+var proc2 = require('daemon').daemon("./bin/infoscreen3",
+    "",
+    {
+        cwd: process.cwd(),
+        stdout: stdoutFd,
+        stderr: stderrFd,    
+    });
+
+console.log(proc2.pid);

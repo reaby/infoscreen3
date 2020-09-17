@@ -24,7 +24,8 @@ Usage is very easy after you have setup the server at local network. The viewer 
 1. run `npm install`
 2. copy `config-default.js` to `config.js`
 3. check config settings and if you don't need live stream support from local network using OBS, set `mediaServer` to `false`
-5. run `npm start`
+4. run `npm start`
+   - optionally you can start as a background task: `npm run-script daemon`, it will output just a pid for the new process and you find new files: `output.log` and `errors.log` at the `data` directory.
 
 # Default usage
 Viewer is located at: http://localhost:8000 <br/>

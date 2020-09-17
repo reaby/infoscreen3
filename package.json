@@ -1,9 +1,10 @@
 {
   "name": "infoscreen3",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "private": true,
   "scripts": {
-    "start": "node --expose-gc ./bin/infoscreen3"
+    "start": "node --expose-gc ./bin/infoscreen3",
+    "daemon": "node --expose-gc ./bin/daemon"
   },
   "dependencies": {
     "basic-auth": "^2.0.1",
@@ -14,6 +15,7 @@
     "connect-sqlite3": "^0.9.11",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
+    "daemon": "^1.1.0",
     "debug": "~2.6.9",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
@@ -22,15 +24,15 @@
     "i18next-express-middleware": "^1.9.1",
     "i18next-node-fs-backend": "^2.1.3",
     "less-middleware": "^3.1.0",
-    "lodash": ">=4.17.19",
+    "lodash": "^4.17.20",
     "minimist": ">=1.2.2",
     "morgan": "~1.9.1",
-    "node-media-server": "^2.2.2",
+    "node-media-server": "^2.2.3",
     "node.extend": ">=2.0.1",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
     "passport.socketio": "^3.7.0",
-    "rate-limiter-flexible": "^2.1.9",
+    "rate-limiter-flexible": "^2.1.10",
     "socket.io": "^2.3.0",
     "sqlite3": "^4.2.0",
     "twig": "~0.10.3",
