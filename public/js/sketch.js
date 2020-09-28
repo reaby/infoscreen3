@@ -50,13 +50,21 @@ class Sketch {
     this.currentTransition = "fade";
     this.bcounter = null;
     this.scene = new THREE.Scene();
-    this.vertex = `
+    /* this.vertex = `
       varying vec2 _uv;
       void main() {
         _uv = uv;
-        gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0 );
       }`;
-
+*/
+    this.vertex = `  
+  varying vec2 _uv;      
+  void main()             
+   {
+     _uv = uv;                       
+     gl_Position = vec4(position, 0.5);
+   } 
+`;
     this.fragment = `
       vec4 transition (vec2 uv) {
         return mix(
@@ -70,7 +78,7 @@ class Sketch {
     this.height = window.innerHeight;
     //this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setPixelRatio(1);
-    this.renderer.setSize(1920,1080);
+    this.renderer.setSize(1920, 1080);
 
     this.duration = opts.duration || 1;
     this.debug = opts.debug || false;
@@ -85,7 +93,7 @@ class Sketch {
 
     this.camera = new THREE.PerspectiveCamera(
       70,
-      16/9,
+      16 / 9,
       0.001,
       1000
     );
@@ -183,7 +191,7 @@ class Sketch {
   }
 
   setupResize() {
-//    window.addEventListener("resize", this.resize.bind(this));
+    //    window.addEventListener("resize", this.resize.bind(this));
   }
 
   resize() {
@@ -227,6 +235,7 @@ class Sketch {
       side: THREE.DoubleSide,
       uniforms: { ...this.getUniformBase() },
       transparent: true,
+      // wireframe: true,
       vertexShader: this.vertex,
       fragmentShader: this.makeFragment(this.fragment),
     });
@@ -267,7 +276,7 @@ class Sketch {
       this.isRunning = true;
       this.material.uniforms.texture2.value = this.nextTexture;
     }
- 
+
     this.tmpImage = false;
     let tween = new TWEEN.Tween(this.material.uniforms.progress);
     tween.to({ value: 1.0 }, this.duration)
