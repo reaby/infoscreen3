@@ -190,6 +190,11 @@ canvas {
     text-rendering: geometricPrecision;
 }
 
+#slider canvas {    
+    text-rendering: initial;
+    width: inherit !important;
+    height: inherit !important;
+}
 #statusMessageOuter {
     z-index: 9;
     width: 100vw;

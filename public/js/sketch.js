@@ -68,8 +68,9 @@ class Sketch {
     this.renderer = new THREE.WebGLRenderer({ alpha: true, antialias: false });
     this.width = window.innerWidth;
     this.height = window.innerHeight;
-    this.renderer.setPixelRatio(window.devicePixelRatio);
-    this.renderer.setSize(this.width, this.height);
+    //this.renderer.setPixelRatio(window.devicePixelRatio);
+    this.renderer.setPixelRatio(1);
+    this.renderer.setSize(1920,1080);
 
     this.duration = opts.duration || 1;
     this.debug = opts.debug || false;
@@ -78,14 +79,13 @@ class Sketch {
     this.nextTexture = null;
     this.tmpImage = false;
     this.container = document.getElementById("slider");
-    this.images = JSON.parse(this.container.getAttribute('data-images')) || [];
     this.width = this.container.offsetWidth;
     this.height = this.container.offsetHeight;
     this.container.appendChild(this.renderer.domElement);
 
     this.camera = new THREE.PerspectiveCamera(
       70,
-      window.innerWidth / window.innerHeight,
+      16/9,
       0.001,
       1000
     );
@@ -183,12 +183,12 @@ class Sketch {
   }
 
   setupResize() {
-    window.addEventListener("resize", this.resize.bind(this));
+//    window.addEventListener("resize", this.resize.bind(this));
   }
 
   resize() {
-    this.width = this.container.offsetWidth;
-    this.height = this.container.offsetHeight;
+    this.width = 1920; //this.container.offsetWidth;
+    this.height = 1080; //this.container.offsetHeight;
     this.renderer.setSize(this.width, this.height);
     this.camera.aspect = this.width / this.height;
 
