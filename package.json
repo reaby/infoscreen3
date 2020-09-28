@@ -27,7 +27,7 @@
     "lodash": "^4.17.20",
     "minimist": ">=1.2.2",
     "morgan": "~1.9.1",
-    "node-media-server": "^2.2.3",
+    "node-media-server": "^2.2.4",
     "node.extend": ">=2.0.1",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
