@@ -3,6 +3,7 @@
 {% block header %}
 <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
 <script src="/socket.io/socket.io.js"></script>
+<script src="/js/sharedScript.js"></script>
 <script>
     var bundle = "{{ bundle }}";
     var file = "{{ file }}";
@@ -54,7 +55,7 @@
             <label for="lbl">{{ t("navs.time") }}</label>
         </div>
     </div>
-    <div id="transitions" class="ui dropdown item">
+    <div id="transitions" class="ui scrolling dropdown item">
         <div class="ui small breadcrumb">
             <span class="section">{{ t("navs.transition") }}</span>
             <i class="right chevron icon divider"></i>

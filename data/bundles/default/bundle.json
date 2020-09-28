@@ -2,7 +2,7 @@
 	"displayName": "default",
 	"background": "bg.jpg",
 	"duration": 15,
-	"transition": "tiles3d",
+	"transition": "Dreamy",
 	"useWebFonts": false,
 	"displayTime": true,
 	"styleHeader": {

@@ -65,13 +65,30 @@ module.exports = function (pluginManager, websocket, dispatcher) {
         });
     });
 
-    router.get('/display/:id', function (req, res, next) {
+    
+    router.get('/display/:id/css', function (req, res, next) {
         res.header('Access-Control-Allow-Origin', '*');
         let idx = parseInt(req.params.id);
         let preview = parseInt(req.query['isPreview']) || 0;
         let volume = parseFloat(req.query['videoVolume']) || 1.;
         let extra = pluginManager.getDisplayAdditions();
         res.render('display', {
+            config: config,
+            display: availableDisplays[idx],
+            displayId: idx,
+            videoVolume: volume,
+            extra: extra,
+            isPreview: preview
+        });
+    });
+
+    router.get('/display/:id', function (req, res, next) {
+        res.header('Access-Control-Allow-Origin', '*');
+        let idx = parseInt(req.params.id);
+        let preview = parseInt(req.query['isPreview']) || 0;
+        let volume = parseFloat(req.query['videoVolume']) || 1.;
+        let extra = pluginManager.getDisplayAdditions();
+        res.render('displayWebGl', {
             config: config,
             display: availableDisplays[idx],
             displayId: idx,

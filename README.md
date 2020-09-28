@@ -64,3 +64,6 @@ Dockerfile is provided for building a docker container. Docker container accepts
 
 `docker build -t reaby/infoscreen .`<br/>
 `docker run -p 8000:8000 -e HOST=infoscreen.lan -e PORT=8000 -e ADMIN_USER=admin -e ADMIN_PASS=secret --name infoscreen reaby/infoscreen`<br/>
+
+# Thanks
+WebGL renderer bases upon initial working of [Creative WebGL Image Transitions](https://github.com/akella/webGLImageTransitions) repository here at github. Thanks for your awesome article.

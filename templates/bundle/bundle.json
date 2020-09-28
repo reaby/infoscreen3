@@ -4,10 +4,10 @@
   "duration": 20,
   "useWebFonts": false,
   "displayTime": true,
-  "transition": "blocks2",
+  "transition": "fade",
   "styleHeader": {
     "fill": "#fff",
-    "fontSize": 64,
+    "fontSize": 72,
     "fontWeight": 900,
     "fontFamily": "Arial",
     "stroke": "",

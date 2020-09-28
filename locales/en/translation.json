@@ -11,7 +11,7 @@
     "uploadScale": "Upload and scale 16:9",
     "save": "Save",
     "savetemplate": "Save as template",
-    "loadTemplate": "Template",    
+    "loadTemplate": "Template",
     "cancel": "Cancel",
     "insert": "Insert",
     "delete": "Delete",
@@ -123,18 +123,19 @@
       "alignCenter": "Align center",
       "alignRight": "Align right",
       "alignUp": "Align top",
-      "alignDown": "Align bottom",      
+      "alignDown": "Align bottom",
       "alignJustify": "Justify Align",
       "fontPlus": "Increase font size",
       "fontMinus": "Decrease font size",
-      "centerHorizontal":"Center Horizontal",
-      "centerVertical":"Center Vertical",
+      "centerHorizontal": "Center Horizontal",
+      "centerVertical": "Center Vertical",
       "undo": "Undo last action"
     }
   },
   "index": {
     "displays": "Available displays",
-    "normal": "Normal",
+    "normal": "WebGl",
+    "css": "CSS3",
     "lite": "Lite",
     "splitter": "or"
   }

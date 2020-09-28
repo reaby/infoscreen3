@@ -2,6 +2,7 @@
 
 {% block header %}
     <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/sharedScript.js"></script>
     {% if config.useLocalAssets %}
         <script src="/assets/jquery.jeditable.min.js"></script>
         <script src="/assets/vue.js"></script>
@@ -19,7 +20,7 @@
             {{ t("infoscreen") }}
         </a>
 
-        <div id="displays" class="ui dropdown item">
+        <div id="displays" class="ui scrolling dropdown item">
             <div class="ui small breadcrumb">
                 <span class="section">{{ t("navs.display") }}</span>
                 <i class="right chevron icon divider"></i>
@@ -28,7 +29,7 @@
             <i class="dropdown icon"></i>
         </div>
 
-        <div id="bundles" class="ui dropdown item">
+        <div id="bundles" class="ui scrolling dropdown item">
             <div class="ui small breadcrumb">
                 <span class="section">{{ t("navs.bundle") }}</span>
                 <i class="right chevron icon divider"></i>
@@ -37,7 +38,7 @@
             <i class="dropdown icon"></i>
         </div>
 
-        <div id="transitions" class="ui dropdown item">
+        <div id="transitions" class="ui scrolling dropdown item">
             <div class="ui small breadcrumb">
                 <span class="section">{{ t("navs.transition") }}</span>
                 <i class="right chevron icon divider"></i>

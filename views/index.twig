@@ -35,19 +35,24 @@
             var output = "";
             for (var i in data.displays) {
                 var display = data.displays[i];
-                var html = '<div class="ui card">' +
-                    '<div class="image" style="background: black;">' +
-                    '<img src="' + data.previewImages[i] + '" />' +
-                    '</div>' +
-                    '<div class="content">' +
-                    '<h3 class="ui center aligned header">' + display.name + '</h3>' +
-                    '<div class="ui attached buttons">' +
-                    '<a href="display/' + index.toString() + '" class="ui positive button">{{ t("index.normal") }}</a>' +
-                    '<div class="or" data-text="{{ t("index.splitter") }}"></div>' +
-                    '<a href="display/' + index.toString() + '/lite" class="ui button">{{ t("index.lite") }}</a>' +
-                    '</div>' +
-                    '</div>' +
-                    '</div>';
+                var html = `
+                <div class="ui card"> 
+                    <h3 class="ui center aligned top attached header ">${display.name}</h3>
+                    <div onclick="window.location='display/${index.toString()}'" class="image" style="background: black;">                                        
+                        <img src="${data.previewImages[i]}" />                                            
+                    </div>
+                    <div class="content">
+                        
+                        <div class="ui attached buttons">
+                            <a href="/display/${index.toString()}" class="ui positive button">{{ t("index.normal") }}</a>
+                            <div class="or" data-text="{{ t("index.splitter") }}"></div>
+                            <a href="/display/${index.toString()}/css" class="ui button">{{ t("index.css") }}</a>
+                            <div class="or" data-text="{{ t("index.splitter") }}"></div>
+                            <a href="/display/${index.toString()}/lite" class="ui button">{{ t("index.lite") }}</a>
+                            </div>
+                        </div><br>
+                        <a href="/admin/display/${index.toString()}" class="ui bottom attached gray button">{{ t("index.admin") }}</a>
+                </div>`;
                 output += html;
                 index += 1;
             }

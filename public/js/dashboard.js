@@ -75,11 +75,11 @@ socket.on("callback.dashboard.sync", function (data) {
     $('.currentDisplay').text(displayList[displayId].name);
 
     var transitionArray = [];
-    var values = ["bars", "blinds", "blinds3d", "zip", "blocks", "blocks2", "concentric", "warp", "cube", "tiles3d", "tiles3dprev", "slide", "swipe", "dissolve"];
-
+    // var values = ["bars", "blinds", "blinds3d", "zip", "blocks", "blocks2", "concentric", "warp", "cube", "tiles3d", "tiles3dprev", "slide", "swipe", "dissolve"];
+    
     transitionArray.push({ name: "random", value: null });
-    for (var i in values) {
-        transitionArray.push({ name: values[i], value: values[i] });
+    for (var i in SupportedTransitions) {
+        transitionArray.push({ name: SupportedTransitions[i], value: SupportedTransitions[i] });
     }
 
     $('#transitions')
@@ -201,7 +201,7 @@ function addLink() {
 }
 
 function createNewVideo() {
-    editSlide("", "video");    
+    editSlide("", "video");
 }
 
 function editSlide(name, type) {

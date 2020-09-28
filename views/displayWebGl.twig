@@ -1,0 +1,57 @@
+{% extends 'layout/view.twig' %}
+{% block header %}
+    {% if config.mediaServer %}
+        {% if config.useLocalAssets %}
+            <script src="/assets/flv.min.js"></script>
+        {% else %}
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/flv.js/1.5.0/flv.min.js"></script>
+        {% endif %}
+    {% endif %}
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/three.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/js/gl-transitions.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/js/tween.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/js/sketch.js" type="text/javascript" charset="utf-8"></script>
+    <title>InfoScreen3 - {{ display.name }}</title>
+{% endblock %}
+
+{% block body %}
+    <div id="blackoutLayer" class="animated"></div>
+    {{ extra }}
+    
+    <div id="time" class="noselect animated">00:00</div>
+
+    <div id="statusMessageOuter" class="noselect animated">
+        <span id="statusMessage"></span>
+    </div>
+    
+
+    <div id="networkstatus" class="noselect animated"><i class="spinner loading icon"></i></div>
+    
+    <video id="stream" class="fsimage" poster=""></video>
+
+    <div id="helperLayer" class="gpu animated"></div>
+
+    <iframe id="webLayer0" scrolling="no" class="web fsimage animated"></iframe>
+    <iframe id="webLayer1" scrolling="no" class="web fsimage animated"></iframe>
+
+    <div id="slider" class="fsimage" style="overflow:">    
+    </div>
+
+    <div id="bg">
+        <img id="bgimg" class="fsimage" src="/img/wait.png"/>
+    </div>
+
+    <video loop autoplay id="bgvid" class="fsimage" poster="">
+    </video>
+
+    <script>
+        var socket = io("{{ config.serverUrl }}:{{ config.serverListenPort }}/display-{{ displayId }}");
+        var videoVolume = {{ videoVolume }};
+        var isPreview = {{ isPreview }};
+    </script>
+
+    <script src="/js/displayWebGl.js"></script>
+{% endblock %}
+

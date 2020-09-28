@@ -42,10 +42,10 @@ module.exports = {
             "username": "operator",
             "password": "operator",
             "permissions": {
-                "isAdmin": true,
+                "isAdmin": false,
                 "dashboard": {
                     "addBundle": false,
-                    "addSlides": true,
+                    "addSlides": false,
                     "addWebPage": false,
                 }
             }

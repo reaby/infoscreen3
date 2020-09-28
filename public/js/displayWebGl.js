@@ -1,83 +1,79 @@
-function symmetricDifference(a1, a2) {
-    var result = [];
-    for (var i = 0; i < a1.length; i++) {
-        if (a2.indexOf(a1[i]) === -1) {
-            result.push(a1[i]);
-        }
-    }
-    for (i = 0; i < a2.length; i++) {
-        if (a1.indexOf(a2[i]) === -1) {
-            result.push(a2[i]);
-        }
-    }
-    return result;
-}
-
-var connectionTimeoutId;
-
-window.f = new flux.slider('#slider', {
-    controls: false,
-    captions: false,
-    autoplay: false,
-    pagination: false,
-    width: $(window).width(),
-    height: $(window).height(),
-});
-
-$(function () {
-    $(window).resize(function () {
-        if (this.resizeTO) clearTimeout(this.resizeTO);
-        this.resizeTO = setTimeout(function () {
-            $(this).trigger('windowResize');
-        }, 250);
-    });
-
-    $(window).on('windowResize', function () {
-        window.f.setSize($(window).width(), $(window).height());
-    });
-
-    updateTimeout();
-});
-
-var layer = 0;
-var flvPlayer;
-var doNext = false;
-/** bundleData
- * @see data/default/bundle.json
- *
- **/
-var bundleData = {
+/***************************
+ *  window load, init
+ * **************************/
+let bundleData = {
     background: "",
     duration: 10,
     styleHeader: {},
     styleText: {},
     useWebFonts: false
 };
-var serverOptions = {};
-var streamStarted = false;
+let serverOptions = {};
 
 
-/***************************
- *  window load, init
- * **************************/
+let sketch = new Sketch(
+    {
+        duration: 2000,
+        debug: false,
+        easing: TWEEN.Easing.Quadratic.Out
+    });
+
+sketch.loadManager.onLoad = () => {
+    try {
+        sketch.play();
+        if (sketch.tmpImage) {            
+            sketch.showSlide("temp");
+            return;
+        }
+
+        setBackground(bundleData.background);
+        if (checkStream(serverOptions) === false) {
+            nextSlide();
+        }
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+let connectionTimeoutId;
+let layer = 0;
+let flvPlayer;
+
+/** bundleData
+ * @see data/default/bundle.json
+ *
+ **/
+
 
 $(function () {
-    fixImageSizes();
+
     displayTime();
     setInterval(displayTime, 1000);
     $('#blackoutLayer').dblclick(toggleFullScreen);
+    if (isPreview === 0) {
+        document.addEventListener("keydown", function (e) {
+            if (e.keyCode == 13) {
+                toggleFullScreen();
+            }
+        }, false);
+    }
+
 });
 
-$(window).bind("resize", function () {
-    fixImageSizes();
-});
 
-if (isPreview === 0) {
-    document.addEventListener("keydown", function (e) {
-        if (e.keyCode == 13) {
-            toggleFullScreen();
+function symmetricDifference(a1, a2) {
+    let result = [];
+    for (let i = 0; i < a1.length; i++) {
+        if (a2.indexOf(a1[i]) === -1) {
+            result.push(a1[i]);
         }
-    }, false);
+    }
+    for (let i = 0; i < a2.length; i++) {
+        if (a1.indexOf(a2[i]) === -1) {
+            result.push(a2[i]);
+        }
+    }
+    return result;
 }
 
 function toggleFullScreen() {
@@ -92,8 +88,6 @@ function toggleFullScreen() {
     }
 }
 
-
-
 function getLayer(offset) {
     if (offset === undefined) offset = 0;
     return "layer" + (layer + offset) % 2;
@@ -103,7 +97,6 @@ function getLayer(offset) {
 /** when connected **/
 socket.on('connect', function () {
     socket.emit("sync");
-    doNext = true;
     $("#networkstatus").css("opacity", 0);
 });
 
@@ -142,7 +135,7 @@ socket.on('callback.update', function (data) {
     serverOptions = data.serverOptions;
     bundleData = data.bundleData;
     checkBlackout();
-    if (checkStream(serverOptions) === false) {
+    if (checkStream(serverOptions) === false) {        
         nextSlide(data);
     }
 });
@@ -154,7 +147,7 @@ socket.on('callback.updateUI', function (data) {
 });
 
 socket.on('callback.removeSlide', function (data) {
-    window.f.clearImageById(data.uuid);
+    sketch.removeImageByUuid(data.uuid);
 });
 
 socket.on('callback.reload', function () {
@@ -167,12 +160,13 @@ socket.on('callback.reloadImage', function (data) {
 
 socket.on('callback.announce', function (data) {
     checkBlackout();
-    nextSlide(data);
+    nextSlide(data);    
 });
 
 socket.on('callback.forceSlide', function (data) {
     checkBlackout();
-    nextSlide(data);
+    nextSlide(data); 
+   
 });
 
 /**
@@ -180,24 +174,14 @@ socket.on('callback.forceSlide', function (data) {
  * hh:mm
  **/
 function displayTime() {
-    var date = new Date();
-    var min = date.getMinutes();
+    let date = new Date();
+    let min = date.getMinutes();
     if (min < 10) min = "0" + min;
-    var time = date.getHours() + ":" + min;
-    $('#time').html(time);
-}
-
-/** resize canvas to max width keeping aspect ratio 16:9**/
-function fixImageSizes() {
-    var con = $(window),
-        aspect = (0.9 / 1.6),
-        width = con.innerWidth(),
-        height = Math.floor(width * aspect);
+    $('#time').html(date.getHours() + ":" + min);
 }
 
 function checkTimeDisplay() {
-    var bool = serverOptions.displayTime;
-
+    let bool = serverOptions.displayTime;
     if (serverOptions.currentMeta.displayTime !== null) {
         bool = serverOptions.currentMeta.displayTime;
     }
@@ -240,8 +224,11 @@ function displayVideo(url, loop, mute) {
 }
 
 function nextSlide(data) {
-    serverOptions = data.serverOptions;
-    bundleData = data.bundleData;
+    if (data) {
+        serverOptions = data.serverOptions;
+        bundleData = data.bundleData;
+    }
+
     checkTimeDisplay();
     updateStatusMessage();
     $("#helperLayer").removeClass("announce");
@@ -276,20 +263,13 @@ function nextSlide(data) {
                 clearIFrame(getWebLayer());
                 clearIFrame(getWebLayer(1));
             }, 2500);
-            try {
-                var randomId = uuidv4();
-                getDataUri("/tmp/" + serverOptions.displayId + "/?randomId=" + randomId, randomId, function (imageId, dataUrl, image) {
-                    image.id = imageId;
-                    image.class = "temp";
-                    window.f.images.push(image);
-                    window.f.imageData.push(dataUrl);
-                    $("#slider").show();
-                    $("#helperLayer").addClass("announce");
-                    window.f.showTempImage(imageId);
-                });
-            } catch (err) {
-                console.log(err);
-            }
+
+
+            $("#slider").show();
+            // $("#helperLayer").addClass("announce");
+            const id = uuidv4();
+            const imgUrl = "/tmp/" + serverOptions.displayId + "/?randomId=" + id;
+            sketch.showTempImage(imgUrl)
         }
     } else {
         switch (serverOptions.currentMeta.type) {
@@ -310,25 +290,24 @@ function nextSlide(data) {
                 }, 2500);
                 break;
             default:
-                /* var transition = serverOptions.transition;
+                let transition = serverOptions.transition;
                 if (serverOptions.currentMeta.transition !== null) {
                     transition = serverOptions.currentMeta.transition;
-                } */
-
-                //var values = ["bars", "blinds", "blinds3d", "zip", "blocks", "blocks2", "concentric", "warp", "cube", "tiles3d", "tiles3dprev", "slide", "swipe", "dissolve"];    
-                var transition = "tiles3d";
+                }
 
                 $("#" + getWebLayer()).addClass("fadeOut").removeClass("fadeIn");
                 $("#" + getWebLayer(1)).addClass("fadeOut").removeClass("fadeIn");
                 $("#stream").fadeOut();
                 $("#slider").show();
-                window.f.showImageById(serverOptions.currentFile, transition);
+                sketch.showSlide(serverOptions.currentFile, transition);
+
                 setTimeout(function () {
                     let video = document.getElementById("stream");
                     video.pause();
                     clearIFrame(getWebLayer());
                     clearIFrame(getWebLayer(1));
                 }, 2500);
+
                 break;
         }
     }
@@ -341,17 +320,21 @@ function setBackground(background) {
     background = encodeURI("/background/" + background);
     if (serverOptions.isStreaming) return;
 
-    var video = document.getElementById("bgvid");
-    var bg = $("#bg");
-    var bgImage = document.getElementById("bgimg");
+    const video = document.getElementById("bgvid");
+    const bg = $("#bg");
+    const bgImage = document.getElementById("bgimg");
     if (background.indexOf(".mp4") !== -1) {
 
         if (parseUrl(video.src) !== background) {
             bg.fadeOut();
-            video.src = background;
-            video.load();
-            video.play();
-            $(video).show();
+            try {
+                video.src = background;
+                video.load();
+                video.play();
+                $(video).show();
+            } catch (e) {
+                console.error(e);
+            }
         }
     } else {
         if (parseUrl(bgImage.src) !== background) {
@@ -379,7 +362,7 @@ function checkStream(serverOptions) {
     if (serverOptions.isStreaming) {
         if (flvjs.isSupported()) {
             $("#stream").show();
-            var videoElement = document.getElementById('stream');
+            const videoElement = document.getElementById('stream');
             flvPlayer = flvjs.createPlayer({
                 type: 'flv',
                 url: serverOptions.streamSource
@@ -420,27 +403,14 @@ function checkStream(serverOptions) {
  * preload images
  * @param data
  */
-function preloadImages(data) {
-    window.f.clearImages();
-
-    var allSlides = data.slides;
-    var count = allSlides.length;
-    var counter = 0;
-    for (var i in allSlides) {
+async function preloadImages(data) {
+    sketch.stop();
+    sketch.clearImages();
+    const allSlides = data.slides;
+    for (let i in allSlides) {
         try {
             if (allSlides[i].type === "slide") {
-                getDataUri("/render/" + serverOptions.currentBundle + "/" + allSlides[i].uuid + ".png", allSlides[i].uuid, function (imageId, imageData, image) {
-                    image.id = imageId;
-                    window.f.images.push(image);
-                    window.f.imageData.push(imageData);
-                    counter++;
-                    if (counter >= count) {
-                        setBackground(bundleData.background);
-                        if (checkStream(serverOptions) === false) {
-                            nextSlide(data);
-                        }
-                    }
-                });
+                await sketch.loadImage("/render/" + serverOptions.currentBundle + "/" + allSlides[i].uuid + ".png", allSlides[i].uuid);
             }
         } catch (err) {
             console.log(err);
@@ -448,40 +418,23 @@ function preloadImages(data) {
     }
 }
 
-function reloadImage(data) {
+async function reloadImage(data) {
     if (serverOptions.currentBundle === data.bundleName) {
-        getDataUri("/render/" + data.bundleName + "/" + data.uuid + ".png?" + uuidv4(), data.uuid, function (imageId, imageData, image) {
-            var found = false;
-            for (var i in window.f.images) {
-                if (window.f.images[i].id === data.uuid) {
-                    image.id = imageId;
-                    window.f.images[i] = image;
-                    window.f.imageData[i] = imageData;
-                    found = true;
-                }
-            }
-            if (!found) {
-                console.log("notfound, adding!");
-                image.id = imageId;
-                window.f.images.push(image);
-                window.f.imageData.push(imageData);
-            }
-        });
+        await sketch.loadImage("/render/" + data.bundleName + "/" + data.uuid + ".png?" + uuidv4(), data.uuid);
     }
 }
 
-var fluxIds;
-var allIds;
 
-function checkImages(allSlides) {
-    fluxIds = [];
-    allIds = [];
+/** not in use */
+/* 
+async function checkImages(allSlides) {
+    let fluxIds = [];
+    let allIds = [];
 
-    var fImages = window.f.images;
-    for (var j in fImages) {
-        fluxIds.push(fImages[j].id);
+    for (let i in sketch.textures) {
+        fluxIds.push(sketch.textures[j].image.uuid);
     }
-    for (var k in allSlides) {
+    for (let k in allSlides) {
         if (allSlides[k].type === "slide") {
             allIds.push(allSlides[k].uuid);
         }
@@ -490,31 +443,25 @@ function checkImages(allSlides) {
     // new slides count is less than slides in rotation
     // remove slides
     if (allIds.length < fluxIds.length) {
-        var diffIds = symmetricDifference(fluxIds, allIds);
-        for (var l in diffIds) {
-            window.f.clearImageById(diffIds[l]);
+        let diffIds = symmetricDifference(fluxIds, allIds);
+        for (let l in diffIds) {
+            sketch.removeImageByUuid(diffIds[l]);
         }
     } else
     // else count is greater, so add slides
     {
-        for (var i in allIds) {
+        for (let i in allIds) {
             try {
-                if (fluxIds.indexOf(allIds[i]) < 0) {
-                    getDataUri("/render/" + serverOptions.currentBundle + "/" + allIds[i] + ".png", allIds[i], function (imageId, imageData, image) {
-                        image.id = imageId;
-                        window.f.images.push(image);
-                        // window.f.imageData.push(imageData);
-                    });
-                    return true;
-                }
-            } catch (err) {
-                console.log(err);
-                return false;
+            await sketch.loadImage("/render/" + serverOptions.currentBundle + "/" + allIds[i] + ".png", allIds[i]);
+            } catch (e) {
+                console.error(e);
             }
         }
+        return true;
     }
     return false;
 }
+*/
 
 /** Generate an uuid
  * @url https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript#2117523 **/
@@ -553,19 +500,4 @@ function clearIFrame(id) {
     if ($('#' + id).attr('src') !== "/empty") {
         $('#' + id).attr('src', '/empty');
     }
-}
-
-
-function getDataUri(url, imageId, callback) {
-    var image = new Image();
-    image.onload = function () {
-        //  let canvas = document.createElement('canvas');
-        //  canvas.width = 1920; // or 'width' if you want a special/scaled size
-        //  canvas.height = 1080; // or 'height' if you want a special/scaled size
-        //  canvas.getContext('2d').drawImage(this, 0, 0);
-        //callback(imageId, canvas.toDataURL('image/png'), this);
-        callback(imageId, null, this);
-        //  canvas = null;
-    };
-    image.src = url;
 }

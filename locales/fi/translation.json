@@ -129,8 +129,10 @@
   },
   "index": {
     "displays": "Näytöt",
-    "normal": "Normaali",
+    "normal": "WebGL",
+    "css": "CSS3",
     "lite": "Kevyt",
-    "splitter": "tai"
+    "splitter": "tai",
+    "admin": "Hallinta"
   }
 }

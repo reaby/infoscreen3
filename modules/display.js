@@ -30,7 +30,7 @@ class display {
          * @property {string} streamSource - URL for FLV media stream
          * @property {bool} isAnnounce - if the next slide is announce one
          * @property {bool} announceMeta - all data needed for announces
-         * @property {string} transition values supported: bars,blinds,blinds3d,zip,blocks,blocks2,concentric,warp,cube,tiles3d,tiles3dprev,slide,swipe,dissolve
+         * @property {string} transition values
          */
         this.serverOptions = {
             displayId: displayId,
@@ -46,7 +46,7 @@ class display {
             streamSource: "",
             isAnnounce: false,
             announceMeta: {},
-            transition: "tiles3d",
+            transition: "fade",
             displayTime: true,
             statusMessage: "",
         };

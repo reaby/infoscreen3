@@ -475,9 +475,8 @@ class admin {
             });
 
             socket.on('edit.saveTemplate', function (data) {
-                let templates = {};
-                console.log(data.name);
-
+                let templates = {};                
+                
                 if (fs.existsSync("./data/template.json")) {
                     templates = JSON.parse(fs.readFileSync("./data/template.json").toString());
                 }                

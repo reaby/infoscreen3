@@ -2,6 +2,7 @@
 
 {% block header %}
     <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/sharedScript.js"></script>
 {% endblock %}
 
 {% block body %}
@@ -36,7 +37,7 @@
             </div>
             <div class="field">
                 <label>{{ t("admin.editBundleProperties.transition") }}</label>
-                <div id="transitions" class="ui selection dropdown">
+                <div id="transitions" class="ui selection scrolling dropdown">
                     <input type="text" id="inputTransition" name="transition" value="{{ bundleData.transition }}" hidden/>
                     <div class="ui small breadcrumb">
                         <span id="currentTransition" class="section"></span>
@@ -160,11 +161,10 @@
         $(function () {
 
             var transitionArray = [];
-            var values = ["bars", "blinds", "blinds3d", "zip", "blocks", "blocks2", "concentric", "warp", "cube", "tiles3d", "tiles3dprev", "slide", "swipe", "dissolve"];
-
+          //  var values = ["bars", "blinds", "blinds3d", "zip", "blocks", "blocks2", "concentric", "warp", "cube", "tiles3d", "tiles3dprev", "slide", "swipe", "dissolve"];
             transitionArray.push({name: "random", value: ""});
-            for (var i in values) {
-                transitionArray.push({name: values[i], value: values[i]});
+            for (var i in SupportedTransitions) {
+                transitionArray.push({name: SupportedTransitions[i], value: SupportedTransitions[i]});
             }
 
             $('#transitions')
