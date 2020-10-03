@@ -224,7 +224,7 @@ class admin {
                     self.screenView.overrideSlide(data.json, null, data.duration, data.transition);
                 }
             });
-
+            
             socket.on('admin.overrideVideo', function (data) {
                 if (data.displayId === null) {                    
                     dispatcher.emit("all.override", data);

@@ -486,7 +486,7 @@ function displayWebPage(url) {
     $("#" + getWebLayer(1)).addClass("fadeOut").removeClass("fadeIn");
     clearIFrame(getWebLayer(1));
     layer++;
-    if (layer > 1) {
+    if (layer >= 1) {
         layer = 0;
     }
 }

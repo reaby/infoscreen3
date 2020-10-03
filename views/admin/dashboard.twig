@@ -46,7 +46,7 @@
             </div>
             <i class="dropdown icon"></i>
         </div>
-       
+
         <div class="right menu">
             <div class="item">
                 <a href="/logout" class="ui red basic button">{{ t("auth.logout") }}</a>
@@ -99,72 +99,86 @@
 
             <div class="center aligned six wide column">
 
-                <div class="row">
+               <!--  <div class="row">
                     <div id="previewContainer" class="ui inverted segment">
                         <h2 class="ui inverted nopadded header"> {{ t("admin.dashboard.preview") }}</h2>
                         <iframe style="overflow-scrolling: unset; overflow: unset;" class="nopadded" id="preview"
                                 src="/admin/preview?uid={{ uid }}"></iframe>
                     </div>
                 </div>
-
+ -->
                 <div class="row">
-                    <div id="programContainer" class="ui inverted segment">
+                    <div id="programContainer" class="ui nopadded basic segment">
                         <h2 class="ui inverted nopadded header currentDisplay"> {{ t("admin.dashboard.program") }} </h2>
                         <iframe class="nopadded" id="program" src="/display/{{ displayId }}?isPreview=1"></iframe>
                     </div>
+                    
+                    <div class="ui nopadded segment">
+                     
+                    </div>
+                
+                <div class="row">
+                    <div class="ui inverted segment">
+                         <h4>YouTube</h4>
+                        <div class="ui fluid left icon inverted action input">
+                        <i class="ui red youtube icon"></i>
+                        <input style="background: #444;" id="youtubeId" value="" placeholder="Youtube Url" />
+                        <div class="ui small green button" onclick="playYoutubeVideo();">{{ t("actions.play") }}</div>
+                        </div>
+                    
+                        <h4> {{ t("admin.dashboard.statusMessage") }}</h4>
+                        <div class="ui fluid grey action input">
+                        <input style="background: #444;" id="statusMessageAdmin" value="" placeholder="{{ t("admin.dashboard.statusMessage") }}" />
+                        <div class="ui small green button" onclick="setStatusMessage();">{{ t("actions.set") }}</div>
+                    </div>    
                 </div>
-
-            </div>
+            </div>          
         </div>
     </div>
+</div>
 
     <!-- menu -->
-    <div class="ui primary bottom fixed two item pointing menu" style="height: 5vh;">
+    <div class="ui primary bottom fixed one item pointing menu" style="height: 5vh;">
         <div class="item">
-            <div class="ui basic text"> {{ t("admin.dashboard.statusMessage") }}</div>
-            <div class="ui fluid action input">
-                <input id="statusMessageAdmin" value="" placeholder=""/>
-                <div class="ui small basic green button" onclick="setStatusMessage();">{{ t("actions.set") }}</div>
-            </div>
-        </div>
-        <div class="item">
+
             <div class="ui inverted buttons">
-                <button class="ui icon button" onclick="emit('controls.previous');">
-                    <i class="step backward icon"></i>
-                </button>
+                            <div class="ui text center">
+                            <button class="ui icon button" onclick="emit('controls.previous');">
+                                <i class="step backward icon"></i>
+                            </button>
 
-                <button id="play" class="ui icon button" onclick="emit('controls.play');">
-                    <i class="play icon"></i>
-                </button>
+                            <button id="play" class="ui icon button" onclick="emit('controls.play');">
+                                <i class="play icon"></i>
+                            </button>
 
-                <button id="pause" class="ui icon button" onclick="emit('controls.pause');">
-                    <i class="pause icon"></i>
-                </button>
+                            <button id="pause" class="ui icon button" onclick="emit('controls.pause');">
+                                <i class="pause icon"></i>
+                            </button>
 
-                <button class="ui  icon button" onclick="emit('controls.next');">
-                    <i class="step forward icon"></i>
-                </button>
-            </div>
-            <div style="width: 1rem;"></div>
+                            <button class="ui  icon button" onclick="emit('controls.next');">
+                                <i class="step forward icon"></i>
+                            </button>
+                            </div>
+                        </div>
 
-            <div class="ui buttons">
-            <button id="blackout" class="ui black basic button" onclick="emit('controls.blackout');">
-                {{ t("actions.blackout") }}
-            </button>
-            <button id="toggleTime" class="ui teal basic button" onclick="emit('controls.time.toggle');">
-                {{ t("actions.displayTime") }}
-            </button>
-            {% if config.mediaServer %}
-                <button id="stream" class="ui blue basic button"
-                        onclick="emit('controls.startStream');">
-                    {{ t("actions.startStream") }}
-                </button>
-            {% endif %}
-            <button class="ui red basic button"
-                    onclick="forceReload()">
-                {{ t("actions.forceReload") }}
-            </button>
-            </div>
+                        <div class="ui buttons">
+                        <button id="blackout" class="ui black basic button" onclick="emit('controls.blackout');">
+                            {{ t("actions.blackout") }}
+                        </button>
+                        <button id="toggleTime" class="ui teal basic button" onclick="emit('controls.time.toggle');">
+                            {{ t("actions.displayTime") }}
+                        </button>
+                        {% if config.mediaServer %}
+                            <button id="stream" class="ui blue basic button"
+                                    onclick="emit('controls.startStream');">
+                                {{ t("actions.startStream") }}
+                            </button>
+                        {% endif %}
+                        <button class="ui red basic button"
+                                onclick="forceReload()">
+                            {{ t("actions.forceReload") }}
+                        </button>
+                        </div>
         </div>
     </div>
     <!-- menu -->
@@ -172,8 +186,6 @@
     <div id="newBundle" class="ui modal">
         <div class="header">{{ t("actions.createNew") }}</div>
         <div class="ui scrolling content form">
-
-
             <label>{{ t("admin.dashboard.bundleDirName") }}</label>
             <input class="ui input" type="text" id="newBundleDirName" value="" required/>
             <label>{{ t("admin.dashboard.bundleName") }}</label>
@@ -208,6 +220,7 @@
     <script>
         var socket = io("{{ config.serverUrl }}:{{ config.serverListenPort }}/admin-{{ displayId }}");
         var displayId = {{ displayId }};
+        var serverUrl = "{{ config.serverUrl }}";
     </script>
     <script src="/js/dashboard.js"></script>
     <script>

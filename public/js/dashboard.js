@@ -76,7 +76,7 @@ socket.on("callback.dashboard.sync", function (data) {
 
     var transitionArray = [];
     // var values = ["bars", "blinds", "blinds3d", "zip", "blocks", "blocks2", "concentric", "warp", "cube", "tiles3d", "tiles3dprev", "slide", "swipe", "dissolve"];
-    
+
     transitionArray.push({ name: "random", value: null });
     for (var i in SupportedTransitions) {
         transitionArray.push({ name: SupportedTransitions[i], value: SupportedTransitions[i] });
@@ -98,8 +98,8 @@ socket.on("callback.dashboard.sync", function (data) {
 
     $('#currentTransition').text(serverOptions.transition || "random");
 
-    var preview = document.getElementById('preview');
-    preview.src = "/admin/preview?displayId=" + displayId + "&socket=" + encodeURIComponent(socket.id);
+    //   var preview = document.getElementById('preview');
+    //  preview.src = "/admin/preview?displayId=" + displayId + "&socket=" + encodeURIComponent(socket.id);
     // updateBundleData(bundleDirs);
 });
 
@@ -161,16 +161,17 @@ function updateBundleData(bundleDirs) {
     bundleDirs.sort(sortByName);
     for (var i in bundleDirs) {
         let bundle = bundleDirs[i];
-        output += '<div class="ui green message item" id="bundle_' + simpleHash(bundle.dir) + '">' +
-            '<div class="right floated content">' +
-            '<button class="ui small basic inverted icon button" onclick="editBundleProperties(\'' + bundle.dir + '\')"><i class="edit icon"></i></button>' +
-            '<button class="ui small basic inverted icon button" onclick="editBundleSlides(\'' + bundle.dir + '\')"><i class="list icon"></i></button>' +
-            '<button class="ui small basic inverted icon button" onclick="changeBundle(\'' + bundle.dir + '\')"><i class="play icon"></i></button>' +
-            '</div>' +
-            '<div class="content">' +
-            '<div>' + bundle.name + '</div>' +
-            '</div>' +
-            '</div>';
+        output += `
+        <div class="ui green message item" id="bundle_${simpleHash(bundle.dir)}">
+            <div class="right floated content">
+            <button class="ui small basic inverted icon button" onclick="editBundleProperties('${bundle.dir}')"><i class="edit icon"></i></button>
+            <button class="ui small basic inverted icon button" onclick="editBundleSlides('${bundle.dir}')"><i class="list icon"></i></button>
+            <button class="ui small basic inverted icon button" onclick="changeBundle('${bundle.dir}')"><i class="play icon"></i></button>
+            </div>
+            <div class="content">
+                <div>${bundle.name}</div>
+            </div>
+        </div>`;
     }
 
     $('#allBundles').html(output);
@@ -222,6 +223,33 @@ function setStatusMessage() {
     emit("admin.setStatusMessage", $('#statusMessageAdmin').val());
 
 }
+
+function playYoutubeVideo() {
+    let elem = $('#youtubeId').val();
+    let regexMatch = /(?:https?:)?(?:\/\/)?(?:[0-9A-Z-]+\.)?(?:youtu\.be\/|youtube(?:-nocookie)?\.com\/\S*?[^\w\s-])((?!videoseries)[\w-]{11})(?=[^\w-]|$)(?![?=&+%\w.-]*(?:['"][^<>]*>|<\/a>))[?=&+%\w.-]*/.exec(elem);
+    let videoId = elem;
+    if (regexMatch.length == 2) {
+        videoId = regexMatch[1];
+    }
+
+    if (videoId !== "") {
+        var obj = {
+            json: {
+                type: "webPage",
+                webUrl: `https://www.youtube.com/embed/${videoId}?autoplay=1&origin=${serverUrl}&rel=0&modestbranding=0`,
+                zoom: 1.,
+                displayTime: false,
+            },
+            displayId: displayId,
+            duration: null,
+            transition: null,
+            png: null,
+        };
+        socket.emit("admin.overrideWebPage", obj);
+    }
+}
+
+
 
 function createNewBundle() {
     $('#newBundle')
@@ -308,20 +336,19 @@ function updateSlides(settings) {
             currentIndex = index;
         }
 
-        var slideType = "'" + slide.type + "'";
-
-        output += '<div class="ui ' + color + ' message item" id="' + slide.uuid + '">' +
-            '<div class="right floated content">' +
-            '<button class="ui small basic inverted icon button" onclick="emit(\'controls.preview\', {fileName: \'' + slide.uuid + '\', bundle: \'' + serverOptions.currentBundle + '\' });"><i class="search icon"></i></button>' +
-            '<button class="ui small basic inverted icon button" onclick="emit(\'controls.skipTo\',{fileName: \'' + slide.uuid + '\'});"><i class="step forward icon"></i></button>' +
-            '<button class="ui small basic inverted icon button" onclick="editSlide(\'' + slide.uuid + '\', ' + slideType + ')"><i class="edit outline icon"></i></button>' +
-            '<button class="ui small basic inverted icon button" onclick="remove(\'' + slide.uuid + '\');"><i class="delete icon"></i></button>' +
-            '</div>' +
-            '<div class="content">' +
-            '<i class="large toggle ' + status + ' icon" onclick="emit(\'controls.toggle\', {fileName: \'' + slide.uuid + '\'});"></i>' +
-            '<div class="editable">' + slide.name.replace(".json", "") + '</div>' +
-            '</div>' +
-            '</div>';
+        output += `
+        <div class="ui ${color} message item" id="${slide.uuid}">
+            <div class="right floated content">
+                <button class="ui small basic inverted icon button" onclick="editSlide('${slide.uuid}', '${slide.type}');"><i class="edit outline icon"></i></button>
+                <button class="ui small basic inverted icon button" onclick="emit('controls.skipTo', {fileName: '${slide.uuid}'} );"><i class="step forward icon"></i></button>
+             <!--   <button class="ui small basic inverted icon button" onclick="remove('${slide.uuid}');"><i class="delete icon"></i></button> -->
+            </div>
+            <div class="content">
+                <i class="large toggle ${status} icon" onclick="emit('controls.toggle', {fileName: '${slide.uuid}'} );"></i>
+                <div class="editable">${slide.name}</div>
+            </div>
+        </div>
+        `;
 
         index += 1;
     }

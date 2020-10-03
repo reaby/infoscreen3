@@ -20,11 +20,12 @@
     "copy": "Kopio",
     "paste": "Liitä",
     "set": "Aseta",
+    "play": "Toista",
     "blackout": "Tummenna",
     "displayTime": "Näytä aika",
     "startStream": "Aloita suoratoisto",
     "forceReload": "Lataa uudelleen",
-    "createNew": "Luo Uusi",    
+    "createNew": "Luo Uusi",
     "createNewSlide": "Luo uusi dia",
     "addVideo": "Lisää Video",
     "addWebPage": "Lisää Web-sivu",
@@ -98,7 +99,7 @@
       "zoom": "Suurennus",
       "duration": "Pituus (sekunneissa), tyhjä on oletusarvo",
       "displayTime": "Näytä aika"
-    },    
+    },
     "addVideo": {
       "name": "Name",
       "url": "url",
