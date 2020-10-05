@@ -90,5 +90,5 @@ function onListening() {
         : 'port ' + addr.port;
 
     cli.info('Infoscreen is now accessible at ' + chalk.bold.white(config.serverUrl + ":" + config.serverListenPort));
-    console.log(chalk.green(">>") + chalk.default("Start complete.") + chalk.green("<<"));
+    console.log(chalk.green(">>") + chalk.white("Start complete.") + chalk.green("<<"));
 }

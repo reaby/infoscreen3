@@ -68,6 +68,7 @@ tmp/*.png
 public/assets/
 data/sessions.db
 data/bundles/*
+data/*.log
 data/template.json
 !data/bundles/default
 !data/bundles/default/*

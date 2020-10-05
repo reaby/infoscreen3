@@ -4,17 +4,17 @@ module.exports = {
     "serverListenPort": process.env.PORT || 8000,
     "serverHost": process.env.HOST || "127.0.0.1",
     "serverUrl": "http://" + (process.env.HOST || "127.0.0.1"),  // used for web client
-    "sessionKey": "generateRandomStringForSecret",
-    "streamKey": 'STREAM_NAME',
+    "sessionKey": "generateRandomStringForSecret", // used for encrypting cookies
+    "streamKey": 'INFOSCREEN3',  // stream key for rtmp end point
     "useLocalAssets": false,    // used to load javascript libraries locally from /public/assets
     "mediaServer": false,       // local streaming server for rtmp, see docs how to use
-    "defaultLocale": "en",
-    
+    "defaultLocale": "en",      // currently supported values are: "en","fi"
+
     /* 
      * Plugins 
      */
     "plugins": [
-        "profiler"
+        "profiler", // display memory statistics at console.
     ],
 
     /*
@@ -38,23 +38,9 @@ module.exports = {
         },
         {
             "id": 2,
-            "displayName": "Display Operator",
-            "username": "operator",
-            "password": "operator",
-            "permissions": {
-                "isAdmin": false,
-                "dashboard": {
-                    "addBundle": false,
-                    "addSlides": false,
-                    "addWebPage": false,
-                }
-            }
-        },
-        {
-            "id": 3,
             "displayName": "Display Viewer",
-            "username": "view",
-            "password": "view",
+            "username": process.env.USER || "view",
+            "password": process.env.PASS || "view",
             "permissions": {
                 "isAdmin": false,
             }
