@@ -203,7 +203,7 @@ let authRouter = require('./routes/auth.js')(app, websocket, eventDispatcher);
 
 app.use('/', indexRouter);
 app.use('/admin', adminRouter);
-//app.use('/', authRouter);
+app.use('/', authRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
