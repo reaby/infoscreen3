@@ -18,7 +18,11 @@ let server = require('http').Server(app);
 let io = require('socket.io')(server, {
     cookieHttpOnly: true,
     cookieSecure: false,
-    cookie: false
+    cookie: false,
+    cors: {
+        origin: "*",
+        methods: ["GET", "POST"]
+      }
 });
 let i18next = require("i18next");
 let FilesystemBackend = require("i18next-node-fs-backend");

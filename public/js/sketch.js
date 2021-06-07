@@ -323,7 +323,7 @@ class Sketch {
       return obj.name == name;
     });
 
-    if (!transition) {
+    if (transition == undefined) {
       transition = window.GLTransitions[39];
     }
 

@@ -9,9 +9,9 @@ When you need to display same content to multiple locations or need to remotely 
 * The output resolution does not matter, all contents are automatically scaled from the Full HD source
 * Finnish and English language support, sets automatically from browser language.
 * Multiple renderers to choose from:
-  1.  WebGL (with 60+ changeable transitions)     
-  2.  CSS3 (only blinds3D)
-  3.  Lite (only cross fade)
+  1. WebGL (with 60+ changeable transitions)     
+  2. CSS3 (only blinds3D)
+  3. Lite (only cross fade)
        *  in case your viewer laptop is totally a potato
 * Content
   * Multiple screen locations, for example big screen may have different slide shows than kiosk -screen etc.

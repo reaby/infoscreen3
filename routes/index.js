@@ -111,7 +111,7 @@ module.exports = function (pluginManager, websocket, dispatcher) {
         res.sendFile(req.params.name, options, function (err) {
             if (err) {
                 cli.error(err);
-                res.end();
+                res.status(404).end();
             }
         });
     });
@@ -129,7 +129,7 @@ module.exports = function (pluginManager, websocket, dispatcher) {
         res.sendFile(req.params.name, options, function (err) {
             if (err) {
                 cli.error(err);
-                res.end();
+                res.status(404).end();
             }
         });
     });
@@ -147,7 +147,7 @@ module.exports = function (pluginManager, websocket, dispatcher) {
         res.sendFile("display_" + req.params.displayId + ".png", options, function (err) {
             if (err) {
                 cli.error(err);
-                res.end();
+                res.status(404).end();
             }
         });
     });
@@ -165,7 +165,7 @@ module.exports = function (pluginManager, websocket, dispatcher) {
         res.sendFile(req.params.name, options, function (err) {
             if (err) {
                 cli.error(err);
-                res.end();
+                res.status(404).end();
             }
         });
     });
