@@ -15,15 +15,8 @@ const eventDispatcher = new Dispatcher();
 
 let app = express();
 let server = require('http').Server(app);
-let io = require('socket.io')(server, {
-    cookieHttpOnly: true,
-    cookieSecure: false,
-    cookie: false,
-    cors: {
-        origin: "*",
-        methods: ["GET", "POST"]
-      }
-});
+let io = require('socket.io')(server);
+
 let i18next = require("i18next");
 let FilesystemBackend = require("i18next-node-fs-backend");
 let i18nextMiddleware = require("i18next-express-middleware");
@@ -199,11 +192,11 @@ let pluginManager = new PluginManager(app, io, eventDispatcher);
 let websocket = require("./modules/websocket")(pluginManager, io, eventDispatcher);
 let indexRouter = require('./routes/index.js')(pluginManager, websocket, eventDispatcher);
 let adminRouter = require('./routes/admin.js')(pluginManager, websocket, eventDispatcher);
-let authRouter = require('./routes/auth.js')(app, websocket, eventDispatcher);
+let authRouter = require('./routes/auth.js')(websocket, eventDispatcher);
 
+app.use('/', authRouter);
 app.use('/', indexRouter);
 app.use('/admin', adminRouter);
-app.use('/', authRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

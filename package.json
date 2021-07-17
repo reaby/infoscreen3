@@ -1,6 +1,6 @@
 {
   "name": "infoscreen3",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "private": true,
   "scripts": {
     "start": "node --expose-gc ./bin/infoscreen3",
@@ -27,7 +27,7 @@
     "lodash": "^4.17.21",
     "minimist": "1.2.5",
     "morgan": "1.10.0",
-    "node-media-server": "2.2.8",
+    "node-media-server": "2.3.8",
     "node.extend": "2.0.2",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",

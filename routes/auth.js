@@ -1,4 +1,6 @@
 let passport = require("passport");
+let express = require('express');
+let router = express.Router();
 const {RateLimiterMemory} = require('rate-limiter-flexible');
 const maxWrongAttemptsByIPperDay = 30;
 const maxConsecutiveFailsByUsernameAndIP = 5;
@@ -17,14 +19,13 @@ const limiterConsecutiveFailsByUsernameAndIP = new RateLimiterMemory({
 
 const getUsernameIPkey = (username, ip) => `${username}_${ip}`;
 
-module.exports = function (app, websocket, dispatcher) {
+module.exports = function (websocket, dispatcher) {
 
-
-    app.get('/login', function (req, res, next) {
+    router.get('/login', function (req, res, next) {
         res.render('auth/login');
     });
 
-    app.post('/login',
+    router.post('/login',
         function (req, res, next) {
             passport.authenticate('local', async function (err, user, info) {
                 const ipAddr = req.ip;
@@ -94,15 +95,15 @@ module.exports = function (app, websocket, dispatcher) {
             })(req, res, next);
         });
 
-    app.get('/logout',
+    router.get('/logout',
         function (req, res) {
             req.logout();
             res.redirect('/');
         });
 
-    app.get('/empty', function (req, res, next) {
+    router.get('/empty', function (req, res, next) {
         res.render('empty');
     });
-
-    return app;
+    
+    return router;
 };
