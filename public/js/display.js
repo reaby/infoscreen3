@@ -345,7 +345,6 @@ function setBackground(background) {
     var bg = $("#bg");
     var bgImage = document.getElementById("bgimg");
     if (background.indexOf(".mp4") !== -1) {
-
         if (parseUrl(video.src) !== background) {
             bg.fadeOut();
             video.src = background;
@@ -354,15 +353,13 @@ function setBackground(background) {
             $(video).show();
         }
     } else {
-        if (parseUrl(bgImage.src) !== background) {
-            bgImage.src = background;
-            bg.fadeIn();
-            // unload video
-            video.pause();
-            video.removeAttribute("src");
-            video.load();
-            $(video).hide();
-        }
+        bgImage.src = background;
+        bg.fadeIn();
+        // unload video
+        video.pause();
+        video.removeAttribute("src");
+        video.load();
+        $(video).hide();
     }
 }
 
@@ -383,7 +380,11 @@ function checkStream(serverOptions) {
             flvPlayer = flvjs.createPlayer({
                 type: 'flv',
                 url: serverOptions.streamSource
-            });
+            },
+                {
+                    enableStashBuffer: false,   // enable for much longer buffer, note: video may stall if network jitter
+                    isLive: true
+                });
             try {
                 flvPlayer.attachMediaElement(videoElement);
                 flvPlayer.volume = videoVolume;

@@ -28,7 +28,7 @@ $(function () {
     setInterval(displayTime, 1000);
     $('#blackoutLayer').dblclick(toggleFullScreen);
 
-// socketio callbacks
+    // socketio callbacks
     /** when connected **/
     socket.on('connect', function () {
         socket.emit("sync");
@@ -55,7 +55,7 @@ $(function () {
         serverOptions.displayTime = data;
         checkTimeDisplay();
     });
-    
+
     socket.on('callback.updateUI', function (data) {
         serverOptions = data.serverOptions;
         bundleData = data.bundleData;
@@ -102,19 +102,19 @@ $(window).bind("resize", function () {
 
 function toggleFullScreen() {
     if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen();
+        document.documentElement.requestFullscreen();
     } else {
-      if (document.exitFullscreen) {
-        document.exitFullscreen(); 
-      }
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        }
     }
-  }
-  
-  document.addEventListener("keydown", function(e) {
+}
+
+document.addEventListener("keydown", function (e) {
     if (e.keyCode == 13) {
-      toggleFullScreen();
+        toggleFullScreen();
     }
-  }, false);
+}, false);
 
 
 function getLayer(offset) {
@@ -172,6 +172,7 @@ function checkBlackout() {
         $("#blackoutLayer").css("opacity", 0);
     }
 }
+
 function updateStatusMessage() {
     if (serverOptions.statusMessage !== "") {
         $('#statusMessageOuter').fadeIn();
@@ -187,7 +188,7 @@ function nextSlide(data) {
     bundleData = data.bundleData;
     checkTimeDisplay();
     updateStatusMessage();
-    
+
     var elem = document.getElementById("img" + layer);
     if (serverOptions.isAnnounce) {
         if (serverOptions.announceMeta.type === "webPage") {
@@ -261,7 +262,6 @@ function setBackground(background) {
     var bg = $("#bg");
     var bgImage = document.getElementById("bgimg");
     if (background.indexOf(".mp4") !== -1) {
-
         if (parseUrl(video.src) !== background) {
             bg.fadeOut();
             video.src = background;
@@ -270,15 +270,15 @@ function setBackground(background) {
             $(video).show();
         }
     } else {
-        if (parseUrl(bgImage.src) !== background) {
-            bgImage.src = background;
-            bg.fadeIn();
-            // unload video
-            video.pause();
-            video.removeAttribute("src");
-            video.load();
-            $(video).hide();
-        }
+
+        bgImage.src = background;
+        bg.fadeIn();
+        // unload video
+        video.pause();
+        video.removeAttribute("src");
+        video.load();
+        $(video).hide();
+
     }
 }
 
@@ -296,10 +296,12 @@ function checkStream(serverOptions) {
     if (serverOptions.isStreaming && streamStarted === false) {
         if (flvjs.isSupported()) {
             var videoElement = document.getElementById('bgvid');
-            flvPlayer = flvjs.createPlayer({
+            flvPlayer = flvjs.createPlayer(
+                {
                     type: 'flv',
                     url: serverOptions.streamSource
-                }, {
+                },
+                {
                     enableStashBuffer: false,   // enable for much longer buffer, note, video may stall if network jitter
                     isLive: true
                 }

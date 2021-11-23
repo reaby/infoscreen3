@@ -1,8 +1,8 @@
 {
 	"displayName": "default",
-	"background": "bg.jpg",
+	"background": "bg_loop.mp4",
 	"duration": 15,
-	"transition": "Dreamy",
+	"transition": "fade",
 	"useWebFonts": false,
 	"displayTime": true,
 	"styleHeader": {
@@ -10,14 +10,16 @@
 		"fill": "#fff",
 		"fontSize": 56,
 		"fontWeight": 900,
-		"fontFamily": "Arial"
+		"fontFamily": "Arial",
+		"strokeWidth": 0
 	},
 	"styleText": {
 		"stroke": "",
 		"fill": "#fff",
 		"fontSize": 32,
 		"fontWeight": 900,
-		"fontFamily": "Arial"
+		"fontFamily": "Arial",
+		"strokeWidth": 0
 	},
 	"bundleName": "default"
 }

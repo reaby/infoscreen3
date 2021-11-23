@@ -21,7 +21,7 @@ let sketch = new Sketch(
 sketch.loadManager.onLoad = () => {
     try {
         sketch.play();
-        if (sketch.tmpImage) {            
+        if (sketch.tmpImage) {
             sketch.showSlide("temp");
             return;
         }
@@ -135,7 +135,7 @@ socket.on('callback.update', function (data) {
     serverOptions = data.serverOptions;
     bundleData = data.bundleData;
     checkBlackout();
-    if (checkStream(serverOptions) === false) {        
+    if (checkStream(serverOptions) === false) {
         nextSlide(data);
     }
 });
@@ -160,13 +160,13 @@ socket.on('callback.reloadImage', function (data) {
 
 socket.on('callback.announce', function (data) {
     checkBlackout();
-    nextSlide(data);    
+    nextSlide(data);
 });
 
 socket.on('callback.forceSlide', function (data) {
     checkBlackout();
-    nextSlide(data); 
-   
+    nextSlide(data);
+
 });
 
 /**
@@ -323,8 +323,8 @@ function setBackground(background) {
     const video = document.getElementById("bgvid");
     const bg = $("#bg");
     const bgImage = document.getElementById("bgimg");
-    if (background.indexOf(".mp4") !== -1) {
 
+    if (background.indexOf(".mp4") !== -1) {
         if (parseUrl(video.src) !== background) {
             bg.fadeOut();
             try {
@@ -337,15 +337,13 @@ function setBackground(background) {
             }
         }
     } else {
-        if (parseUrl(bgImage.src) !== background) {
-            bgImage.src = background;
-            bg.fadeIn();
-            // unload video
-            video.pause();
-            video.removeAttribute("src");
-            video.load();
-            $(video).hide();
-        }
+        bgImage.src = background;
+        bg.fadeIn();
+        // unload video
+        video.pause();
+        video.removeAttribute("src");
+        video.load();
+        $(video).hide();
     }
 }
 
@@ -366,7 +364,11 @@ function checkStream(serverOptions) {
             flvPlayer = flvjs.createPlayer({
                 type: 'flv',
                 url: serverOptions.streamSource
-            });
+            },
+                {
+                    enableStashBuffer: false,   // enable for much longer buffer, note: video may stall if network jitter
+                    isLive: true
+                });
             try {
                 flvPlayer.attachMediaElement(videoElement);
                 flvPlayer.volume = videoVolume;

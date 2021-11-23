@@ -130,7 +130,8 @@ class admin {
 
                 if (serverOptions.isStreaming === false) {
                     serverOptions.loop = false;
-                    serverOptions.streamSource = "http://" + config.serverHost + ":" + (config.serverListenPort + 1) + "/live/" + config.streamKey + ".flv";
+                    // changed next line from http:// to ws://, to reduce stream lag
+                    serverOptions.streamSource = "ws://" + config.serverHost + ":" + (config.serverListenPort + 1) + "/live/" + config.streamKey + ".flv";
                     serverOptions.isStreaming = true;
                     cli.success("start stream");
                 } else {
