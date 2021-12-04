@@ -409,6 +409,23 @@ async function preloadImages(data) {
     sketch.stop();
     sketch.clearImages();
     const allSlides = data.slides;
+
+    let count = 0;
+    for (var i in allSlides) {
+        if (allSlides[i].type == "slide") {
+            count += 1;
+        }
+    }
+
+    if (count == 0) {
+        setBackground(bundleData.background);
+        if (checkStream(serverOptions) === false) {
+            console.log(".");
+            nextSlide(data);
+        }
+        return;
+    }
+
     for (let i in allSlides) {
         try {
             if (allSlides[i].type === "slide") {

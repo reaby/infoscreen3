@@ -424,9 +424,22 @@ function checkStream(serverOptions) {
 function preloadImages(data) {
     window.f.clearImages();
 
-    var allSlides = data.slides;
-    var count = allSlides.length;
-    var counter = 0;
+    let allSlides = data.slides;
+    let count = 0;
+    for (var i in allSlides) {
+        if (allSlides[i].type == "slide") {
+            count += 1;
+        }
+    }
+    if (count == 0) {
+        setBackground(bundleData.background);
+        if (checkStream(serverOptions) === false) {
+            nextSlide(data);
+        }
+        return;
+    }
+        
+    let counter = 0;
     for (var i in allSlides) {
         try {
             if (allSlides[i].type === "slide") {
