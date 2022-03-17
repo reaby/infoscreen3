@@ -1,12 +1,15 @@
 # Nice fresh and new base
-FROM node:10-alpine
+FROM node:current-alpine
 
 # Create directory for our app
 WORKDIR /usr/src/infoscreen
 
 # Install app dependencies
 COPY package*.json ./
-RUN npm install
+RUN apk add --no-cache --virtual .gyp python3 make g++ \
+    && ln -s /usr/bin/python3 /usr/bin/python \
+    && npm install \
+    && apk del .gyp
 
 # Bundle app source
 COPY . .
