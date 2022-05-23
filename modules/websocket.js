@@ -1,14 +1,12 @@
-let config = require(`../config.js`);
+import config from '../config.js';
 let availableDisplays = config.displays;
-let display = require(`./display.js`);
-let admin = require(`./admin.js`);
-let adminLobby = require(`./adminLobby.js`);
-let cli = require(`./cli.js`);
-let _bundleManager = require(`./bundleManager.js`);
-let chalk = require('chalk');
-let fs = require('fs');
-
-
+import display from './display.js';
+import admin from './admin.js';
+import adminLobby from './adminLobby.js';
+import cli from './cli.js';
+import _bundleManager from './bundleManager.js';
+import chalk from 'chalk';
+import fs from 'fs';
 
 /**
  * @param server
@@ -17,7 +15,7 @@ let fs = require('fs');
  * @param dispatcher
  * @return {{screenView: display[], adminView: admin[], bundleManager: bundleManager}}
  */
-module.exports = function (pluginManager, io, dispatcher) {
+export default function (pluginManager, io, dispatcher) {
     /**
      * @type {display[]}
      */
@@ -36,7 +34,7 @@ module.exports = function (pluginManager, io, dispatcher) {
         cli.error("data directory (./data) is not writable", err);
         process.exit(1);
     }
-    
+
     try {
         fs.accessSync("./tmp", fs.W_OK);
         cli.success("temp directory (./tmp) is writable ");

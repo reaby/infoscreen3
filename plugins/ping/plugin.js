@@ -1,6 +1,6 @@
-let plugin = require("../../modules/plugin.js").default;
-let config = require(__dirname + "/config.json");
-let exec = require('child_process').exec;
+import plugin from "../../modules/plugin.js";
+import exec from 'child_process';
+import config from './settings.js';
 
 function ping_getTime() {
     let d = new Date();
@@ -8,7 +8,7 @@ function ping_getTime() {
 }
 
 
-class myTestPlugin extends plugin {
+export default class myTestPlugin extends plugin {
 
     onInit() {
         this.cache = 0;
@@ -19,7 +19,7 @@ class myTestPlugin extends plugin {
         let self = this;
         router.get("/ajax/ping", function (req, res) {
 
-            if ((ping_getTime() - self.lastStamp) <= 5 * 1000) {                
+            if ((ping_getTime() - self.lastStamp) <= 5 * 1000) {
                 return res.json({ ping: self.cache });
             }
 
@@ -43,7 +43,4 @@ class myTestPlugin extends plugin {
     setDisplayViewAdditions() {
         return this.renderPluginView("pingWidget");
     }
-
 }
-
-exports.default = myTestPlugin;

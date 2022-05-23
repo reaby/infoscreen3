@@ -1,7 +1,8 @@
-let passport = require("passport");
-let express = require('express');
-let router = express.Router();
-const {RateLimiterMemory} = require('rate-limiter-flexible');
+import passport from 'passport';
+import express from 'express';
+import { RateLimiterMemory } from 'rate-limiter-flexible';
+
+const router = express.Router();
 const maxWrongAttemptsByIPperDay = 30;
 const maxConsecutiveFailsByUsernameAndIP = 5;
 
@@ -19,7 +20,7 @@ const limiterConsecutiveFailsByUsernameAndIP = new RateLimiterMemory({
 
 const getUsernameIPkey = (username, ip) => `${username}_${ip}`;
 
-module.exports = function (websocket, dispatcher) {
+export default function (websocket, dispatcher) {
 
     router.get('/login', function (req, res, next) {
         res.render('auth/login');
@@ -104,6 +105,6 @@ module.exports = function (websocket, dispatcher) {
     router.get('/empty', function (req, res, next) {
         res.render('empty');
     });
-    
+
     return router;
 };

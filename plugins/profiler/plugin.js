@@ -1,12 +1,13 @@
-let plugin = require("../../modules/plugin.js").default;
-let cli = require('../../modules/cli.js');
-let chalk = require('chalk');
+import plugin from "../../modules/plugin.js";
+import cli from "../../modules/cli.js";
+import chalk from 'chalk';
+
 let prevValue = 0;
 let startValue = (process.memoryUsage().rss / 1048576).toFixed(1);
 
 function tickHeapDump() {
     setImmediate(function () {
-        var memMB = (process.memoryUsage().rss / 1048576).toFixed(1);
+        let memMB = (process.memoryUsage().rss / 1048576).toFixed(1);
         if (prevValue != memMB) {
             let prefix = chalk.bold.red("▲");
             if (memMB < prevValue) {
@@ -18,7 +19,7 @@ function tickHeapDump() {
     });
 }
 
-class profilerPlugin extends plugin {
+export default class profilerPlugin extends plugin {
     onInit() {
         tickHeapDump();
         setInterval(() => {
@@ -26,5 +27,3 @@ class profilerPlugin extends plugin {
         }, 5000);
     }
 }
-
-exports.default = profilerPlugin;

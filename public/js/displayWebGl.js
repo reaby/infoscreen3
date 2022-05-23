@@ -420,7 +420,6 @@ async function preloadImages(data) {
     if (count == 0) {
         setBackground(bundleData.background);
         if (checkStream(serverOptions) === false) {
-            console.log(".");
             nextSlide(data);
         }
         return;
@@ -445,7 +444,7 @@ async function reloadImage(data) {
 
 
 /** not in use */
-/* 
+/*
 async function checkImages(allSlides) {
     let fluxIds = [];
     let allIds = [];

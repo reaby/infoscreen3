@@ -1,29 +1,50 @@
-let config = require("./config.js");
-let express = require('express');
-let createError = require('http-errors');
-let logger = require('morgan');
-let lessMiddleware = require('less-middleware');
-let path = require('path');
-let PluginManager = require("./modules/pluginManager");
-const EventEmitter = require('events');
-
-let cookieParser = require('cookie-parser')(config.sessionKey);
-
+import EventEmitter from 'events';
 class Dispatcher extends EventEmitter { }
-
 const eventDispatcher = new Dispatcher();
 
-let app = express();
-let server = require('http').Server(app);
-let io = require('socket.io')(server);
+import config from './config.js';
+import express from 'express';
+import createError from 'http-errors';
+import logger from 'morgan';
+import lessMiddleware from 'less-middleware';
+import path from 'path';
+import PluginManager from './modules/pluginManager.js';
+const app = express();
+const server = Http.Server(app);
+const io = new SocketIO(server);
 
-let i18next = require("i18next");
-let FilesystemBackend = require("i18next-node-fs-backend");
-let i18nextMiddleware = require("i18next-express-middleware");
+const pluginManager = new PluginManager(app, io, eventDispatcher);
+import WebSocket from './modules/websocket.js';
+const websocket = WebSocket(pluginManager, io, eventDispatcher);
+import routerIndex from './routes/index.js';
+const indexRouter = routerIndex(pluginManager, websocket, eventDispatcher);
+import routerAdmin from './routes/admin.js';
+const adminRouter = routerAdmin(pluginManager, websocket, eventDispatcher);
+import routerAuth from './routes/auth.js';
+const authRouter = routerAuth(websocket, eventDispatcher);
 
-let passport = require('passport');
-let LocalStrategy = require('passport-local').Strategy;
-let User = require("./modules/db.js");
+import CookieParser from 'cookie-parser';
+import Http from 'http';
+import { Server as SocketIO } from 'socket.io';
+import i18next from 'i18next';
+import FilesystemBackend from 'i18next-node-fs-backend';
+import i18nextMiddleware from 'i18next-http-middleware';
+import passport from 'passport';
+import passportlocal from 'passport-local';
+import NodeMediaServer from 'node-media-server';
+import expressSession from 'express-session';
+import sqlite3 from 'connect-sqlite3';
+const SQLiteStore = sqlite3(expressSession);
+const cookieParser = CookieParser(config.sessionKey);
+
+
+const LocalStrategy = passportlocal.Strategy;
+import User from './modules/db.js';
+
+import { fileURLToPath } from 'url'
+import { dirname } from 'path'
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
 
 passport.serializeUser(function (user, cb) {
     cb(null, user.id);
@@ -57,8 +78,6 @@ passport.use("local", new LocalStrategy({
     }));
 
 if (config.mediaServer) {
-    const NodeMediaServer = require('node-media-server');
-
     const nodeServerConfig = {
         logtype: 2,
         rtmp: {
@@ -76,11 +95,11 @@ if (config.mediaServer) {
             api: true,
             api_user: config.admins[0].username,
             api_pass: config.admins[0].password,
-            
+
         }
     };
 
-    let nms = new NodeMediaServer(nodeServerConfig);
+    const nms = new NodeMediaServer(nodeServerConfig);
     nms.run();
 }
 
@@ -135,9 +154,8 @@ app.use(express.urlencoded({
 app.use(cookieParser);
 app.use(lessMiddleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use("/video/",express.static(path.join(__dirname, 'data','video')));
 
-var expressSession = require('express-session');
-var SQLiteStore = require('connect-sqlite3')(expressSession);
 var sessionStore = new SQLiteStore({
     dir: "./data",
     db: "sessions.db"
@@ -188,12 +206,6 @@ function onAuthorizeFail(data, message, error, accept) {
 }
 */
 
-let pluginManager = new PluginManager(app, io, eventDispatcher);
-let websocket = require("./modules/websocket")(pluginManager, io, eventDispatcher);
-let indexRouter = require('./routes/index.js')(pluginManager, websocket, eventDispatcher);
-let adminRouter = require('./routes/admin.js')(pluginManager, websocket, eventDispatcher);
-let authRouter = require('./routes/auth.js')(websocket, eventDispatcher);
-
 app.use('/', authRouter);
 app.use('/', indexRouter);
 app.use('/admin', adminRouter);
@@ -214,9 +226,10 @@ app.use(function (err, req, res, next) {
     res.render('error');
 });
 
-module.exports = {
-    app: app,
-    server: server,
-    io: io,
-    eventDispatcher: eventDispatcher
+
+export {
+    app,
+    server,
+    io,
+    eventDispatcher
 };

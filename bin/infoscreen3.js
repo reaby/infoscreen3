@@ -3,11 +3,10 @@
 /**
  * Module dependencies.
  */
-let cli = require('../modules/cli');
-let chalk = require('chalk');
-let debug = require('debug')('screen-info:server');
-let config = require('../config.js');
-let app = require('../app').app;
+import cli from '../modules/cli.js';
+import chalk from 'chalk';
+import config from '../config.js';
+import { app, server } from "../app.js";
 
 
 /**
@@ -21,7 +20,6 @@ app.set('port', port);
  * Create HTTP server.
  */
 
-let server = require("../app").server;
 
 /**
  * Listen on provided port, on all network interfaces.

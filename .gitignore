@@ -72,3 +72,4 @@ data/*.log
 data/template.json
 !data/bundles/default
 !data/bundles/default/*
+data/video/*.mp4

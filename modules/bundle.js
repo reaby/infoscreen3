@@ -1,10 +1,10 @@
-let cli = require("./cli.js");
-let fs = require("fs");
+import fs from 'fs';
+import cli from './cli.js';
 
 /**
  * @module infoscreen3/bundle
  */
-class bundleClass {
+export default class bundleClass {
 
     constructor(name, data, slides) {
         this.name = name;
@@ -85,11 +85,11 @@ class bundleClass {
                     if (fs.existsSync(path + "/slides/" + uuid)) {
                         fs.renameSync(path + "/slides/" + uuid, toPath + "/slides/" + uuid);
                     }
-                    let slideData = clone(slide);                    
+                    let slideData = clone(slide);
                     this.removeUuid(uuid);
                     return slideData;
                 } catch (err) {
-                    cli.error("error while moving file:" + uuid, err);                    
+                    cli.error("error while moving file:" + uuid, err);
                     return null;
                 }
             }
@@ -231,9 +231,3 @@ function uuidv4() {
         return v.toString(16);
     });
 }
-
-/**
- *
- * @type {bundleClass}
- */
-module.exports = bundleClass;

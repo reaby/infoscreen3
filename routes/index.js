@@ -1,10 +1,9 @@
-let express = require('express');
-let router = express.Router();
-let fs = require("fs");
-let config = require("../config.js");
-let availableDisplays = config.displays;
-const cli = require('../modules/cli.js');
-const {RateLimiterMemory} = require('rate-limiter-flexible');
+import express from 'express';
+const router = express.Router();
+import config from '../config.js';
+
+import cli from '../modules/cli.js';
+import { RateLimiterMemory } from 'rate-limiter-flexible';
 
 const rateLimiter = new RateLimiterMemory({
     points: 100, // Number of points
@@ -35,8 +34,9 @@ function ensureIsAdmin(req, res, next) {
     }
     next();
 }
+const availableDisplays = config.displays;
 
-module.exports = function (pluginManager, websocket, dispatcher) {
+export default function (pluginManager, websocket, dispatcher) {
     router.use(ensureIsAdmin);
     router.use(rateLimit);
 
@@ -65,7 +65,7 @@ module.exports = function (pluginManager, websocket, dispatcher) {
         });
     });
 
-    
+
     router.get('/display/:id/css', function (req, res, next) {
         res.header('Access-Control-Allow-Origin', '*');
         let idx = parseInt(req.params.id);
@@ -169,7 +169,6 @@ module.exports = function (pluginManager, websocket, dispatcher) {
             }
         });
     });
-
 
     return router;
 };

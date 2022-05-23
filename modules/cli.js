@@ -1,7 +1,7 @@
-let chalk = require('chalk');
+import chalk from 'chalk';
 let lastStamp = "";
 
-module.exports = {
+export default {
     error: function (error, title) {
         if (title == null) {
             title = "";

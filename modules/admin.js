@@ -1,7 +1,6 @@
-let fs = require("fs");
-let config = require(`../config.js`);
-let cli = require(`./cli.js`);
-
+import fs from 'fs';
+import config from '../config.js';
+import cli from './cli.js';
 
 /** Generate an uuid
  * @url https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript#2117523 **/
@@ -15,7 +14,7 @@ function uuidv4() {
 /**
  *
  */
-class admin {
+export default class admin {
 
     /**
      * @param sharedIO
@@ -225,11 +224,11 @@ class admin {
                     self.screenView.overrideSlide(data.json, null, data.duration, data.transition);
                 }
             });
-            
+
             socket.on('admin.overrideVideo', function (data) {
-                if (data.displayId === null) {                    
+                if (data.displayId === null) {
                     dispatcher.emit("all.override", data);
-                } else {     
+                } else {
                     self.screenView.overrideSlide(data.json, null, data.json.duration, null);
                 }
             });
@@ -315,8 +314,8 @@ class admin {
                 }
                 socket.emit("callback.webpage", {bundleData: bundleData, json: json});
             });
-            
-            
+
+
             socket.on('edit.saveLink', function (data) {
 
                 let filename = data.filename;
@@ -379,16 +378,16 @@ class admin {
                 }
                 socket.emit("callback.video", {bundleData: bundleData, json: json});
             });
-            
-            
+
+
             socket.on('edit.saveVideo', function (data) {
 
                 let filename = data.filename;
                 if (filename === "") {
                     filename = uuidv4();
                 }
-                
-                if (data.duration === "") {                    
+
+                if (data.duration === "") {
                     socket.emit("callback.saveVideo", {erro: "Video duration is not known. Remember to load metadata!"});
                     return;
                 }
@@ -398,8 +397,8 @@ class admin {
 
                     let template = {
                         uuid: filename,
-                        name: data.name,  
-                        duration: data.duration,                      
+                        name: data.name,
+                        duration: data.duration,
                         enabled: true,
                         displayTime: data.displayTime,
                         type: "video",
@@ -415,8 +414,8 @@ class admin {
                         bundle.allSlides.push(template);
                     } else {
                         obj.url = data.url;
-                        obj.name = data.name;      
-                        obj.duration = data.duration;                  
+                        obj.name = data.name;
+                        obj.duration = data.duration;
                         obj.displayTime = data.displayTime;
                         obj.mute = data.mute;
                         obj.loop = data.loop;
@@ -476,11 +475,11 @@ class admin {
             });
 
             socket.on('edit.saveTemplate', function (data) {
-                let templates = {};                
-                
+                let templates = {};
+
                 if (fs.existsSync("./data/template.json")) {
                     templates = JSON.parse(fs.readFileSync("./data/template.json").toString());
-                }                
+                }
                 templates[data.name] = data.json;
                 try {
                     fs.writeFileSync("./data/template.json", JSON.stringify(templates));
@@ -683,8 +682,3 @@ class admin {
 
     // admin
 }
-
-/**
- * @type {admin}
- */
-module.exports = admin;

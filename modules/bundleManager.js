@@ -1,11 +1,11 @@
-const bundle = require(`./bundle.js`);
-let fs = require("fs");
-let cli = require(`./cli.js`);
+import fs from 'fs';
+import cli from './cli.js';
+import bundle from './bundle.js';
 
 /**
  * @module infoscreen3/bundleManager
  */
-class bundleManager {
+export default class bundleManager {
 
     constructor() {
         this.syncBundles();
@@ -49,15 +49,15 @@ class bundleManager {
         }
     }
 
-    moveSlide(fromBundle, toBundle, uuid, position) {        
-        let slideData = this.getBundle(fromBundle).moveTo(toBundle, uuid);       
+    moveSlide(fromBundle, toBundle, uuid, position) {
+        let slideData = this.getBundle(fromBundle).moveTo(toBundle, uuid);
         let bundle = this.getBundle(toBundle);
         slideData.index = position;
         if (slideData) {
             bundle.allSlides.push(slideData);
             bundle.save();
         }
-        
+
     }
 
     reorderSlides(bundleName, sortedIDs) {
@@ -105,8 +105,3 @@ function getDirectories(path) {
 function getJson(file) {
     return JSON.parse(fs.readFileSync(file).toString());
 }
-
-/**
- * @type {bundleManager}
- */
-module.exports = bundleManager;

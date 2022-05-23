@@ -1,6 +1,8 @@
-const records = require(`../config.js`).admins;
+import config from '../config.js'
 
-module.exports = {
+const records = config.admins;
+
+export default {
 
     findById: function (id, cb) {
         process.nextTick(function () {

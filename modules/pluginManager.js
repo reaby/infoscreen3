@@ -1,17 +1,22 @@
-let fs = require("fs");
-let cli = require(`./cli.js`);
-let config = require(`../config.js`);
+import fs from 'fs';
+import cli from './cli.js'
+import config from '../config.js';
 
-class pluginManager {
+export default class pluginManager {
 
     constructor(app, io, eventDispatcher) {
         this.plugins = {};
         this.dispatcher = eventDispatcher;
         cli.info("Initializing plugins...");
-        for (let pluginName of config.plugins) {
+        this.load(app, io, eventDispatcher);
+    }
+
+    async load(app, io, eventDispatcher) {
+        for (const pluginName of config.plugins) {
             try {
-                let pluginclass = require("../plugins/" + pluginName + "/plugin.js").default;
-                let pluginInstance = new pluginclass(pluginName, app, io, eventDispatcher);
+                const pluginclass = await import("../plugins/" + pluginName + "/plugin.js");
+                const plugin = pluginclass.default;
+                let pluginInstance = new plugin(pluginName, app, io, eventDispatcher);
                 cli.info("" + pluginName, 'plugin');
                 this.plugins[pluginName] = pluginInstance;
             } catch (err) {
@@ -19,7 +24,6 @@ class pluginManager {
             }
         }
     }
-
     callMethod(method, params) {
         this.dispatcher.emit("plugin." + method, params);
     }
@@ -33,5 +37,3 @@ class pluginManager {
     }
 
 }
-
-module.exports = pluginManager;

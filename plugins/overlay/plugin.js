@@ -1,7 +1,7 @@
-let plugin = require("../../modules/plugin.js").default;
+import plugin from "../../modules/plugin.js";
 
-class overlayPlugin extends plugin {
-    
+export default class overlayPlugin extends plugin {
+
     setDisplayViewAdditions() {
         return `<style type="text/css">
         html, body {
@@ -13,5 +13,3 @@ class overlayPlugin extends plugin {
         </style>`;
     }
 }
-
-exports.default = overlayPlugin;

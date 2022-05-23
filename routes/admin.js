@@ -1,10 +1,10 @@
-let express = require('express');
-let router = express.Router();
-let cli = require("../modules/cli.js");
-let fs = require('fs');
-let path = require('path');
-let config = require("../config.js");
-let busboy = require("connect-busboy");
+import express from 'express';
+const router = express.Router();
+import cli from '../modules/cli.js';
+import fs from 'fs';
+import path from 'path';
+import config from '../config.js';
+import busboy from 'connect-busboy'
 
 function getFiles(path) {
     return fs.readdirSync(path).filter(function (file) {
@@ -26,7 +26,7 @@ function ensureIsAdmin(req, res, next) {
     next();
 }
 
-module.exports = function (pluginManager, websocket, dispatcher) {
+export default function (pluginManager, websocket, dispatcher) {
     var bundleManager = websocket.bundleManager;
 
     router.use(ensureIsAdmin);
@@ -90,7 +90,7 @@ module.exports = function (pluginManager, websocket, dispatcher) {
 
         req.busboy.on('file', function (fieldname, file, filename, encoding, mimeType) {
             if (fieldname === "newBackground")
-                if (filename.length > 0 && (mimeType === "image/jpeg" || mimeType === "video/mp4" || mimeType === "image/png")) {                    
+                if (filename.length > 0 && (mimeType === "image/jpeg" || mimeType === "video/mp4" || mimeType === "image/png")) {
                     let fstream = fs.createWriteStream('./data/backgrounds/' + filename);
                     file.pipe(fstream);
                 } else {
@@ -139,7 +139,7 @@ module.exports = function (pluginManager, websocket, dispatcher) {
                     bundleData.styleText.fill = fields.textFill;
                     bundleData.styleText.stroke = fields.textStroke;
                     bundleData.styleText.strokeWidth = parseInt(fields.textStrokeSize) || 0;
-                    
+
                     bundle.setBundleData(bundleData);
                     bundle.save();
 

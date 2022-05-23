@@ -1,11 +1,10 @@
-'use strict'
-let fs = require("fs");
-let cli = require(`./cli.js`);
+import fs from 'fs';
+import cli from './cli.js';
 
 /**
  * handles one display instance
  */
-class display {
+export default class display {
 
     /**
      * @param {object} sharedIO - socketIO
@@ -273,7 +272,3 @@ class display {
     }
 }
 
-/**
- * @type {display}
- */
-module.exports = display;

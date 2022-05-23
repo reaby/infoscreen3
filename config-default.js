@@ -1,6 +1,4 @@
-let displays = require(`./data/displays.json`);
-
-module.exports = {
+export default {
     "serverListenPort": process.env.PORT || 8000,
     "serverHost": process.env.HOST || "127.0.0.1",
     "serverUrl": "http://" + (process.env.HOST || "127.0.0.1"),  // used for web client
@@ -10,8 +8,8 @@ module.exports = {
     "mediaServer": false,       // local streaming server for rtmp, see docs how to use
     "defaultLocale": "en",      // currently supported values are: "en","fi"
 
-    /* 
-     * Plugins 
+    /*
+     * Plugins
      */
     "plugins": [
         "profiler", // display memory statistics at console.
@@ -46,5 +44,15 @@ module.exports = {
             }
         }
     ],
-    "displays": displays
+    "displays":
+        [
+            {
+                "name": "Main Screen",
+                "bundle": "default"
+            },
+            {
+                "name": "Secondary Screen",
+                "bundle": "default"
+            },
+        ]
 };

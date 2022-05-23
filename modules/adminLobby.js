@@ -1,6 +1,6 @@
-let cli = require(`./cli.js`);
+import cli from './cli.js'
 
-class adminLobby {
+export default class adminLobby {
 
     /**
      * @param sharedIO
@@ -66,11 +66,11 @@ class adminLobby {
                     cli.error("error while duplicating slide", err);
                 }
             });
-            
+
             socket.on('admin.moveSlide', function (data) {
-                try {                 
-                    let bundle = bundleManager.moveSlide(data.from, data.to, data.uuid, data.position);                    
-                    socket.emit("callback.updateBundleData");                    
+                try {
+                    let bundle = bundleManager.moveSlide(data.from, data.to, data.uuid, data.position);
+                    socket.emit("callback.updateBundleData");
                     updateSlides(data.from, bundle);
                 } catch (err) {
                     cli.error("error while moving slide", err);
@@ -83,7 +83,7 @@ class adminLobby {
                     let bundle = bundleManager.getBundle(data.bundleName);
                     bundle.setName(data.uuid, data.name);
                     updateSlides(data.bundleName, bundle);
-                    socket.emit("callback.updateBundleData"); 
+                    socket.emit("callback.updateBundleData");
                 } catch (err) {
                     cli.error("error while renaming slide", err);
                 }
@@ -144,7 +144,3 @@ class adminLobby {
     }
 
 }
-
-module.exports = adminLobby;
-
-
