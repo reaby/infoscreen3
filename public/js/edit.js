@@ -1,14 +1,13 @@
-var canvas;
-var bundleData;
+let canvas;
+let bundleData;
 
-var grid = 1920 / 32;
+const grid = 1920 / 32;
 
-var _clipboard = null;
-var slideName = "untitled";
-var undoData = [];
-
-var undoActive = false;
-var templates = {};
+let _clipboard = null;
+let slideName = "untitled";
+let undoData = [];
+let undoActive = false;
+let templates = {};
 
 bundleData = {
     background: "",
@@ -51,10 +50,52 @@ $(function () {
 
     $('html').keyup(function (e) {
         if (e.keyCode === 46) {
-            var obj = canvas.getActiveObject();
+            const obj = canvas.getActiveObject();
             if (!obj.isEditing) {
                 removeSelectedObjects();
             }
+        }
+    });
+
+    $('html').keydown(function (e) {
+        const obj = canvas.getActiveObject();
+        if (obj == null) return;
+        if (obj.isEditing) return;
+        let mult = grid*0.2;
+        if (e.ctrlKey) mult = grid*1;
+
+        // left
+        if (e.keyCode == 37) {
+            e.preventDefault();
+            obj.set({
+                left: Math.round(obj.left - mult),
+            }).setCoords();
+            canvas.renderAll();
+        }
+        // right
+        if (e.keyCode == 39) {
+            e.preventDefault();
+            obj.set({
+                left: Math.round(obj.left + mult),
+            }).setCoords();
+            canvas.renderAll();
+        }
+        // down
+        if (e.keyCode == 40) {
+            e.preventDefault();
+            obj.set({
+                top: Math.round(obj.top + mult),
+            }).setCoords();
+            canvas.renderAll();
+        }
+
+        // up
+        if (e.keyCode == 38) {
+            e.preventDefault();
+            obj.set({
+                top: Math.round(obj.top - mult),
+            }).setCoords();
+            canvas.renderAll();
         }
     });
 
@@ -342,7 +383,7 @@ socket.on('callback.edit', function (data) {
     }
 
     var transitionArray = [];
-    //var values = ["bars", "blinds", "blinds3d", "zip", "blocks", "blocks2", "concentric", "warp", "cube", "tiles3d", "tiles3dprev", "slide", "swipe", "dissolve"];    
+    //var values = ["bars", "blinds", "blinds3d", "zip", "blocks", "blocks2", "concentric", "warp", "cube", "tiles3d", "tiles3dprev", "slide", "swipe", "dissolve"];
     transitionArray.push({ name: "default", value: null });
     for (var i in SupportedTransitions) {
         transitionArray.push({ name: SupportedTransitions[i], value: SupportedTransitions[i] });

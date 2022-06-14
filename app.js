@@ -156,7 +156,7 @@ app.use(lessMiddleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use("/video/",express.static(path.join(__dirname, 'data','video')));
 
-var sessionStore = new SQLiteStore({
+const sessionStore = new SQLiteStore({
     dir: "./data",
     db: "sessions.db"
 
