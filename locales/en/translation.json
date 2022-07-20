@@ -81,7 +81,8 @@
       "fontSize": "Size",
       "fontColor": "Color",
       "fontBorder": "Border Color",
-      "fontBorderWidth": "Border Width"
+      "fontBorderWidth": "Border Width",
+      "deleteBundle": "Delete Bundle?"
     },
     "editSlide": {
       "changeColor": "Change Color",

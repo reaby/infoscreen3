@@ -61,8 +61,8 @@ $(function () {
         const obj = canvas.getActiveObject();
         if (obj == null) return;
         if (obj.isEditing) return;
-        let mult = grid*0.2;
-        if (e.ctrlKey) mult = grid*1;
+        let mult = grid * 0.2;
+        if (e.ctrlKey) mult = grid * 1;
 
         // left
         if (e.keyCode == 37) {
@@ -265,9 +265,9 @@ function undo() {
 
 
 /**
- * Displays the local time for bottom of screen
- * hh:mm
- **/
+* Displays the local time for bottom of screen
+* hh:mm
+**/
 function displayTime() {
     var date = new Date();
     var min = date.getMinutes();
@@ -349,16 +349,31 @@ socket.on('callback.edit', function (data) {
         $("#slideName").val(slideName);
     }
 
-    let vals = [{
-        name: "Empty",
-        value: "empty"
-    }];
+    let templateText = `
+    <div class="item" data-value="empty" data-text="Empty">
+        <div class="content">
+            <div class="text">Empty</div>
+        </div>
+    </div>
+    `;
+
     for (let i in templates) {
-        vals.push({ name: i, value: i });
+        templateText += `
+        <div class="item" data-value="${i}" data-text="${i}">
+            <div class="right floated content">
+            <i class="black close icon" onclick="removeTemplate('${i}')"></i>
+            </div>
+            <div class="content">
+                <div class="text">${i}</div>
+            </div>
+        </div>
+        `;
     }
 
+    $('#templates .menu').html(templateText);
+
+
     $('#templates').dropdown({
-        values: vals,
         action: function (text, value) {
             $('#templates').dropdown("hide");
             if (value === "empty") {
@@ -368,7 +383,8 @@ socket.on('callback.edit', function (data) {
                 nextSlide(templates[value]);
             }
         }
-    })
+    });
+
     $("#duration").val(data.slideData.duration || "");
 
     if (data.slideData.displayTime !== null) {
@@ -397,7 +413,6 @@ socket.on('callback.edit', function (data) {
                 $('#transitions').dropdown("hide");
                 $('#transitions').dropdown("set selected", value);
                 $('#currentTransition').text(text);
-
             }
         }).dropdown("set selected", data.slideData.transition);
 
@@ -739,6 +754,14 @@ function cueSlide(id) {
     }
 }
 
+function removeTemplate(value) {
+    if (confirm("Are you sure you wish to remove this template?")) {
+        socket.emit("edit.removeTemplate", {
+            name: value,
+        });
+    }
+}
+
 function saveTemplate() {
     canvas.setBackgroundImage(null, null, null);
     var objects = canvas.getObjects('line');
@@ -1018,7 +1041,7 @@ function openImageBrowser() {
 }
 
 /** Generate an uuid
- * @url https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript#2117523 **/
+* @url https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript#2117523 **/
 function uuidv4() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
         let r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);

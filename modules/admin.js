@@ -488,6 +488,23 @@ export default class admin {
                 }
             });
 
+            socket.on('edit.removeTemplate', function (data) {
+                let templates = {};
+
+                if (fs.existsSync("./data/template.json")) {
+                    templates = JSON.parse(fs.readFileSync("./data/template.json").toString());
+                }
+
+                delete templates[data.name];
+
+                try {
+                    fs.writeFileSync("./data/template.json", JSON.stringify(templates));
+                } catch (e) {
+                    cli.error(e, "remove template");
+                }
+            });
+
+
             socket.on('edit.save', function (data) {
 
                 let filename = data.fileName.replace(".json", "");

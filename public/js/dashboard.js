@@ -26,9 +26,6 @@ socket.on("callback.dashboard.sync", function (data) {
     displayId = parseInt(data.displayId);
     serverOptions = data.serverOptions;
     bundleDirs = data.bundleDirs;
-
-    allBundlesVue.bundleDirs = bundleDirs;
-
     displayList = data.displays;
     updateControls(data.serverOptions);
 
@@ -100,7 +97,7 @@ socket.on("callback.dashboard.sync", function (data) {
 
     //   var preview = document.getElementById('preview');
     //  preview.src = "/admin/preview?displayId=" + displayId + "&socket=" + encodeURIComponent(socket.id);
-    // updateBundleData(bundleDirs);
+    updateBundleData(bundleDirs);
 });
 
 socket.on("callback.dashboard.updateSlides", function (data) {
@@ -111,8 +108,8 @@ socket.on("callback.dashboard.updateSlides", function (data) {
 });
 
 socket.on("callback.dashboard.updateBundles", function (data) {
-    bundleSettings = data;
-    //  updateBundleData(data.bundleDirs);
+    bundleSettings.bundleDirs = data.bundleDirs;
+    updateBundleData(data.bundleDirs);
 });
 
 socket.on("callback.dashboard.update", function (data) {
@@ -159,14 +156,15 @@ $(function () {
 function updateBundleData(bundleDirs) {
     let output = "";
     bundleDirs.sort(sortByName);
-    for (var i in bundleDirs) {
+
+    for (let i in bundleDirs) {
         let bundle = bundleDirs[i];
         output += `
         <div class="ui green message item" id="bundle_${simpleHash(bundle.dir)}">
-            <div class="right floated content">
-            <button class="ui small basic inverted icon button" onclick="editBundleProperties('${bundle.dir}')"><i class="edit icon"></i></button>
-            <button class="ui small basic inverted icon button" onclick="editBundleSlides('${bundle.dir}')"><i class="list icon"></i></button>
-            <button class="ui small basic inverted icon button" onclick="changeBundle('${bundle.dir}')"><i class="play icon"></i></button>
+            <div class="ui right floated content" style="width: fit-content;">
+                <button class="ui small basic inverted icon button" onclick="editBundleProperties('${bundle.dir}')"><i class="edit icon"></i></button>
+                <button class="ui small basic inverted icon button" onclick="editBundleSlides('${bundle.dir}')"><i class="list icon"></i></button>
+                <button class="ui small basic inverted icon button" onclick="changeBundle('${bundle.dir}')"><i class="play icon"></i></button>
             </div>
             <div class="content">
                 <div>${bundle.name}</div>
@@ -370,7 +368,20 @@ function updateSlides(settings) {
     });
 
 }
+function editBundleProperties(bundle) {
+    window.open("/admin/edit/bundleProperties?bundle=" + bundle, '_blank', 'width=400,height=800,scrollbars=yes,status=no,location=no');
+}
 
+function editBundleSlides(name) {
+    window.open("/admin/edit/bundleSlides?bundle=" + name, '_blank', 'width=400,height=800,scrollbars=yes,status=no,location=no');
+}
+
+function changeBundle(name) {
+    if (confirm(askMessage) == true) {
+        emit("admin.setBundle", {bundle: name});
+    }
+    return true;
+}
 
 function remove(uuid) {
     var obj = { bundleName: serverOptions.currentBundle, uuid: uuid };

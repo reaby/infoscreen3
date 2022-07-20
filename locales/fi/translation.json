@@ -50,7 +50,7 @@
       "preview": "Esikatselu",
       "program": "Ohjelma",
       "statusMessage": "Tilaviesti",
-      "askChangeBundle": "Vaida diapaketti?"
+      "askChangeBundle": "Vaihda diapaketti?"
     },
     "editBundleSlides": {
       "bundle": "Diapaketti",
@@ -81,7 +81,8 @@
       "fontSize": "Kirjainten koko",
       "fontColor": "Kirjainten väri",
       "fontBorder": "Rajan väri",
-      "fontBorderWidth": "Rajan koko"
+      "fontBorderWidth": "Rajan koko",
+      "deleteBundle": "Poista Diapaketti?"
     },
     "editSlide": {
       "changeColor": "Vaihda väriä",

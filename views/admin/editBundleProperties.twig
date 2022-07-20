@@ -101,7 +101,7 @@
                 <label>{{ t("admin.editBundleProperties.fontSize") }}</label>
                 <input type="number" value="{{ bundleData.styleHeader.fontSize }}" name="headerFontSize"/>
             </div>
-         
+
             <div class="field">
                 <label>{{ t("admin.editBundleProperties.fontColor") }}</label>
                 <input id="headerFill" type="text" value="{{ bundleData.styleHeader.fill }}" name="headerFill"
@@ -124,7 +124,7 @@
                 <label> {{ t("admin.editBundleProperties.fontName") }}</label>
                 <input type="text" value="{{ bundleData.styleText.fontFamily }}" name="textFontFamily"/>
             </div>
-            
+
             <div class="field">
                 <label>{{ t("admin.editBundleProperties.fontWeight") }}</label>
                 <input type="number" value="{{ bundleData.styleText.fontWeight }}" name="textFontWeight"/>
@@ -144,14 +144,22 @@
                 <input id="textStroke" type="text" value="{{ bundleData.styleText.stroke }}" name="textStroke"
                        onchange="previewColor(this)"/>
             </div>
-            
+
             <div class="field">
                 <label>{{ t("admin.editBundleProperties.fontBorderWidth") }}</label>
                 <input type="number" value="{{ bundleData.styleText.strokeWidth }}" name="textStrokeSize"/>
             </div>
 
             <div class="field">
-                <button name="sNormal" value="true" type="submit" class="ui basic button">{{ t("actions.save") }}</button>
+                <button name="sNormal" value="true" type="submit" class="ui green button">{{ t("actions.save") }}</button>
+            </div>
+        </form>
+        <br>
+
+        <form action="/admin/delete/bundle" method="post" enctype="multipart/form-data" class="ui form">
+            <input type="text" name="bundle" value="{{ bundle }}" hidden/>
+            <div class="field">
+                <button name="sDelete" value="true" type="submit" class="ui red button" onclick="return confirm('{{ t("admin.editBundleProperties.deleteBundle") }}');">{{ t("actions.delete") }}</button>
             </div>
         </form>
     </div>

@@ -5,12 +5,10 @@
     <script src="/js/sharedScript.js"></script>
     {% if config.useLocalAssets %}
         <script src="/assets/jquery.jeditable.min.js"></script>
-        <script src="/assets/vue.js"></script>
     {% else %}
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jeditable.js/2.0.6/jquery.jeditable.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     {% endif %}
-        
+
 {% endblock %}
 
 {% block body %}
@@ -53,7 +51,7 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Grids -->
     <div class="column">
         <div class="ui three column grid">
@@ -70,7 +68,7 @@
                                 onclick="editBundles();">  {{ t("actions.edit") }}</button>
 
                     {% endif %}
-                    <div id="allBundles" class="">
+                    <div id="allBundles" class="ui slides list" >
 
                     </div>
                 </div>
@@ -112,11 +110,11 @@
                         <h2 class="ui inverted nopadded header currentDisplay"> {{ t("admin.dashboard.program") }} </h2>
                         <iframe class="nopadded" id="program" src="/display/{{ displayId }}?isPreview=1"></iframe>
                     </div>
-                    
+
                     <div class="ui nopadded segment">
-                     
+
                     </div>
-                
+
                 <div class="row">
                     <div class="ui inverted segment">
                          <h4>YouTube</h4>
@@ -125,14 +123,14 @@
                         <input style="background: #444;" id="youtubeId" value="" placeholder="Youtube Url" />
                         <div class="ui small green button" onclick="playYoutubeVideo();">{{ t("actions.play") }}</div>
                         </div>
-                    
+
                         <h4> {{ t("admin.dashboard.statusMessage") }}</h4>
                         <div class="ui fluid grey action input">
                         <input style="background: #444;" id="statusMessageAdmin" value="" placeholder="{{ t("admin.dashboard.statusMessage") }}" />
                         <div class="ui small green button" onclick="setStatusMessage();">{{ t("actions.set") }}</div>
-                    </div>    
+                    </div>
                 </div>
-            </div>          
+            </div>
         </div>
     </div>
 </div>
@@ -197,54 +195,12 @@
             <div class="ui cancel button">{{ t("actions.cancel") }}</div>
         </div>
     </div>
-    <template id="allBundlesTemplate">
-        {% verbatim %}  
-        <div class="ui slides list">
-            <div v-for="bundle in bundleDirs" class="ui green message item">             
-                <div class="ui right floated content" style="width: fit-content;">
-                    <button class="ui small basic inverted icon button" @click="editBundleProperties(bundle.dir)">
-                    <i class="edit icon"></i></button>
-                    <button class="ui small basic inverted icon button" @click="editBundleSlides(bundle.dir)">
-                        <i class="list icon"></i></button>
-                    <button class="ui small basic inverted icon button" @click="changeBundle(bundle.dir)">
-                        <i class="play icon"></i></button>
-                </div>
-                <div class="content">
-                    <div>{{ bundle.name }}</div>
-                </div>
-            </div>                           
-        </div>
-        {% endverbatim %}
-    </template>
 
     <script>
         var socket = io("{{ config.serverUrl }}:{{ config.serverListenPort }}/admin-{{ displayId }}");
         var displayId = {{ displayId }};
         var serverUrl = "{{ config.serverUrl }}";
+        var askMessage = '{{ t("admin.dashboard.askChangeBundle") }}';
     </script>
     <script src="/js/dashboard.js"></script>
-    <script>
-        var allBundlesVue = new Vue({
-            el: "#allBundles",
-            template: "#allBundlesTemplate",
-            data: {
-                bundleDirs: [],
-                current: "default",
-            },
-            methods: {
-                editBundleProperties: function (bundle) {
-                    window.open("/admin/edit/bundleProperties?bundle=" + bundle, '_blank', 'width=400,height=800,scrollbars=yes,status=no,location=no');
-                },
-                editBundleSlides: function (name) {
-                    window.open("/admin/edit/bundleSlides?bundle=" + name, '_blank', 'width=400,height=800,scrollbars=yes,status=no,location=no');
-                },
-                changeBundle: function (name) {
-                    if (confirm('{{ t("admin.dashboard.askChangeBundle") }}') == true) {
-                        emit("admin.setBundle", {bundle: name});
-                    }
-                    return true;
-                }
-            }
-        });
-    </script>
 {% endblock %}

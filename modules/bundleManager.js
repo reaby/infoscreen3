@@ -22,9 +22,9 @@ export default class bundleManager {
         for (let name of dirs) {
             let data = getJson("./data/bundles/" + name + "/bundle.json");
             let slides = getJson("./data/bundles/" + name + "/slides.json");
-
             this.bundles[name] = new bundle(name, data, slides);
         }
+
     }
 
     /**

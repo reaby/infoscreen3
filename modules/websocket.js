@@ -36,6 +36,14 @@ export default function (pluginManager, io, dispatcher) {
     }
 
     try {
+        fs.accessSync("./trash", fs.W_OK);
+        cli.success("trash directory (./trash) is writable");
+    } catch (err) {
+        cli.error("trash directory (./trash) is not writable", err);
+        process.exit(1);
+    }
+
+    try {
         fs.accessSync("./tmp", fs.W_OK);
         cli.success("temp directory (./tmp) is writable ");
         let tempFiles = fs.readdirSync("./tmp/", {

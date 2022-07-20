@@ -102,9 +102,9 @@
             </div>
             {% else %}
             <a href="#" onclick="cueSlide(null)" class="ui red button">{{ t("actions.announceAll") }}</a>
-            {% endif %}    
-            <a href="#" onclick="window.close()" class="ui small basic button">{{ t("actions.cancel") }}</a>        
-        </div>       
+            {% endif %}
+            <a href="#" onclick="window.close()" class="ui small basic button">{{ t("actions.cancel") }}</a>
+        </div>
     </div>
 </div>
 
@@ -191,9 +191,9 @@
 
     <div class="right menu">
         <div class="item">
-        <div class="ui inverted buttons">        
+        <div class="ui inverted buttons">
             <a href="#" onclick="undo()" class="ui basic icon button" data-content="{{ t("admin.tooltip.undo") }}"><i
-                        class="ui undo icon"></i> {{ t("admin.tooltip.undo") }}</a>                        
+                        class="ui undo icon"></i> {{ t("admin.tooltip.undo") }}</a>
             <a href="#" onclick="copyObject()" class="ui basic icon button" data-content="{{t("admin.tooltip.copy")}}"><i
                         class="ui copy icon"></i></a>
                 <a href="#" onclick="pasteObject()" class="ui basic icon button"><i class="ui paste icon" data-content="{{t("admin.tooltip.paste")}}"></i></a>
@@ -204,14 +204,14 @@
     </div>
 </div>
 
-<div id="matchsize" style="margin:0; padding:0; position: absolute;">    
+<div id="matchsize" style="margin:0; padding:0; position: absolute;">
         <canvas id="edit" width="1920" height="1080" style="position: absolute; z-index:10;"></canvas>
         <div id="bg">
             <img id="bgimg" class="fsimage" src="" />
         </div>
         <video muted loop autoplay id="bgvid2" poster="">
         </video>
-        <div id="time2" class="noselect delay animated">00:00</div>    
+        <div id="time2" class="noselect delay animated">00:00</div>
 </div>
 
 <div id="contextmenu" class="ui small vertical menu" style="display: none; position: absolute; z-index: 1000;">
@@ -260,11 +260,11 @@
             delay: {
                 show: 1000,
                 hide: 0
-            },            
+            },
             position: "bottom left"
         });
     $(function () {
-        
+
         var opts = {
             dragClass: "active",
             on: {

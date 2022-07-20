@@ -5,6 +5,8 @@ import fs from 'fs';
 import path from 'path';
 import config from '../config.js';
 import busboy from 'connect-busboy'
+import fse from 'fs-extra';
+
 
 function getFiles(path) {
     return fs.readdirSync(path).filter(function (file) {
@@ -129,13 +131,13 @@ export default function (pluginManager, websocket, dispatcher) {
                     bundleData.displayTime = displayTime;
                     bundleData.styleHeader.fontFamily = fields.headerFontFamily;
                     bundleData.styleHeader.fontSize = parseInt(fields.headerFontSize);
-                    bundleData.styleHeader.fontWeight= parseInt(fields.headerFontWeight) || 400;
+                    bundleData.styleHeader.fontWeight = parseInt(fields.headerFontWeight) || 400;
                     bundleData.styleHeader.fill = fields.headerFill;
                     bundleData.styleHeader.stroke = fields.headerStroke;
                     bundleData.styleHeader.strokeWidth = parseInt(fields.headerStrokeSize) || 0;
                     bundleData.styleText.fontFamily = fields.textFontFamily;
                     bundleData.styleText.fontSize = parseInt(fields.textFontSize);
-                    bundleData.styleText.fontWeight= parseInt(fields.textFontWeight) || 400;
+                    bundleData.styleText.fontWeight = parseInt(fields.textFontWeight) || 400;
                     bundleData.styleText.fill = fields.textFill;
                     bundleData.styleText.stroke = fields.textStroke;
                     bundleData.styleText.strokeWidth = parseInt(fields.textStrokeSize) || 0;
@@ -146,12 +148,37 @@ export default function (pluginManager, websocket, dispatcher) {
                 } catch (err) {
                     cli.error("error loading bundle", err);
                 }
-
-                dispatcher.emit("updateBundles");
                 res.send("<!doctype HTML><html><head><script>window.close();</script></head><body></body></html>");
+                dispatcher.emit("updateBundles");
             }
         });
     });
+
+    router.post('/delete/bundle', function (req, res, next) {
+        let fields = {};
+
+        req.busboy.on('field', function (fieldname, val) {
+
+            fields[fieldname] = val;
+        });
+
+        req.busboy.on('finish', function () {
+            if (fields.hasOwnProperty("sDelete")) {
+                let dir = `./data/bundles/${fields.bundle}/`;
+                if (fs.existsSync(dir)) {
+                    fse.moveSync(dir, `./trash/${fields.bundle}/`);
+                    bundleManager.syncBundles();
+                    cli.success(dir, "Bundle removed");
+                } else {
+                    cli.error(dir, "Folder not found");
+                }
+
+                res.send("<!doctype HTML><html><head><script>window.close();</script></head><body></body></html>");
+                dispatcher.emit("updateBundles");
+            }
+        });
+    });
+
 
     router.get('/edit/bundleProperties', function (req, res, next) {
         let bundle = req.query['bundle'];
