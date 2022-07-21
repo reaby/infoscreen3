@@ -266,7 +266,8 @@ function setBackground(background) {
             bg.fadeOut();
             video.src = background;
             video.load();
-            video.play();
+            video.pause();
+            //video.play();
             $(video).show();
         }
     } else {
