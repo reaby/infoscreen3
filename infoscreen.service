@@ -1,0 +1,13 @@
+[Unit]
+Description=Infoscreen Service
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/infoscreen3/
+ExecStart=npm start
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

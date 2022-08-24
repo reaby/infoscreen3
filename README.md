@@ -9,7 +9,7 @@ When you need to display same content to multiple locations or need to remotely 
 * The output resolution does not matter, all contents are automatically scaled from the Full HD source
 * Finnish and English language support, sets automatically from browser language.
 * Multiple renderers to choose from:
-  1. WebGL (with 60+ changeable transitions)     
+  1. WebGL (with 60+ changeable transitions)
   2. CSS3 (only blinds3D)
   3. Lite (only cross fade)
        *  in case your viewer laptop is totally a potato
@@ -20,7 +20,7 @@ When you need to display same content to multiple locations or need to remotely 
   * Now with embedded Youtube video support (to have a 10h nyancat)
   * Supports mp4 video as a slide, in case you wish to run ads or democompo entry as a content slide.
   * Optional support for local RTMP Live streams, buffer delay is about 2 seconds.
-          
+
 ## Setup
 1. run `npm install`
 2. copy `config-default.js` to `config.js`
@@ -99,6 +99,23 @@ Dockerfile is provided for building a docker container. Docker container accepts
 ```bash
 docker build -t reaby/infoscreen .
 docker run -p 8000:8000 -e HOST=infoscreen.lan -e PORT=8000 -e ADMIN_USER=admin -e ADMIN_PASS=secret --name infoscreen reaby/infoscreen
+```
+
+## Linux service
+
+Service file for sysctl, provided by Hartsa (many thanks!)
+Just edit the working directory of the script and you're good to go!
+
+```bash
+sudo cp infoscreen.service /etc/systemd/system/
+sudo systemctl start infoscreen.service
+sudo systemctl enable infoscreen.service
+```
+
+If you need to see status of the service:
+
+```bash
+sudo systemctl status infoscreen.service
 ```
 
 # Thanks
