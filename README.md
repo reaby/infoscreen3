@@ -104,7 +104,7 @@ docker run -p 8000:8000 -e HOST=infoscreen.lan -e PORT=8000 -e ADMIN_USER=admin 
 ## Linux service
 
 Service file for sysctl, provided by Hartsa (many thanks!)
-Just edit the working directory of the script and you're good to go!
+Just edit the working directory of the script and change the user from root to yours, if needed.
 
 ```bash
 sudo cp infoscreen.service /etc/systemd/system/
