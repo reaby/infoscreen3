@@ -1,15 +1,15 @@
 /**
- * Sketch 
- * 
+ * Sketch
+ *
  * initially based upon resource found at:
  * https://github.com/akella/webGLImageTransitions
  *
  * Original lisence:
  * This resource can be used freely if integrated or build upon in personal or commercial projects such as websites,
- * web apps and web templates intended for sale. It is not allowed to take the resource "as-is" and sell it, redistribute, 
- * re-publish it, or sell "pluginized" versions of it. Free plugins built using this resource should have a visible mention and 
- * link to the original work. Always consider the licenses of all included libraries, scripts and images used. 
- * 
+ * web apps and web templates intended for sale. It is not allowed to take the resource "as-is" and sell it, redistribute,
+ * re-publish it, or sell "pluginized" versions of it. Free plugins built using this resource should have a visible mention and
+ * link to the original work. Always consider the licenses of all included libraries, scripts and images used.
+ *
  * ! notice: heavily modified for infoscreen3 use !
  */
 class Sketch {
@@ -19,20 +19,20 @@ class Sketch {
 
   makeFragment(transitionGlsl) {
     return `
-    precision highp float;    
+    precision highp float;
     varying vec2 _uv;
     uniform sampler2D texture1, texture2;
     uniform float progress, ratio, _fromR, _toR;
 
     vec4 getFromColor(vec2 uv) {
-      return texture2D(texture1, uv);    
+      return texture2D(texture1, uv);
     }
     vec4 getToColor(vec2 uv){
         return texture2D(texture2, uv);
       }
-    
+
       ${transitionGlsl}
-    
+
     void main() {
       gl_FragColor = transition(_uv);
     }
@@ -45,7 +45,7 @@ class Sketch {
     this.loadManager = new THREE.LoadingManager();
     this.loader = new THREE.TextureLoader(this.loadManager);
     this.delta = 0;
-    this.interval = 1 / 60;      // 60 fps    
+    this.interval = 1 / 60;      // 60 fps
     this.tempImages = [];
     this.currentTransition = "fade";
     this.bcounter = null;
@@ -57,13 +57,13 @@ class Sketch {
         gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0 );
       }`;
 */
-    this.vertex = `  
-  varying vec2 _uv;      
-  void main()             
+    this.vertex = `
+  varying vec2 _uv;
+  void main()
    {
-     _uv = uv;                       
+     _uv = uv;
      gl_Position = vec4(position, 0.5);
-   } 
+   }
 `;
     this.fragment = `
       vec4 transition (vec2 uv) {
@@ -150,7 +150,7 @@ class Sketch {
   }
 
   async loadImage(url, uuid) {
-    const idx = this.getTextureId(url);
+    const idx = this.getTextureId(uuid);
 
     if (idx) {
       // replace texture with a new resource
@@ -161,7 +161,7 @@ class Sketch {
       });
 
     } else {
-      // load new texture   
+      // load new texture
       const texture = await this.loader.load(url, () => {
         texture.minFilter = THREE.LinearFilter;
         texture.image.id = uuid;

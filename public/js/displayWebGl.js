@@ -52,7 +52,7 @@ $(function () {
     $('#blackoutLayer').dblclick(toggleFullScreen);
     if (isPreview === 0) {
         document.addEventListener("keydown", function (e) {
-            if (e.keyCode == 13) {
+            if (e.code == 13) {
                 toggleFullScreen();
             }
         }, false);
