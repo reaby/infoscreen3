@@ -206,7 +206,7 @@ function checkBlackout() {
 function updateStatusMessage() {
     if (serverOptions.statusMessage !== "") {
         $('#statusMessageOuter').fadeIn();
-        $('#statusMessage').text(serverOptions.statusMessage);
+        $('#statusMessage').html(serverOptions.statusMessage);
     } else {
         $('#statusMessageOuter').fadeOut();
         $('#statusMessage').text("");

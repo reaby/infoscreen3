@@ -222,7 +222,7 @@ function checkBlackout() {
 function updateStatusMessage() {
     if (serverOptions.statusMessage !== "") {
         $('#statusMessageOuter').fadeIn();
-        $('#statusMessage').text(serverOptions.statusMessage);
+        $('#statusMessage').html(serverOptions.statusMessage);
     } else {
         $('#statusMessageOuter').fadeOut();
         $('#statusMessage').text("");
@@ -315,7 +315,7 @@ function nextSlide(data) {
                     transition = serverOptions.currentMeta.transition;
                 } */
 
-                //var values = ["bars", "blinds", "blinds3d", "zip", "blocks", "blocks2", "concentric", "warp", "cube", "tiles3d", "tiles3dprev", "slide", "swipe", "dissolve"];    
+                //var values = ["bars", "blinds", "blinds3d", "zip", "blocks", "blocks2", "concentric", "warp", "cube", "tiles3d", "tiles3dprev", "slide", "swipe", "dissolve"];
                 var transition = "tiles3d";
 
                 $("#" + getWebLayer()).addClass("fadeOut").removeClass("fadeIn");
@@ -438,7 +438,7 @@ function preloadImages(data) {
         }
         return;
     }
-        
+
     let counter = 0;
     for (var i in allSlides) {
         try {

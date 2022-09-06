@@ -208,14 +208,14 @@ canvas {
     align-content: center;
     bottom: 1vw;
     left: 0;
-    font-variant: all-small-caps;
-    background: rgba(0, 0, 0,1);
+    background: rgba(0, 0, 0, 0.8);
     font-family: 'Open Sans', sans-serif;
     font-weight: bolder;
     font-size: 3vw;
     color: white;
     border-top: 2px solid white;
     border-bottom: 2px solid white;
+    overflow-block: clip;
 }
 
 #time {

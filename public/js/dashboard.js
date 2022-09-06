@@ -219,7 +219,6 @@ function editSlide(name, type) {
 
 function setStatusMessage() {
     emit("admin.setStatusMessage", $('#statusMessageAdmin').val());
-
 }
 
 function playYoutubeVideo() {
