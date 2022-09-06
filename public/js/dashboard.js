@@ -339,10 +339,12 @@ function updateSlides(settings) {
                 <button class="ui small basic inverted icon button" onclick="editSlide('${slide.uuid}', '${slide.type}');"><i class="edit outline icon"></i></button>
                 <button class="ui small basic inverted icon button" onclick="emit('controls.skipTo', {fileName: '${slide.uuid}'} );"><i class="step forward icon"></i></button>
              <!--   <button class="ui small basic inverted icon button" onclick="remove('${slide.uuid}');"><i class="delete icon"></i></button> -->
+                <i class="large toggle ${status} icon" onclick="emit('controls.toggle', {fileName: '${slide.uuid}'} );"></i>
             </div>
             <div class="content">
-                <i class="large toggle ${status} icon" onclick="emit('controls.toggle', {fileName: '${slide.uuid}'} );"></i>
-                <div class="editable">${slide.name}</div>
+                <span class="editable">${slide.name}</span><br>
+                <i class="check icon"></i>
+
             </div>
         </div>
         `;

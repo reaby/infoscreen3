@@ -265,15 +265,18 @@ function undo() {
 
 
 /**
-* Displays the local time for bottom of screen
-* hh:mm
-**/
+ * Displays the local time for bottom of screen
+ * hh:mm
+ **/
 function displayTime() {
-    var date = new Date();
-    var min = date.getMinutes();
+    let date = new Date();
+    let min = date.getMinutes();
+    let month = date.getMonth() + 1;
+    let day = date.getDate();
     if (min < 10) min = "0" + min;
-    var time = date.getHours() + ":" + min;
-    $('#time2').html(time);
+    if (month < 10) month = "0" + month;
+    if (day < 10) day = "0" + day;
+    $('#time2').html(date.getHours() + ":" + min + "<div style='font-size: 3vh;'>" + date.getFullYear() + "-" + month + "-" + day + "</div>");
     checkTimeDisplay();
 }
 

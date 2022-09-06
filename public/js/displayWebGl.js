@@ -176,8 +176,12 @@ socket.on('callback.forceSlide', function (data) {
 function displayTime() {
     let date = new Date();
     let min = date.getMinutes();
+    let month = date.getMonth()+1;
+    let day = date.getDate();
     if (min < 10) min = "0" + min;
-    $('#time').html(date.getHours() + ":" + min);
+    if (month < 10) month = "0" + month;
+    if (day < 10) day = "0" + day;
+    $('#time').html(date.getHours() + ":" + min + "<div style='font-size: 3vh;'>"+date.getFullYear() + "-" + month + "-" + day + "</div>");
 }
 
 function checkTimeDisplay() {
