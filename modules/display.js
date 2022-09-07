@@ -205,7 +205,7 @@ export default class display {
         this.serverOptions.announceMeta = {};
 
         let bundle = this.getBundle();
-        let slides = bundle.enabledSlides;
+        let slides = bundle.getEnabledSlides();
 
         if (slides.length >= 0) {
             let lIndex = this.serverOptions.loopIndex;
@@ -214,7 +214,7 @@ export default class display {
             this.serverOptions.loopIndex = idx;
             this.serverOptions.currentFile = slides[idx];
             this.serverOptions.slideDuration = bundle.findSlideByUuid(slides[idx]).duration || bundle.getBundleData().duration;
-            this.serverOptions.currentId = bundle.enabledSlides.indexOf(this.serverOptions.currentFile);
+            this.serverOptions.currentId = slides.indexOf(this.serverOptions.currentFile);
             this.serverOptions.currentMeta = bundle.findSlideByUuid(slides[idx]);
             this.serverOptions.displayTime = bundle.bundleData.displayTime;
         }

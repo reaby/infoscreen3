@@ -7,7 +7,9 @@
 		"displayTime": null,
 		"type": "slide",
 		"index": 0,
-		"transition": null
+		"transition": null,
+		"epochStart": -1,
+		"epochEnd": -1
 	},
 	{
 		"uuid": "03191688-bb93-4376-a3ab-53ed790b2155",
@@ -17,7 +19,9 @@
 		"displayTime": null,
 		"type": "slide",
 		"transition": null,
-		"index": 1
+		"index": 1,
+		"epochStart": -1,
+		"epochEnd": -1
 	},
 	{
 		"uuid": "6a298b8c-9246-411f-b364-2d73c7e292d0",
@@ -27,6 +31,8 @@
 		"displayTime": null,
 		"transition": null,
 		"type": "slide",
-		"index": 2
+		"index": 2,
+		"epochStart": -1,
+		"epochEnd": -1
 	}
 ]

@@ -1,5 +1,6 @@
 let canvas;
 let bundleData;
+let slideData;
 
 const grid = 1920 / 32;
 
@@ -8,6 +9,7 @@ let slideName = "untitled";
 let undoData = [];
 let undoActive = false;
 let templates = {};
+
 
 bundleData = {
     background: "",
@@ -344,6 +346,7 @@ socket.on('callback.edit.updateFileList', function (data) {
 
 socket.on('callback.edit', function (data) {
     bundleData = data.bundleData;
+    slideData = data.slideData;
     templates = data.templates;
     canvas.clear();
 
@@ -389,6 +392,18 @@ socket.on('callback.edit', function (data) {
     });
 
     $("#duration").val(data.slideData.duration || "");
+
+    if (slideData.epochStart != -1) {
+        let d = new Date(slideData.epochStart);
+        let isoStr = (new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString()).slice(0, -1);
+        $("#enableStart").val(isoStr);
+    }
+
+    if (slideData.epochEnd != -1) {
+        let d = new Date(slideData.epochEnd);
+        let isoStr = (new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString()).slice(0, -1);
+        $("#enableEnd").val(isoStr);
+    }
 
     if (data.slideData.displayTime !== null) {
         $("#override").checkbox('set checked');
@@ -828,6 +843,8 @@ function save() {
     var transition = $("#transitions").dropdown("get value");
     if (transition === "null") transition = "";
 
+    let epochStart = Date.parse($("#enableStart").val()) || -1;
+    let epochEnd = Date.parse($("#enableEnd").val()) || -1;
 
     var obj = {
         bundleName: bundle,
@@ -837,7 +854,9 @@ function save() {
         json: canvas.toJSON(['id', 'fontSize']),
         png: canvas.toDataURL('png'),
         displayTime: checked,
-        transition: transition
+        transition: transition,
+        epochStart: epochStart,
+        epochEnd: epochEnd
     };
 
     socket.emit("edit.save", obj);

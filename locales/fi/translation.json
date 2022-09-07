@@ -92,7 +92,9 @@
       "sendToFront": "Tuo päällimmäiseksi",
       "moveForward": "Siirrä eteenpäin",
       "moveBackward": "Siirrä taaksepäin",
-      "sendToBack": "Vie alimmaikseksi"
+      "sendToBack": "Vie alimmaikseksi",
+      "slideStart": "Aloitus aika",
+      "slideEnd": "Päättymis aika"
     },
     "addLink": {
       "name": "Nimi",

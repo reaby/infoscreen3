@@ -32,224 +32,268 @@
         top: 0px !important;
         left: 0px !important;
     }
-
 </style>
 {% endblock %}
 
 {% block body %}
-<div class="ui primary pointing menu" style="margin: 0;">
-    <div class="item">
-        <div class="ui input">
-            <label for="duration"></label>
-            <input type="number" id="duration" placeholder="{{ t("navs.duration") }}" min="5" />
-        </div>
-    </div>
-    <div class="item">
-        <div id="override" class="ui checkbox">
-            <input id="lbl2" type="checkbox" />
-            <label for="lbl2">{{ t("navs.override") }} </label>
-        </div>
+	<div class="ui small primary pointing menu" style="margin: 0;">
+		<div class="item">
+			<div class="ui labeled input">
+				<label class="ui right pointing label" for="slideName">{{ t("navs.slideName") }}</label>
+				<input class="ui input" name="slideName" type="text" id="slideName" value="untitled"/>
+			</div>
+		</div>
 
-        <div id="displaytime" class="ui toggle checkbox">
-            <input id="lbl" type="checkbox" />
-            <label for="lbl">{{ t("navs.time") }}</label>
-        </div>
-    </div>
-    <div id="transitions" class="ui scrolling dropdown item">
-        <div class="ui small breadcrumb">
-            <span class="section">{{ t("navs.transition") }}</span>
-            <i class="right chevron icon divider"></i>
-            <span id="currentTransition" class="section"></span>
-        </div>
-        <i class="dropdown icon"></i>
-    </div>
-    <div class="item">
-        <div class="ui labeled input">
-            <label class="ui right pointing label" for="slide_name">{{ t("navs.slideName") }}</label>
-            <input class="ui input" name="slideName" type="text" id="slideName" value="untitled" />
-        </div>
-    </div>
-    <div class="right menu">
-        <div class="item">
-            <div class="ui green buttons">
-                <div onclick="save()" class="ui button">{{ t("actions.save") }}</div>
-                <div class="ui floating dropdown icon button" id="dropdownSave">
-                    <i class="dropdown icon"></i>
-                    <div class="menu">
-                        <div onclick="saveTemplate()" class="item"><i class="save icon"></i>
-                            {{ t("actions.savetemplate") }}</div>
-                    </div>
-                </div>
-            </div>
-            <div id="templates" class="ui teal basic icon button dropdown">
-                    {{ t('actions.loadTemplate') }}
-                    <i class="dropdown icon"></i>
-                    <div class="menu">
-                    </div>
-            </div>
+		<div class="item">
+			<div class="ui labeled input">
+				<label class="ui right pointing label" for="enableStart">{{ t("admin.editSlide.slideStart") }}</label>
+				<input type="datetime-local" id="enableStart"/>
+			</div>
+		</div>
+		<div class="item">
+			<div class="ui labeled input">
+				<label class="ui right pointing label" for="enableEnd">{{ t("admin.editSlide.slideEnd") }}</label>
+				<input type="datetime-local" id="enableEnd"/>
+			</div>
+		</div>
+		<div class="item">
+			<div class="ui labeled input">
+				<label for="duration" class="ui right pointing label">{{ t("navs.duration") }}</label>
+				<input type="number" id="duration" min="5"/>
+			</div>
+		</div>
+	</div>
+
+	<div class="ui small primary pointing menu" style="margin: 0;">
+
+		<div class="item">
+			<div id="override" class="ui checkbox">
+				<input id="lbl2" type="checkbox"/>
+				<label for="lbl2">{{ t("navs.override") }}
+				</label>
+			</div>
+
+			<div id="displaytime" class="ui toggle checkbox">
+				<input id="lbl" type="checkbox"/>
+				<label for="lbl">{{ t("navs.time") }}</label>
+			</div>
+		</div>
+		<div id="transitions" class="ui scrolling dropdown item">
+			<div class="ui small breadcrumb">
+				<span class="section">{{ t("navs.transition") }}</span>
+				<i class="right chevron icon divider"></i>
+				<span id="currentTransition" class="section"></span>
+			</div>
+			<i class="dropdown icon"></i>
+		</div>
+
+		<div class="right menu">
+			<div class="item">
+				<div class="ui green buttons">
+					<div onclick="save()" class="ui button">{{ t("actions.save") }}</div>
+					<div class="ui floating dropdown icon button" id="dropdownSave">
+						<i class="dropdown icon"></i>
+						<div class="menu">
+							<div onclick="saveTemplate()" class="item">
+								<i class="save icon"></i>
+								{{ t("actions.savetemplate") }}</div>
+						</div>
+					</div>
+				</div>
+				<div id="templates" class="ui teal basic icon button dropdown">
+					{{ t('actions.loadTemplate') }}
+					<i class="dropdown icon"></i>
+					<div class="menu"></div>
+				</div>
 
 
-            {% if displayId != null %}
-            <div class="ui red basic buttons">
-                <div onclick="cueSlide({{ displayId }})" class="ui button">{{ t("actions.announce") }}</div>
-                <div class="ui floating dropdown icon button" id="dropdownAnnounce">
-                    <i class="dropdown icon"></i>
-                    <div class="menu">
-                        <div onclick="cueSlide(null)" class="item"><i class="exclamation icon"></i>
-                            {{ t("actions.announceAll") }}</div>
-                    </div>
-                </div>
-            </div>
-            {% else %}
-            <a href="#" onclick="cueSlide(null)" class="ui red button">{{ t("actions.announceAll") }}</a>
-            {% endif %}
-            <a href="#" onclick="window.close()" class="ui small basic button">{{ t("actions.cancel") }}</a>
-        </div>
-    </div>
-</div>
+				{% if displayId != null %}
+					<div class="ui red basic buttons">
+						<div onclick="cueSlide({{ displayId }})" class="ui button">{{ t("actions.announce") }}</div>
+						<div class="ui floating dropdown icon button" id="dropdownAnnounce">
+							<i class="dropdown icon"></i>
+							<div class="menu">
+								<div onclick="cueSlide(null)" class="item">
+									<i class="exclamation icon"></i>
+									{{ t("actions.announceAll") }}</div>
+							</div>
+						</div>
+					</div>
+				{% else %}
+					<a href="#" onclick="cueSlide(null)" class="ui red button">{{ t("actions.announceAll") }}</a>
+				{% endif %}
+				<a href="#" onclick="window.close()" class="ui small basic button">{{ t("actions.cancel") }}</a>
+			</div>
+		</div>
+	</div>
+	<div class="ui menu" style="margin: 0;">
+		<div class="item">
+			<div class="ui inverted buttons">
+				<a href="#" onclick="addHeader('header')" class="ui basic icon button" data-content="{{ t("admin.tooltip.header")}}">
+					<i class="ui heading icon"></i>
+				</a>
+				<a href="#" onclick="addText('paragraph text')" class="ui basic icon button" data-content="{{t("admin.tooltip.paragraph")}}">
+					<i class="ui paragraph icon"></i>
+				</a>
+				<a href="#" onclick="openImageBrowser()" class="ui basic icon button" data-content="{{t("admin.tooltip.image")}}">
+					<i class="ui image icon"></i>
+				</a>
+			</div>
+		</div>
+		<div class="item">
+			<div class="ui inverted buttons">
+				<a class="ui basic icon button" onclick="setZindex('bringToFront');" data-content="{{t("admin.tooltip.bringToFront")}}">
+					<i class="ui level up icon"></i>
+				</a>
+				<a class="ui basic icon button" onclick="setZindex('bringForward');" data-content="{{t("admin.tooltip.bringForward")}}">
+					<i class="ui arrow up icon"></i>
 
+				</a>
+				<a class="ui basic icon button" onclick="setZindex('sendBackwards>');" data-content="{{t("admin.tooltip.sendBackward")}}">
+					<i class="ui arrow down icon"></i>
+				</a>
+				<a class="ui basic icon button" onclick="setZindex('sendToBack');" data-content="{{t("admin.tooltip.sendToBack")}}">
+					<i class="ui level down icon"></i>
+				</a>
+			</div>
+		</div>
 
-<div class="ui menu" style="margin: 0;">
-    <div class="item">
-        <div class="ui inverted buttons">
-            <a href="#" onclick="addHeader('header')" class="ui basic icon button" data-content="{{ t("admin.tooltip.header")}}"><i class="ui heading icon"></i></a>
-            <a href="#" onclick="addText('paragraph text')" class="ui basic icon button" data-content="{{t("admin.tooltip.paragraph")}}"><i class="ui paragraph icon"></i></a>
-            <a href="#" onclick="openImageBrowser()" class="ui basic icon button" data-content="{{t("admin.tooltip.image")}}"><i class="ui image icon"></i></a>
-        </div>
-    </div>
-    <div class="item">
-        <div class="ui inverted buttons">
-            <a class="ui basic icon button" onclick="setZindex('bringToFront');" data-content="{{t("admin.tooltip.bringToFront")}}">
-                <i class="ui level up icon"></i>
-            </a>
-            <a class="ui basic icon button" onclick="setZindex('bringForward');" data-content="{{t("admin.tooltip.bringForward")}}">
-                <i class="ui arrow up icon"></i>
+		<div class="item">
+			<div class="ui inverted buttons">
+				<a href="#" onclick="setAlign('left')" class="ui basic icon button" data-content="{{t("admin.tooltip.alignLeft")}}">
+					<i class="ui align left icon"></i>
+				</a>
+				<a href="#" onclick="setAlign('center')" class="ui basic icon button" data-content="{{t("admin.tooltip.alignCenter")}}">
+					<i class="ui align center icon"></i>
+				</a>
+				<a href="#" onclick="setAlign('right')" class="ui basic icon button" data-content="{{t("admin.tooltip.alignRight")}}">
+					<i class="ui align right icon"></i>
+				</a>
+				<a href="#" onclick="setAlign('justify')" class="ui basic icon button" data-content="{{t("admin.tooltip.alignJustify")}}">
+					<i class="ui align justify icon"></i>
+				</a>
+			</div>
+		</div>
+		<div class="item">
+			<div onclick="fontSize(1);" class="ui basic icon button" data-content="{{t("admin.tooltip.fontPlus")}}">
+				<i class="icons">
+					<i class="plus icon"></i>
+					<i class="corner font icon"></i>
+				</i>
+			</div>
+			<div onclick="fontSize(-1);" class="ui basic icon button" data-content="{{t("admin.tooltip.fontMinus")}}">
+				<i class="icons">
+					<i class="minus icon"></i>
+					<i class="corner font icon"></i>
+				</i>
+			</div>
+		</div>
+		<div class="item">
+			<div id="colorPicker" class="ui basic button">{{ t("admin.editSlide.changeColor") }}
+			</div>
 
-            </a>
-            <a class="ui basic icon button" onclick="setZindex('sendBackwards>');" data-content="{{t("admin.tooltip.sendBackward")}}">
-                <i class="ui arrow down icon"></i>
-            </a>
-            <a class="ui basic icon button" onclick="setZindex('sendToBack');" data-content="{{t("admin.tooltip.sendToBack")}}">
-                <i class="ui level down icon"></i>
-            </a>
-        </div>
-    </div>
+			<div class="ui popup" style="display: none; min-width: 500px;">
+				<div onclick="changeColor(this);" class="ui white basic icon button"></div>
+				<div onclick="changeColor(this);" class="ui grey icon button"></div>
+				<div onclick="changeColor(this);" style="background:black;" class="ui black icon button"></div>
+				<div onclick="changeColor(this);" class="ui red icon icon button"></div>
+				<div onclick="changeColor(this);" class="ui orange icon button"></div>
+				<div onclick="changeColor(this);" class="ui yellow icon button"></div>
+				<div onclick="changeColor(this);" class="ui olive icon button"></div>
+				<div onclick="changeColor(this);" class="ui green icon button"></div>
+				<div onclick="changeColor(this);" class="ui teal icon button"></div>
+				<div onclick="changeColor(this);" class="ui blue icon button"></div>
+				<div onclick="changeColor(this);" class="ui violet icon button"></div>
+				<div onclick="changeColor(this);" class="ui purple icon button"></div>
+				<div onclick="changeColor(this);" class="ui pink icon button"></div>
+				<div onclick="changeColor(this);" class="ui brown icon button"></div>
+			</div>
+		</div>
+		<div class="item">
+			<div class="ui basic icon button" onclick="setCenter('h')" data-content="{{t("admin.tooltip.centerHorizontal")}}">
+				<i class="arrows alternate horizontal icon"></i>
+			</div>
+			<div class="ui basic icon button" onclick="setCenter('v')" data-content="{{t("admin.tooltip.centerVertical")}}">
+				<i class="arrows alternate vertical icon"></i>
+			</div>
+			<div class="ui basic icon button" onclick="alignObject('left')" data-content="{{t("admin.tooltip.alignLeft")}}">
+				<i class="arrow alternate circle left outline icon"></i>
+			</div>
+			<div class="ui basic icon button" onclick="alignObject('right')" data-content="{{t("admin.tooltip.alignRight")}}">
+				<i class="arrow alternate circle right outline icon"></i>
+			</div>
+			<div class="ui basic icon button" onclick="alignObject('top')" data-content="{{t("admin.tooltip.alignUp")}}">
+				<i class="arrow alternate circle up outline icon"></i>
+			</div>
+			<div class="ui basic icon button" onclick="alignObject('bottom')" data-content="{{t("admin.tooltip.alignDown")}}">
+				<i class="arrow alternate circle down outline icon"></i>
+			</div>
 
-    <div class="item">
-        <div class="ui inverted buttons">
-            <a href="#" onclick="setAlign('left')" class="ui basic icon button" data-content="{{t("admin.tooltip.alignLeft")}}"><i class="ui align left icon"></i></a>
-            <a href="#" onclick="setAlign('center')" class="ui basic icon button" data-content="{{t("admin.tooltip.alignCenter")}}"><i
-                    class="ui align center icon"></i></a>
-            <a href="#" onclick="setAlign('right')" class="ui basic icon button" data-content="{{t("admin.tooltip.alignRight")}}"><i class="ui align right icon"></i></a>
-            <a href="#" onclick="setAlign('justify')" class="ui basic icon button" data-content="{{t("admin.tooltip.alignJustify")}}"><i
-                    class="ui align justify icon"></i></a>
-        </div>
-    </div>
-    <div class="item">
-        <div onclick="fontSize(1);" class="ui basic icon button"  data-content="{{t("admin.tooltip.fontPlus")}}">
-            <i class="icons">
-                <i class="plus icon"></i>
-                <i class="corner font icon"></i>
-            </i>
-        </div>
-        <div onclick="fontSize(-1);" class="ui basic icon button"  data-content="{{t("admin.tooltip.fontMinus")}}">
-            <i class="icons">
-                <i class="minus icon"></i>
-                <i class="corner font icon"></i>
-            </i>
-        </div>
-    </div>
-    <div class="item">
-        <div id="colorPicker" class="ui basic button">{{ t("admin.editSlide.changeColor") }} </div>
+		</div>
 
-        <div class="ui popup" style="display: none; min-width: 500px;">
-            <div onclick="changeColor(this);" class="ui white basic icon button"></div>
-            <div onclick="changeColor(this);" class="ui grey icon button"></div>
-            <div onclick="changeColor(this);" style="background:black;" class="ui black icon button"></div>
-            <div onclick="changeColor(this);" class="ui red icon icon button"></div>
-            <div onclick="changeColor(this);" class="ui orange icon button"></div>
-            <div onclick="changeColor(this);" class="ui yellow icon button"></div>
-            <div onclick="changeColor(this);" class="ui olive icon button"></div>
-            <div onclick="changeColor(this);" class="ui green icon button"></div>
-            <div onclick="changeColor(this);" class="ui teal icon button"></div>
-            <div onclick="changeColor(this);" class="ui blue icon button"></div>
-            <div onclick="changeColor(this);" class="ui violet icon button"></div>
-            <div onclick="changeColor(this);" class="ui purple icon button"></div>
-            <div onclick="changeColor(this);" class="ui pink icon button"></div>
-            <div onclick="changeColor(this);" class="ui brown icon button"></div>
-        </div>
-    </div>
-    <div class="item">
-        <div class="ui basic icon button" onclick="setCenter('h')" data-content="{{t("admin.tooltip.centerHorizontal")}}"><i class="arrows alternate horizontal icon"></i></div>
-        <div class="ui basic icon button" onclick="setCenter('v')" data-content="{{t("admin.tooltip.centerVertical")}}"><i class="arrows alternate vertical icon"></i></div>
-        <div class="ui basic icon button" onclick="alignObject('left')" data-content="{{t("admin.tooltip.alignLeft")}}"><i class="arrow alternate circle left outline icon"></i></div>
-        <div class="ui basic icon button" onclick="alignObject('right')" data-content="{{t("admin.tooltip.alignRight")}}"><i class="arrow alternate circle right outline icon"></i></div>
-        <div class="ui basic icon button" onclick="alignObject('top')" data-content="{{t("admin.tooltip.alignUp")}}"><i class="arrow alternate circle up outline icon"></i></div>
-        <div class="ui basic icon button" onclick="alignObject('bottom')" data-content="{{t("admin.tooltip.alignDown")}}"><i class="arrow alternate circle down outline icon"></i></div>
+		<div class="right menu">
+			<div class="item">
+				<div class="ui inverted buttons">
+					<a href="#" onclick="undo()" class="ui basic icon button" data-content="{{ t("admin.tooltip.undo") }}">
+						<i class="ui undo icon"></i>
+						{{ t("admin.tooltip.undo") }}</a>
+					<a href="#" onclick="copyObject()" class="ui basic icon button" data-content="{{t("admin.tooltip.copy")}}">
+						<i class="ui copy icon"></i>
+					</a>
+					<a href="#" onclick="pasteObject()" class="ui basic icon button">
+						<i class="ui paste icon" data-content="{{t("admin.tooltip.paste")}}"></i>
+					</a>
+					<a href="#" onclick="removeSelectedObjects()" class="ui basic icon button" data-content="{{t("admin.tooltip.remove")}}">
+						<i class="ui remove icon"></i>
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
 
-    </div>
+	<div id="matchsize" style="margin:0; padding:0; position: absolute;">
+		<canvas id="edit" width="1920" height="1080" style="position: absolute; z-index:10;"></canvas>
+		<div id="bg">
+			<img id="bgimg" class="fsimage" src=""/>
+		</div>
+		<video muted loop autoplay id="bgvid2" poster=""></video>
+		<div id="time2" class="noselect delay animated">00:00</div>
+	</div>
 
-    <div class="right menu">
-        <div class="item">
-        <div class="ui inverted buttons">
-            <a href="#" onclick="undo()" class="ui basic icon button" data-content="{{ t("admin.tooltip.undo") }}"><i
-                        class="ui undo icon"></i> {{ t("admin.tooltip.undo") }}</a>
-            <a href="#" onclick="copyObject()" class="ui basic icon button" data-content="{{t("admin.tooltip.copy")}}"><i
-                        class="ui copy icon"></i></a>
-                <a href="#" onclick="pasteObject()" class="ui basic icon button"><i class="ui paste icon" data-content="{{t("admin.tooltip.paste")}}"></i></a>
-                <a href="#" onclick="removeSelectedObjects()" class="ui basic icon button" data-content="{{t("admin.tooltip.remove")}}"><i
-                        class="ui remove icon"></i></a>
-            </div>
-        </div>
-    </div>
-</div>
+	<div id="contextmenu" class="ui small vertical menu" style="display: none; position: absolute; z-index: 1000;">
+		<a class="item" data-action="copy">
+			{{ t("actions.copy") }}
+		</a>
+		<a class="item" data-action="paste">
+			{{ t("actions.paste") }}
+		</a>
+		<div class="ui dropdown item">
+			<i class="dropdown icon"></i>
+			{{ t("admin.editSlide.order") }}
+			<div class="menu">
+				<div class="item" data-action="bringToFront">{{ t("admin.editSlide.sendToFront") }}</div>
+				<div class="item" data-action="bringForward">{{ t("admin.editSlide.moveForward") }}</div>
+				<div class="item" data-action="sendBackwards">{{ t("admin.editSlide.moveBackward") }}</div>
+				<div class="item" data-action="sendToBack">{{ t("admin.editSlide.sendToBack") }}</div>
+			</div>
+		</div>
+		<a class="item" data-action="delete">
+			{{ t("actions.delete") }}
+		</a>
+	</div>
 
-<div id="matchsize" style="margin:0; padding:0; position: absolute;">
-        <canvas id="edit" width="1920" height="1080" style="position: absolute; z-index:10;"></canvas>
-        <div id="bg">
-            <img id="bgimg" class="fsimage" src="" />
-        </div>
-        <video muted loop autoplay id="bgvid2" poster="">
-        </video>
-        <div id="time2" class="noselect delay animated">00:00</div>
-</div>
+	<div id="imageLayer" class="ui modal">
+		<div class="header">{{ t("admin.editSlide.insertImage") }}</div>
+		<div id="dropzone" class="scrolling content">
+			<div class="ui info message">{{ t("admin.editSlide.dropToUpload") }}</div>
+			<div id="imageList" class="ui three stackable cards"></div>
+		</div>
+		<div class="actions">
+			<div class="ui cancel button">{{ t("actions.cancel") }}</div>
+		</div>
+	</div>
 
-<div id="contextmenu" class="ui small vertical menu" style="display: none; position: absolute; z-index: 1000;">
-    <a class="item" data-action="copy">
-        {{ t("actions.copy") }}
-    </a>
-    <a class="item" data-action="paste">
-        {{ t("actions.paste") }}
-    </a>
-    <div class="ui dropdown item">
-        <i class="dropdown icon"></i>
-        {{ t("admin.editSlide.order") }}
-        <div class="menu">
-            <div class="item" data-action="bringToFront">{{ t("admin.editSlide.sendToFront") }}</div>
-            <div class="item" data-action="bringForward">{{ t("admin.editSlide.moveForward") }}</div>
-            <div class="item" data-action="sendBackwards">{{ t("admin.editSlide.moveBackward") }}</div>
-            <div class="item" data-action="sendToBack">{{ t("admin.editSlide.sendToBack") }}</div>
-        </div>
-    </div>
-    <a class="item" data-action="delete">
-        {{ t("actions.delete") }}
-    </a>
-</div>
-
-<div id="imageLayer" class="ui modal">
-    <div class="header">{{ t("admin.editSlide.insertImage") }}</div>
-    <div id="dropzone" class="scrolling content">
-        <div class="ui info message">{{ t("admin.editSlide.dropToUpload") }}</div>
-        <div id="imageList" class="ui three stackable cards">
-
-        </div>
-    </div>
-    <div class="actions">
-        <div class="ui cancel button">{{ t("actions.cancel") }}</div>
-    </div>
-</div>
-
-<canvas id="tempCanvas" width="1920" height="1080" style="display: none"></canvas>
+	<canvas id="tempCanvas" width="1920" height="1080" style="display: none"></canvas>
 
 <script>
     var socket = io.connect("{{ config.serverUrl }}:{{ config.serverListenPort }}/admin-" + displayId);
@@ -263,6 +307,7 @@
             },
             position: "bottom left"
         });
+
     $(function () {
 
         var opts = {

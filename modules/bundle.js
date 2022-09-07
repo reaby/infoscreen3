@@ -159,11 +159,34 @@ export default class bundleClass {
         }
     }
 
+    getEnabledSlides() {
+        this.sync();
+        return this.enabledSlides;
+    }
+
+
     sync() {
         this.enabledSlides = [];
         this.disabledSlides = [];
         this.allSlides.sort(sortByProperty('index'));
+        let time = Date.parse(new Date().toISOString());
         for (let slide of this.allSlides) {
+
+            if (slide.epochEnd != -1 && time >= slide.epochEnd) {
+                slide.enabled = false;
+                this.disabledSlides.push(slide.uuid.replace(".json", ""));
+                continue;
+            }
+
+            if (slide.epochStart != -1) {
+                slide.enabled = false;
+                if (time >= slide.epochStart) {
+                    slide.enabled = true;
+                    this.enabledSlides.push(slide.uuid.replace(".json", ""));
+                    continue;
+                }
+            }
+
             if (slide.enabled) {
                 this.enabledSlides.push(slide.uuid.replace(".json", ""));
             } else {

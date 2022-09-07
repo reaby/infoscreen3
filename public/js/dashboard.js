@@ -1,7 +1,7 @@
-var serverOptions;
-var bundleSettings;
-var bundleDirs = [];
-var displayList;
+let serverOptions;
+let bundleSettings;
+let bundleDirs = [];
+let displayList;
 
 
 socket.on('connect', function () {
@@ -15,6 +15,7 @@ socket.on("callback.update", function (data) {
         $('#bundleSlides').children().css("border", "1px solid black");
         $('#' + serverOptions.currentFile).css("border", "1px solid #1ebc30");
         updateControls(data.serverOptions);
+        updateSlides(data.slides);
     }
 });
 
@@ -30,8 +31,8 @@ socket.on("callback.dashboard.sync", function (data) {
     updateControls(data.serverOptions);
 
     // update dropdown at menu with bundles
-    var valueArray = [];
-    for (var dir of bundleDirs) {
+    let valueArray = [];
+    for (let dir of bundleDirs) {
         valueArray.push({ name: dir.name, value: dir.dir });
     }
 
@@ -50,8 +51,8 @@ socket.on("callback.dashboard.sync", function (data) {
     $('#statusMessageAdmin').val(serverOptions.statusMessage);
     // update dropdown at menu with bundles
     valueArray = [];
-    var x = 0;
-    for (var display of data.displays) {
+    let x = 0;
+    for (let display of data.displays) {
         valueArray.push({ name: display.name, value: x });
         x++;
     }
@@ -71,11 +72,11 @@ socket.on("callback.dashboard.sync", function (data) {
 
     $('.currentDisplay').text(displayList[displayId].name);
 
-    var transitionArray = [];
-    // var values = ["bars", "blinds", "blinds3d", "zip", "blocks", "blocks2", "concentric", "warp", "cube", "tiles3d", "tiles3dprev", "slide", "swipe", "dissolve"];
+    let transitionArray = [];
+    // let values = ["bars", "blinds", "blinds3d", "zip", "blocks", "blocks2", "concentric", "warp", "cube", "tiles3d", "tiles3dprev", "slide", "swipe", "dissolve"];
 
     transitionArray.push({ name: "random", value: null });
-    for (var i in SupportedTransitions) {
+    for (let i in SupportedTransitions) {
         transitionArray.push({ name: SupportedTransitions[i], value: SupportedTransitions[i] });
     }
 
@@ -95,7 +96,7 @@ socket.on("callback.dashboard.sync", function (data) {
 
     $('#currentTransition').text(serverOptions.transition || "random");
 
-    //   var preview = document.getElementById('preview');
+    //   let preview = document.getElementById('preview');
     //  preview.src = "/admin/preview?displayId=" + displayId + "&socket=" + encodeURIComponent(socket.id);
     updateBundleData(bundleDirs);
 });
@@ -103,7 +104,7 @@ socket.on("callback.dashboard.sync", function (data) {
 socket.on("callback.dashboard.updateSlides", function (data) {
     if (serverOptions.currentBundle === data.bundleName) {
         bundleSettings = data.bundleSettings;
-        updateSlides(data.bundleSettings);
+        updateSlides(data.bundleSettings.allSlides);
     }
 });
 
@@ -120,7 +121,7 @@ socket.on("callback.dashboard.update", function (data) {
     bundleSettings = data.bundleSettings;
     serverOptions = data.serverOptions;
     updateControls(data.serverOptions);
-    updateSlides(bundleSettings);
+    updateSlides(bundleSettings.allSlides);
 
     $('#allBundles').children().css("border", "1px solid black");
     $('#bundle_' + simpleHash(serverOptions.currentBundle)).css("border", "1px solid #1ebc30");
@@ -130,7 +131,7 @@ socket.on("callback.dashboard.update", function (data) {
     $('#currentTransition').text(serverOptions.transition || "random");
 
     $('.editable').editable(function (value, settings) {
-        var uuid = $(this).parent().parent().attr("id");
+        let uuid = $(this).parent().parent().attr("id");
         emit("admin.renameSlide", { uuid: uuid, name: value, bundleName: serverOptions.currentBundle });
         return (value);
     }, {
@@ -147,7 +148,7 @@ $(function () {
     fixPreview();
     $(".sortable").sortable({
         beforeStop: function (event, element) {
-            var sortedIDs = $(".sortable").sortable("toArray");
+            let sortedIDs = $(".sortable").sortable("toArray");
             emit("admin.reorderSlides", { bundleName: serverOptions.currentBundle, sortedIDs: sortedIDs });
         }
     }).disableSelection();
@@ -179,7 +180,7 @@ function updateBundleData(bundleDirs) {
 
 
 function fixPreview() {
-    var con = $("#programContainer"),
+    let con = $("#programContainer"),
         aspect = (0.9 / 1.6),
         width = con.innerWidth(),
         height = Math.floor(width * aspect);
@@ -230,7 +231,7 @@ function playYoutubeVideo() {
     }
 
     if (videoId !== "") {
-        var obj = {
+        let obj = {
             json: {
                 type: "webPage",
                 webUrl: `https://www.youtube.com/embed/${videoId}?autoplay=1&origin=${serverUrl}&rel=0&modestbranding=0`,
@@ -314,24 +315,42 @@ function updateControls(serverOptions) {
 
 }
 
-function updateSlides(settings) {
-    var slides = settings.allSlides;
-
-    var output = "";
-    var index = 0;
-    var currentIndex = 0;
-    for (slide of slides) {
-        var status = "on";
-        var color = "green";
+function updateSlides(slides) {
+    let output = "";
+    let index = 0;
+    let currentIndex = 0;
+    for (let slide of slides) {
+        let status = "on";
+        let color = "green";
         if (!slide.enabled) {
             status = "off";
             color = "red";
         }
-        var iconStatus = "play";
+        let iconStatus = "play";
         if (serverOptions.currentFile === slide.uuid) {
             iconStatus = "play";
             currentIndex = index;
         }
+
+        let statusHtml = ``;
+        if (slide.epochStart != -1) {
+            let d = new Date(slide.epochStart);
+            let isoStr = d.toLocaleDateString() + " " + d.toLocaleTimeString();
+            statusHtml = `<i class="check icon"></i> ${isoStr}`;
+        }
+        if (slide.epochEnd != -1) {
+            let d = new Date(slide.epochEnd);
+            let isoStr = d.toLocaleDateString() + " " + d.toLocaleTimeString();
+            statusHtml += ` <i class="delete icon"></i> ${isoStr}`;
+        }
+
+        let toggleButton =  `<i class="large toggle ${status} icon" onclick="emit('controls.toggle', {fileName: '${slide.uuid}'} );"></i>`;
+        if (slide.epochEnd != -1 && slide.epochStart != -1) {
+            toggleButton = `<i class="large icon"></i>`;
+        }
+
+
+
 
         output += `
         <div class="ui ${color} message item" id="${slide.uuid}">
@@ -339,12 +358,11 @@ function updateSlides(settings) {
                 <button class="ui small basic inverted icon button" onclick="editSlide('${slide.uuid}', '${slide.type}');"><i class="edit outline icon"></i></button>
                 <button class="ui small basic inverted icon button" onclick="emit('controls.skipTo', {fileName: '${slide.uuid}'} );"><i class="step forward icon"></i></button>
              <!--   <button class="ui small basic inverted icon button" onclick="remove('${slide.uuid}');"><i class="delete icon"></i></button> -->
-                <i class="large toggle ${status} icon" onclick="emit('controls.toggle', {fileName: '${slide.uuid}'} );"></i>
+               ${toggleButton}
             </div>
             <div class="content">
                 <span class="editable">${slide.name}</span><br>
-                <i class="check icon"></i>
-
+                ${statusHtml}
             </div>
         </div>
         `;
@@ -356,7 +374,7 @@ function updateSlides(settings) {
     $('#bundleSlides').children().css("border", "1px solid black");
     $('#' + serverOptions.currentFile).css("border", "1px solid #1ebc30");
     $('.editable').editable(function (value, settings) {
-        var uuid = $(this).parent().parent().attr("id");
+        let uuid = $(this).parent().parent().attr("id");
         emit("admin.renameSlide", { uuid: uuid, name: value, bundleName: serverOptions.currentBundle });
         return (value);
     }, {
@@ -385,7 +403,7 @@ function changeBundle(name) {
 }
 
 function remove(uuid) {
-    var obj = { bundleName: serverOptions.currentBundle, uuid: uuid };
+    let obj = { bundleName: serverOptions.currentBundle, uuid: uuid };
 
     if (confirm("Really delete slide?")) {
         emit('admin.removeSlide', obj);
@@ -407,12 +425,12 @@ function sortByName(a, b) {
 }
 
 function simpleHash(string) {
-    var hash = 0;
+    let hash = 0;
     if (string.length == 0) {
         return hash;
     }
-    for (var i = 0; i < string.length; i++) {
-        var char = string.charCodeAt(i);
+    for (let i = 0; i < string.length; i++) {
+        let char = string.charCodeAt(i);
         hash = ((hash << 5) - hash) + char;
         hash = hash & hash; // Convert to 32bit integer
     }

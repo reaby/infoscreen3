@@ -539,6 +539,8 @@ export default class admin {
                         type: "slide",
                         index: bundle.allSlides.length,
                         transition: transition,
+                        epochStart: data.epochStart,
+                        epochEnd: data.epochEnd
                     };
 
                     let obj = bundle.findSlideByUuid(filename);
@@ -549,6 +551,8 @@ export default class admin {
                         obj.duration = duration;
                         obj.displayTime = data.displayTime;
                         obj.transition = transition;
+                        obj.epochStart = data.epochStart,
+                        obj.epochEnd = data.epochEnd;
                     }
 
                     bundle.save();

@@ -97,7 +97,9 @@
       "centerVertical": "Center Vertical",
       "copy": "Copy element",
       "paste": "Paste element",
-      "remove": "Remove element"
+      "remove": "Remove element",
+      "slideStart": "Start Time",
+      "slideEnd": "End Time"
     },
     "addLink": {
       "name": "Name",
