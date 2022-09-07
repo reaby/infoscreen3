@@ -187,7 +187,7 @@ socket.on('callback.forceSlide', function (data) {
     if (min < 10) min = "0" + min;
     if (month < 10) month = "0" + month;
     if (day < 10) day = "0" + day;
-    $('#time').html(date.getHours() + ":" + min + "<div style='font-size: 3vh;'>"+date.getFullYear() + "-" + month + "-" + day + "</div>");
+    $('#time').html(date.getHours() + ":" + min + "<div style='font-size: 3vh;'>"+date.toLocaleDateString() + "</div>");
 }
 
 /** resize canvas to max width keeping aspect ratio 16:9**/
