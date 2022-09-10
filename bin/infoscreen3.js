@@ -87,6 +87,6 @@ function onListening() {
         ? 'pipe ' + addr
         : 'port ' + addr.port;
 
-    cli.info('Infoscreen is now accessible at ' + chalk.bold.white(config.serverUrl + ":" + config.serverListenPort));
+    cli.info('Infoscreen is now accessible at ' + chalk.bold.white(config.serverUrl());
     console.log(chalk.green(">>") + chalk.white("Start complete.") + chalk.green("<<"));
 }
