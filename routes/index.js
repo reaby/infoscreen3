@@ -6,7 +6,7 @@ import cli from '../modules/cli.js';
 import { RateLimiterMemory } from 'rate-limiter-flexible';
 
 const rateLimiter = new RateLimiterMemory({
-    points: 100, // Number of points
+    points: 500, // Number of points
     duration: 1, // Per second
     blockDuration: 60 // one minute
 });
