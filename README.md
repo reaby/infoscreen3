@@ -37,7 +37,6 @@ Example:
 module.exports = {
     "serverListenPort": 8000,
     "serverHost": "192.168.56.100",
-    "serverUrl": "http://192.168.56.100"),
     // ...config file continues from here...
 ```
 If you wish to have live stream support at local network using OBS, set `mediaServer` to `true` and set desired streamKey
@@ -83,14 +82,15 @@ Admin interface is located at: http://localhost:8001/admin
 It accepts the same crendetials as configured at the main app.
 
 ## Environment variables
-| ENV        | default   | Usage                                                 |
-| :--------- | :-------- | :---------------------------------------------------- |
-| PORT       | 8000      | Server listen port                                    |
-| HOST       | localhost | Host or ip, where the server is externally accessible |
-| ADMIN_USER | admin     | Username to access admin interface                    |
-| ADMIN_PASS | admin     | Password for the admin interface                      |
-| USER       | view      | Username to access viewer                             |
-| PASS       | view      | Password to access viewer                             |
+| ENV         | default   | Usage                                                 |
+| :---------- | :-------- | :---------------------------------------------------- |
+| PORT        | 8000      | Server listen port                                    |
+| HOST        | localhost | Host or ip, where the server is externally accessible |
+| ADMIN_USER  | admin     | Username to access admin interface                    |
+| ADMIN_PASS  | admin     | Password for the admin interface                      |
+| USER        | view      | Username to access viewer                             |
+| PASS        | view      | Password to access viewer                             |
+| FRONT_PROXY | false     | Tell software that it's behind a front proxy          |
 
 ## Dockerfile
 

@@ -2,7 +2,7 @@ export default {
     "serverListenPort": process.env.PORT || 8000,
     "serverHost": process.env.HOST || "127.0.0.1",
     "serverUrl": () => {
-        if (process.env.HTTPS_FRONT_PROXY || false) return "https://" + (process.env.HOST || "127.0.0.1");
+        if (process.env.FRONT_PROXY || false) return "https://" + (process.env.HOST || "127.0.0.1");
         else return "http://" + (process.env.HOST || "127.0.0.1") + ":" + (process.env.PORT || 8000);
     },
     "sessionKey": "generateRandomStringForSecret", // used for encrypting cookies
