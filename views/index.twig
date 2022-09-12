@@ -18,7 +18,7 @@
     </div>
 
     <script>
-        var socket = io.connect("{{ config.serverUrl }}:{{ config.serverListenPort }}/lobby");
+        var socket = io.connect("{{ config.serverUrl }}/lobby");
         var intervalId = null;
 
         /** when connected **/

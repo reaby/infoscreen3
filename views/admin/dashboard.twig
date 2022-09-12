@@ -197,7 +197,7 @@
     </div>
 
     <script>
-        var socket = io("{{ config.serverUrl }}:{{ config.serverListenPort }}/admin-{{ displayId }}");
+        var socket = io("{{ config.serverUrl }}/admin-{{ displayId }}");
         var displayId = {{ displayId }};
         var serverUrl = "{{ config.serverUrl }}";
         var askMessage = '{{ t("admin.dashboard.askChangeBundle") }}';

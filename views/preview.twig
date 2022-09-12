@@ -21,7 +21,7 @@
     </video>
 
     <script>
-        let socket = io.connect("{{ config.serverUrl }}:{{ config.serverListenPort }}/admin-{{ displayId }}");
+        let socket = io.connect("{{ config.serverUrl }}/admin-{{ displayId }}");
         let socketId = encodeURIComponent("{{ socketId }}");
     </script>
     <script src="/js/preview.js"></script>

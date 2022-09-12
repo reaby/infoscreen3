@@ -48,7 +48,7 @@
     </video>
 
     <script>
-        var socket = io("{{ config.serverUrl }}:{{ config.serverListenPort }}/display-{{ displayId }}");
+        var socket = io("{{ config.serverUrl }}/display-{{ displayId }}");
         var videoVolume = {{ videoVolume }};
         var isPreview = {{ isPreview }};
     </script>

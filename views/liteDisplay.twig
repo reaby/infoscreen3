@@ -52,7 +52,7 @@
         var socket = null;
 
         $(function () {
-            socket = io.connect("{{ config.serverUrl }}:{{ config.serverListenPort }}/display-{{ displayId }}");
+            socket = io.connect("{{ config.serverUrl }}/display-{{ displayId }}");
         });
     </script>
     <script src="/js/displayLite.js"></script>
