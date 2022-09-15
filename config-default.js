@@ -4,7 +4,7 @@ const port = 8000;        // port for infoscreen
 
 
 let hostUrl = "http://" + (process.env.HOST || host) + ":" + (process.env.PORT || port);
-if (process.env.FRONT_PROXY || false) hostUrl = "http://" + (process.env.HOST || host);
+if (process.env.FRONT_PROXY || false) hostUrl = "https://" + (process.env.HOST || host);
 
 export default {
     "serverListenPort": process.env.PORT || port,
