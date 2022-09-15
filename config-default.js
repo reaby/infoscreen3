@@ -1,10 +1,15 @@
+
+const host = "127.0.0.1"  // ip of the infoscreen interface, use external address if not develoment
+const port = 8000;        // port for infoscreen
+
+
+let hostUrl = "http://" + (process.env.HOST || host) + ":" + (process.env.PORT || port);
+if (process.env.FRONT_PROXY || false) hostUrl = "http://" + (process.env.HOST || host);
+
 export default {
-    "serverListenPort": process.env.PORT || 8000,
-    "serverHost": process.env.HOST || "127.0.0.1",
-    "serverUrl": () => {
-        if (process.env.FRONT_PROXY || false) return "https://" + (process.env.HOST || "127.0.0.1");
-        else return "http://" + (process.env.HOST || "127.0.0.1") + ":" + (process.env.PORT || 8000);
-    },
+    "serverListenPort": process.env.PORT || port,
+    "serverHost": process.env.HOST || host,
+    "serverUrl": hostUrl,
     "sessionKey": "generateRandomStringForSecret", // used for encrypting cookies
     "streamKey": 'INFOSCREEN3',  // stream key for rtmp end point
     "useLocalAssets": false,    // used to load javascript libraries locally from /public/assets
