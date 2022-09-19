@@ -341,6 +341,8 @@ export default class admin {
                         zoom: parseFloat(data.zoom) || 1.0,
                         index: bundle.allSlides.length,
                         transition: null,
+                        epochStart: -1,
+                        epochEnd: -1
                     };
 
                     let obj = bundle.findSlideByUuid(filename);
@@ -353,6 +355,8 @@ export default class admin {
                         obj.displayTime = data.displayTime;
                         obj.zoom = parseFloat(data.zoom) || 1.0;
                         obj.transition = null;
+                        obj.epochStart = -1;
+                        obj.epochEnd = -1;
                     }
 
                     bundle.save();
@@ -402,11 +406,13 @@ export default class admin {
                         enabled: true,
                         displayTime: data.displayTime,
                         type: "video",
-                        webUrl: data.url,
+                        url: data.url,
                         mute: data.mute,
                         loop: data.loop,
                         index: bundle.allSlides.length,
-                        transition: null
+                        transition: null,
+                        epochStart: -1,
+                        epochEnd: -1
                     };
 
                     let obj = bundle.findSlideByUuid(filename);
@@ -420,6 +426,8 @@ export default class admin {
                         obj.mute = data.mute;
                         obj.loop = data.loop;
                         obj.transition = null;
+                        obj.epochEnd = -1;
+                        obj.epochStart = -1;
                     }
 
                     bundle.save();

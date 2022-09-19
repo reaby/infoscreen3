@@ -25,11 +25,11 @@
                                 <button class="ui small basic inverted icon button"
                                         onclick="editSlide('{{ slide.uuid }}', '{{ slide.type }}');"><i
                                             class="edit outline icon"></i></button>
-                                <div onclick="duplicateSlide('{{bundle.name}}','{{slide.uuid}}')" class="ui small basic inverted icon button"><i class="ui copy icon"></i></div>                                
+                                <div onclick="duplicateSlide('{{bundle.name}}','{{slide.uuid}}')" class="ui small basic inverted icon button"><i class="ui copy icon"></i></div>
                                 <button class="ui small basic inverted icon button"
                                         onclick="remove('{{ slide.uuid }}');"><i class="delete icon"></i>
                                 </button>
-                                
+
                             </div>
                             <div class="content">
                                 <div class="editable">{{ slide.name }} </div>
@@ -42,7 +42,7 @@
         </div>
     </div>
     <script>
-        var socket = io.connect("{{ config.serverUrl }}:{{ config.serverListenPort }}/admin");
+          var socket = io("{{ config.serverUrl }}/admin");
         var bundleName = "{{ bundle.name }}";
     </script>
 
@@ -104,7 +104,7 @@
             }
         }
 
-        socket.on("callback.updateBundleData", function() {    
+        socket.on("callback.updateBundleData", function() {
              document.location.reload(true);
         });
 

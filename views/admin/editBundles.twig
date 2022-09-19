@@ -3,13 +3,13 @@
 {% block header %}
     <script src="/socket.io/socket.io.js"></script>
     {% if config.useLocalAssets %}
-        <script src="/assets/jquery.jeditable.min.js"></script>    
+        <script src="/assets/jquery.jeditable.min.js"></script>
     {% else %}
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jeditable.js/2.0.6/jquery.jeditable.min.js"></script>    
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jeditable.js/2.0.6/jquery.jeditable.min.js"></script>
     {% endif %}
-    <style> 
+    <style>
     #sortable1, #sortable2 {
-        height: 100%;        
+        height: 100%;
     }
     </style>
 {% endblock %}
@@ -24,11 +24,11 @@
 					<input type="hidden" name="bundle1">
 					<i class="dropdown icon"></i>
 					<div class="default text">Bundle</div>
-					<div class="menu">					
+					<div class="menu">
 					</div>
 				</div>
 				<div class="ui slides list connectedSortable" id="sortable1" data-bundleDir="">
-                
+
                 </div>
 			</div>
 			<div class="eight wide column">
@@ -36,7 +36,7 @@
 					<input type="hidden" name="bundle2">
 					<i class="dropdown icon"></i>
 					<div class="default text">Bundle</div>
-					<div class="menu">					
+					<div class="menu">
 					</div>
 				</div>
 				<div class="ui slides list connectedSortable" id="sortable2"  data-bundleDir="">
@@ -46,8 +46,8 @@
 		</div>
 	</div>
 	<script>
-        var socket = io.connect("{{ config.serverUrl }}:{{ config.serverListenPort }}/admin");
- 
+        var socket = io("{{ config.serverUrl }}/admin");
+
         function editSlide(bundleName, uuid, type) {
             switch (type) {
                 case "slide":
@@ -71,21 +71,21 @@
                     socket.emit("admin.removeSlide", {bundleName: bundleDir, uuid: uuid});
                 }
                 return true;
-            }      
-        
+            }
+
 
         function updateBundleData() {
             loadBundleData("#sortable1", $("#bundle1").dropdown("get value"));
-            loadBundleData("#sortable2", $("#bundle2").dropdown("get value"));            
+            loadBundleData("#sortable2", $("#bundle2").dropdown("get value"));
             }
-        
+
         function loadBundleData(block, bundleDir) {
             $.getJSON("/admin/ajax/getSlides?bundle="+bundleDir, function (data) {
                 var htmlData = "";
-                           
-                for(var slide of data.allSlides) {                    
-                    htmlData +=`<div class="ui green message item" data-uuid="${slide.uuid}" data-bundle="${bundleDir}">                                        
-                    <div class="ui right floated content" style="width: fit-content;">            
+
+                for(var slide of data.allSlides) {
+                    htmlData +=`<div class="ui green message item" data-uuid="${slide.uuid}" data-bundle="${bundleDir}">
+                    <div class="ui right floated content" style="width: fit-content;">
                         <button class="ui small basic inverted icon button"
                                         onclick="editSlide('${bundleDir}','${ slide.uuid }', '${ slide.type }');"><i
                                             class="edit outline icon"></i></button>
@@ -95,16 +95,16 @@
                     <div class="content">
                     <i class="ui icon move"></i>
                     <span class="editable">${slide.name}</span>
-                        
-                    </div>                    
+
+                    </div>
                     </div>`;
-                }       
+                }
                 $(block).data('bundleDir',bundleDir);
-                $(block).html(htmlData);               
+                $(block).html(htmlData);
                 $('.editable').editable(function (value, settings) {
                 var uuid = $(this).parent().parent().data("uuid");
                 var bundle = $(this).parent().parent().data("bundle");
-                socket.emit("admin.renameSlide", { uuid: uuid, name: value, bundleName: bundle });              
+                socket.emit("admin.renameSlide", { uuid: uuid, name: value, bundleName: bundle });
                 return (value);
             }, {
                 submit: 'rename',
@@ -113,10 +113,10 @@
                 cssclass: 'ui mini nopadded form',
                 cancelcssclass: 'ui tiny basic negative button',
                 submitcssclass: 'ui tiny basic positive button',
-                }); 
+                });
 
-            });    
-        
+            });
+
         }
 
         $(function () {
@@ -127,19 +127,19 @@
               items.push({value: elem.dir, name: elem.name, selected: boolval});
                boolval = false;
             }
-            
-            $('#bundle1').dropdown({      
+
+            $('#bundle1').dropdown({
                 values: items,
                 onChange: function (_value, _text, _item) {
                             if (_value !== "") {
-                                loadBundleData("#sortable1", _value);               
+                                loadBundleData("#sortable1", _value);
                             }
-                        }                
+                        }
                 });
 
-            $('#bundle2').dropdown({      
+            $('#bundle2').dropdown({
                 values: items,
-                onChange: function (_value, _text, _item) {       
+                onChange: function (_value, _text, _item) {
                             if (_value !== "") {
                                 loadBundleData("#sortable2", _value);
                             }
@@ -148,7 +148,7 @@
 
             });
 
-   $("#sortable1").sortable({    
+   $("#sortable1").sortable({
     connectWith: ".connectedSortable",
     handle: ".move",
     cursor: "move",
@@ -161,16 +161,16 @@
         if (position < 0) {
             position = 0;
         }
-        socket.emit("admin.moveSlide", {from: originBundle, to: targetBundle, uuid: uuid, position:position });                
+        socket.emit("admin.moveSlide", {from: originBundle, to: targetBundle, uuid: uuid, position:position });
     },
     stop: function (event, element) {
             var sortedIDs = $("#sortable1").sortable("toArray", {attribute: "data-uuid"});
             var currentBundle = $("#bundle1").dropdown("get value");
-            socket.emit("admin.reorderSlides", { bundleName: currentBundle, sortedIDs: sortedIDs });           
-        }      
+            socket.emit("admin.reorderSlides", { bundleName: currentBundle, sortedIDs: sortedIDs });
+        }
     }).disableSelection();
-    
-    $("#sortable2").sortable({    
+
+    $("#sortable2").sortable({
     connectWith: ".connectedSortable",
     handle: ".move",
     cursor: "move",
@@ -178,26 +178,26 @@
         var targetBundle = $("#bundle2").dropdown("get value");
         var originBundle = ui.item[0].dataset.bundle;
         var uuid = ui.item[0].dataset.uuid;
-        var sortedIDs = $("#sortable1").sortable("toArray", {attribute: "data-uuid"});         
+        var sortedIDs = $("#sortable1").sortable("toArray", {attribute: "data-uuid"});
         var position =  sortedIDs.indexOf(uuid)-1;
         if (position < 0) {
             position = 0;
-        }      
-        socket.emit("admin.moveSlide", {from: originBundle, to: targetBundle, uuid: uuid, position: position });                
+        }
+        socket.emit("admin.moveSlide", {from: originBundle, to: targetBundle, uuid: uuid, position: position });
     },
-    stop: function (event, ui) {        
+    stop: function (event, ui) {
             var sortedIDs = $("#sortable2").sortable("toArray", {attribute: "data-uuid"});
             var currentBundle = $("#bundle2").dropdown("get value");
-            socket.emit("admin.reorderSlides", { bundleName: currentBundle, sortedIDs: sortedIDs });            
-        }    
+            socket.emit("admin.reorderSlides", { bundleName: currentBundle, sortedIDs: sortedIDs });
+        }
     }).disableSelection();
 });
 
-socket.on("connect", function () { 
+socket.on("connect", function () {
     socket.emit("admin.editBundles", {});
 });
 
-socket.on("callback.updateBundleData", function() {    
+socket.on("callback.updateBundleData", function() {
     updateBundleData();
 });
 

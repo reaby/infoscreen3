@@ -3,7 +3,7 @@
 {% block header %}
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        var socket = io.connect("{{ config.serverUrl }}:{{ config.serverListenPort }}/admin");
+       var socket = io("{{ config.serverUrl }}/admin-{{ displayId }}");
     </script>
 {% endblock %}
 

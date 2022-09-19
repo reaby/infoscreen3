@@ -50,7 +50,7 @@
         </form>
     </div>
     <script>
-        var socket = io.connect("{{ config.serverUrl }}:{{ config.serverListenPort }}/admin-{{ displayId }}");
+        var socket = io("{{ config.serverUrl }}/admin-{{ displayId }}");
 
         $(function () {
             $("#time").checkbox();
@@ -102,7 +102,9 @@
                 webUrl: $("#weburl").val(),
                 duration: duration,
                 zoom: zoom,
-                displayTime: $("#displaytime").checkbox('is checked')
+                displayTime: $("#displaytime").checkbox('is checked'),
+                epochStart: -1,
+                epochEnd: -1
             };
             socket.emit("edit.saveLink", obj);
         }

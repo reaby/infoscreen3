@@ -60,7 +60,7 @@
         </form>
     </div>
     <script>
-        var socket = io.connect("{{ config.serverUrl }}:{{ config.serverListenPort }}/admin-{{ displayId }}");
+        var socket = io("{{ config.serverUrl }}/admin-{{ displayId }}");
         var videoDuration = 0;
 
         $(function () {
@@ -68,10 +68,10 @@
             $("#dropdownAnnounce").dropdown();
         });
 
-        function loadVideo() {            
+        function loadVideo() {
             var video = document.getElementById("preview");
             video.src = $('#url').val();
-            video.onloadedmetadata = function() {                
+            video.onloadedmetadata = function() {
                videoDuration = video.duration;
                setActive();
             };
@@ -96,19 +96,22 @@
                 json: {
                     type: "video",
                     duration: videoDuration,
-                    url: $("#url").val(),                    
+                    url: $("#url").val(),
                     displayTime: $("#displaytime").checkbox('is checked'),
                     mute: $("#mute").checkbox('is checked'),
-                    loop: $("#loop").checkbox('is checked')
+                    loop: $("#loop").checkbox('is checked'),
+                    epochStart: -1,
+                    epochEnd: -1
                 },
-                displayId: dispId,                
-                transition: null,                
+                displayId: dispId,
+                transition: null,
+
 
             };
             socket.emit("admin.overrideVideo", obj);
         }
 
-        function save() {    
+        function save() {
             if (videoDuration == 0) {
                 alert("video duration not set!");
                 return;
@@ -119,10 +122,12 @@
                 bundleName: bundle,
                 duration: videoDuration,
                 name: $("#name").val(),
-                url: $("#url").val(),                                
+                url: $("#url").val(),
                 displayTime: $("#displaytime").checkbox('is checked'),
                 mute: $("#mute").checkbox('is checked'),
-                loop: $("#loop").checkbox('is checked')
+                loop: $("#loop").checkbox('is checked'),
+                epochStart: -1,
+                epochEnd: -1.
             };
             socket.emit("edit.saveVideo", obj);
         }
@@ -136,8 +141,8 @@
             var json = data.json;
 
             $("#name").val(json.name);
-            $("#url").val(json.url);           
-            
+            $("#url").val(json.url);
+
             if (json.displayTime) {
                 $("#displaytime").checkbox('set checked', true);
             } else {
