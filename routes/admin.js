@@ -90,10 +90,10 @@ export default function (pluginManager, websocket, dispatcher) {
             fields[fieldname] = val;
         });
 
-        req.busboy.on('file', function (fieldname, file, filename, encoding, mimeType) {
+        req.busboy.on('file', function (fieldname, file, details) {
             if (fieldname === "newBackground")
-                if (filename.length > 0 && (mimeType === "image/jpeg" || mimeType === "video/mp4" || mimeType === "image/png")) {
-                    let fstream = fs.createWriteStream('./data/backgrounds/' + filename);
+                if (details.filename.length > 0 && (details.mimeType === "image/jpeg" || details.mimeType === "video/mp4" || details.mimeType === "image/png")) {
+                    let fstream = fs.createWriteStream('./data/backgrounds/' + details.filename);
                     file.pipe(fstream);
                 } else {
                     file.resume();

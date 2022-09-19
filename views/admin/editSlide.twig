@@ -296,9 +296,7 @@
 	<canvas id="tempCanvas" width="1920" height="1080" style="display: none"></canvas>
 
 <script>
-    var socket = io.connect("{{ config.serverUrl }}:{{ config.serverListenPort }}/admin-" + displayId);
-</script>
-<script>
+	var socket = io("{{ config.serverUrl }}/admin-{{ displayId }}");
     var images = {};
     $('.ui.button').popup({
             delay: {

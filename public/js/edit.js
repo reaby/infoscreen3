@@ -393,13 +393,13 @@ socket.on('callback.edit', function (data) {
 
     $("#duration").val(data.slideData.duration || "");
 
-    if (slideData.epochStart != -1) {
+    if (slideData.epochStart && slideData.epochStart != -1) {
         let d = new Date(slideData.epochStart);
         let isoStr = (new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString()).slice(0, -1);
         $("#enableStart").val(isoStr);
     }
 
-    if (slideData.epochEnd != -1) {
+    if (slideData.epochStart && slideData.epochEnd != -1) {
         let d = new Date(slideData.epochEnd);
         let isoStr = (new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString()).slice(0, -1);
         $("#enableEnd").val(isoStr);
