@@ -313,9 +313,9 @@
             on: {
                 load: function (e, file) {
                     // check file type
-                    var imageType = /image.(jpeg|png)/;
+                    var imageType = /image.(jpeg|jpg|png)/;
                     if (!file.type.match(imageType)) {
-                        //  alert("File \"" + file.name + "\" is not a valid image file, only jpeg and png are supported");
+                        alert("File \"" + file.name + "\" is not a valid image file, only jpeg and png are supported");
                         return false;
                     }
 

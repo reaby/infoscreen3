@@ -260,7 +260,7 @@ export default function (pluginManager, websocket, dispatcher) {
 
         let output = [];
         for (let file of bundleImages) {
-            if (file.match(/(.*\.png)|(.*\.jpg)/i)) {
+            if (file.match(/(.*\.png)|(.*\.jpg)|(.*\.jpeg)/i)) {
                 output.push({
                     url: "/images/" + bundle + "/" + file,
                     name: file
