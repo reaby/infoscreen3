@@ -11,7 +11,10 @@ import path from 'path';
 import PluginManager from './modules/pluginManager.js';
 const app = express();
 const server = Http.Server(app);
-const io = new SocketIO(server);
+const io = new SocketIO(server, {
+    maxHttpBufferSize: 4e8,
+    pingTimeout: 60000
+});
 
 const pluginManager = new PluginManager(app, io, eventDispatcher);
 import WebSocket from './modules/websocket.js';

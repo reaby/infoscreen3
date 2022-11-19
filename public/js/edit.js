@@ -852,7 +852,7 @@ function save() {
         fileName: file,
         duration: duration,
         json: canvas.toJSON(['id', 'fontSize']),
-        png: canvas.toDataURL('png'),
+        png: canvas.toDataURL('image/png', 1.0),
         displayTime: checked,
         transition: transition,
         epochStart: epochStart,
