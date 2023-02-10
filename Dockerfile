@@ -7,6 +7,7 @@ WORKDIR /usr/src/infoscreen
 # Install app dependencies
 COPY package*.json ./
 RUN apk add --no-cache --virtual .gyp python3 make g++ \
+    && rm /usr/bin/python \
     && ln -s /usr/bin/python3 /usr/bin/python \
     && npm install \
     && apk del .gyp
