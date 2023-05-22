@@ -36,7 +36,7 @@
     "passport-local": "1.0.0",
     "passport.socketio": "3.7.0",
     "rate-limiter-flexible": "2.4.1",
-    "socket.io": "4.5.3",
+    "socket.io": "4.6.1",
     "sqlite3": "5.1.5",
     "twig": "1.15.4",
     "utf-8-validate": "5.0.10",
