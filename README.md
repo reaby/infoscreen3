@@ -1,6 +1,7 @@
 # Info screen<sup>3</sup>
-![Discord](https://img.shields.io/discord/1173060772956479488) | ![GitHub Release Date - Published_At](https://img.shields.io/github/release-date/reaby/infoscreen3) | ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/reaby/infoscreen3/master)
-| ![GitHub](https://img.shields.io/github/license/reaby/infoscreen3)
+<a href="https://discord.gg/evoesports"><img alt="Discord" src="https://img.shields.io/discord/1173060772956479488?label=Discord&logo=discord&logoColor=fff"></a>&nbsp;
+ ![GitHub Release Date - Published_At](https://img.shields.io/github/release-date/reaby/infoscreen3) &nbsp; ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/reaby/infoscreen3/master)&nbsp;
+ ![GitHub](https://img.shields.io/github/license/reaby/infoscreen3)
 
 When you need to display same content to multiple locations or need to remotely control a slide show.
 
