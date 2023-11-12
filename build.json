@@ -1,0 +1,13 @@
+{
+    "name": "infoscreen3",
+    "version": "1.6.4",
+    "private": true,    
+    "bin": "./webpack/bundle.js",
+    "module": "false",
+    "pkg": {
+        "scripts": ["./webpack/*.bundle.js", "./node_modules/socket.io/"],        
+        "assets": ["./node_modules/socket.io/"],
+        "targets": [ "node18-windows-x64", "node18-linux-x64"],
+        "outputPath": "dist"
+      }
+}

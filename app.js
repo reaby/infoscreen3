@@ -6,7 +6,6 @@ import config from './config.js';
 import express from 'express';
 import createError from 'http-errors';
 import logger from 'morgan';
-import lessMiddleware from 'less-middleware';
 import path from 'path';
 import PluginManager from './modules/pluginManager.js';
 const app = express();
@@ -30,7 +29,7 @@ import CookieParser from 'cookie-parser';
 import Http from 'http';
 import { Server as SocketIO } from 'socket.io';
 import i18next from 'i18next';
-import FilesystemBackend from 'i18next-node-fs-backend';
+import FilesystemBackend from 'i18next-fs-backend';
 import i18nextMiddleware from 'i18next-http-middleware';
 import passport from 'passport';
 import passportlocal from 'passport-local';
@@ -83,22 +82,23 @@ passport.use("local", new LocalStrategy({
 if (config.mediaServer) {
     const nodeServerConfig = {
         logtype: 2,
+        allow_origin: '*',
         rtmp: {
             port: 1935,
             chunk_size: 60000,
             gop_cache: true,
             ping: 60,
-            ping_timeout: 30
+            ping_timeout: 30,
+            
         },
         http: {
             port: (parseInt(config.serverListenPort) + 1),
-            allow_origin: '*',
+            allow_origin: '*',            
         },
         auth: {
             api: true,
             api_user: config.admins[0].username,
             api_pass: config.admins[0].password,
-
         }
     };
 
@@ -148,14 +148,13 @@ app.set('port', parseInt(config.serverListenPort));
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'twig');
 app.use(i18nextMiddleware.handle(i18next));
-app.use(logger('dev'));
+//app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({
     extended: false
 }));
 
 app.use(cookieParser);
-app.use(lessMiddleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use("/video/",express.static(path.join(__dirname, 'data','video')));
 

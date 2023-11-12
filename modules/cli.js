@@ -1,3 +1,4 @@
+import 'dotenv/config'
 import chalk from 'chalk';
 let lastStamp = "";
 
@@ -23,6 +24,7 @@ export default {
     },
 
     log: function (string) {
+        if (process.env.DEBUG != "true") return;
         let now = getDateTime();
         if (lastStamp != now) {
             lastStamp = now;

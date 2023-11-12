@@ -160,13 +160,16 @@ socket.on('callback.reloadImage', function (data) {
 
 socket.on('callback.announce', function (data) {
     checkBlackout();
-    nextSlide(data);
+    if (checkStream(serverOptions) === false) {
+        nextSlide(data);
+    }
 });
 
 socket.on('callback.forceSlide', function (data) {
     checkBlackout();
-    nextSlide(data);
-
+    if (checkStream(serverOptions) === false) {
+        nextSlide(data);
+    }
 });
 
 /**
@@ -176,12 +179,12 @@ socket.on('callback.forceSlide', function (data) {
 function displayTime() {
     let date = new Date();
     let min = date.getMinutes();
-    let month = date.getMonth()+1;
+    let month = date.getMonth() + 1;
     let day = date.getDate();
     if (min < 10) min = "0" + min;
     if (month < 10) month = "0" + month;
     if (day < 10) day = "0" + day;
-    $('#time').html(date.getHours() + ":" + min + "<div style='font-size: 3vh;'>"+date.toLocaleDateString() + "</div>");
+    $('#time').html(date.getHours() + ":" + min + "<div style='font-size: 3vh;'>" + date.toLocaleDateString() + "</div>");
 }
 
 function checkTimeDisplay() {
@@ -216,6 +219,7 @@ function updateStatusMessage() {
         $('#statusMessage').text("");
     }
 }
+
 function displayVideo(url, loop, mute) {
     if (serverOptions.isStreaming) return;
     $("#stream").show();
@@ -276,10 +280,11 @@ function nextSlide(data) {
             sketch.showTempImage(imgUrl)
         }
     } else {
+        let video = document.getElementById("stream");
         switch (serverOptions.currentMeta.type) {
+            
             case "webpage":
-                $("#slider").hide();
-                let video = document.getElementById("stream");
+                $("#slider").hide();                
                 video.pause();
                 $("#stream").hide();
                 $("#" + getWebLayer()).css("transform", "scale(" + serverOptions.currentMeta.zoom + ")");
@@ -301,13 +306,11 @@ function nextSlide(data) {
 
                 $("#" + getWebLayer()).addClass("fadeOut").removeClass("fadeIn");
                 $("#" + getWebLayer(1)).addClass("fadeOut").removeClass("fadeIn");
-                $("#stream").fadeOut();
+                $("#stream").hide();
                 $("#slider").show();
-                sketch.showSlide(serverOptions.currentFile, transition);
-
-                setTimeout(function () {
-                    let video = document.getElementById("stream");
-                    video.pause();
+                sketch.showSlide(serverOptions.currentFile, transition);                
+                video.pause();
+                setTimeout(function () {                           
                     clearIFrame(getWebLayer());
                     clearIFrame(getWebLayer(1));
                 }, 2500);
@@ -333,6 +336,7 @@ function setBackground(background) {
             bg.fadeOut();
             try {
                 video.src = background;
+                video.volume = 0.;
                 video.load();
                 video.play();
                 $(video).show();
@@ -365,17 +369,20 @@ function checkStream(serverOptions) {
         if (flvjs.isSupported()) {
             $("#stream").show();
             const videoElement = document.getElementById('stream');
-            flvPlayer = flvjs.createPlayer({
-                type: 'flv',
-                url: serverOptions.streamSource
-            },
+            flvPlayer = flvjs.createPlayer(
                 {
-                    enableStashBuffer: false,   // enable for much longer buffer, note: video may stall if network jitter
+                    type: 'flv',
+                    url: serverOptions.streamSource
+                },
+                {
+                    enableStashBuffer: false,   // enable for much longer buffer, note, video may stall if network jitter
+                    cors: true,
                     isLive: true
-                });
+                }
+            );
             try {
                 flvPlayer.attachMediaElement(videoElement);
-                flvPlayer.volume = videoVolume;
+                flvPlayer.muted = true;
                 flvPlayer.load();
                 flvPlayer.play();
                 streamStarted = true;

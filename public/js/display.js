@@ -295,10 +295,11 @@ function nextSlide(data) {
             }
         }
     } else {
+        let video = document.getElementById("stream");
+        
         switch (serverOptions.currentMeta.type) {
             case "webpage":
-                $("#slider").hide();
-                let video = document.getElementById("stream");
+                $("#slider").hide();            
                 video.pause();
                 $("#stream").hide();
                 $("#" + getWebLayer()).css("transform", "scale(" + serverOptions.currentMeta.zoom + ")");
@@ -323,12 +324,11 @@ function nextSlide(data) {
 
                 $("#" + getWebLayer()).addClass("fadeOut").removeClass("fadeIn");
                 $("#" + getWebLayer(1)).addClass("fadeOut").removeClass("fadeIn");
-                $("#stream").fadeOut();
+                $("#stream").hide();
+                video.pause();
                 $("#slider").show();
-                window.f.showImageById(serverOptions.currentFile, transition);
-                setTimeout(function () {
-                    let video = document.getElementById("stream");
-                    video.pause();
+                window.f.showImageById(serverOptions.currentFile, transition);                
+                setTimeout(function () {                    
                     clearIFrame(getWebLayer());
                     clearIFrame(getWebLayer(1));
                 }, 2500);
@@ -351,6 +351,7 @@ function setBackground(background) {
         if (parseUrl(video.src) !== background) {
             bg.fadeOut();
             video.src = background;
+            video.volume = 0.;
             video.load();
             video.play();
             $(video).show();
@@ -386,11 +387,12 @@ function checkStream(serverOptions) {
             },
                 {
                     enableStashBuffer: false,   // enable for much longer buffer, note: video may stall if network jitter
-                    isLive: true
+                    isLive: true,
+                    cors: true,
                 });
             try {
                 flvPlayer.attachMediaElement(videoElement);
-                flvPlayer.volume = videoVolume;
+                flvPlayer.muted = true;
                 flvPlayer.load();
                 flvPlayer.play();
                 streamStarted = true;

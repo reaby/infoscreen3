@@ -28,7 +28,7 @@ export default class bundleClass {
 
     getSlideJsonFile(fileName) {
         try {
-            return fs.readFileSync("./data/bundles/" + this.name + "/slides/" + fileName).toString();
+            return fs.readFileSync(process.cwd() + "/data/bundles/" + this.name + "/slides/" + fileName).toString();
         } catch (err) {
             return "{}";
         }
@@ -48,7 +48,7 @@ export default class bundleClass {
             if (slide.uuid === uuid) {
                 if (slide.type === "slide") {
                     let newId = uuidv4();
-                    let path = "./data/bundles/" + this.name;
+                    let path = process.cwd() + "/data/bundles/" + this.name;
                     try {
                         // duplicate at filesystem
                         if (fs.existsSync(path + "/render/" + uuid + ".png")) {
@@ -72,8 +72,8 @@ export default class bundleClass {
     }
 
     moveTo(bundleDir, uuid) {
-        let toPath = "./data/bundles/" + bundleDir;
-        let path = "./data/bundles/" + this.name;
+        let toPath = process.cwd() +"/data/bundles/" + bundleDir;
+        let path = process.cwd() + "/data/bundles/" + this.name;
         for (let slide of this.allSlides) {
             if (slide.uuid === uuid) {
                 try {
@@ -109,7 +109,7 @@ export default class bundleClass {
             }
             if (slide.uuid === uuid) {
                 if (slide.type === "slide") {
-                    let path = "./data/bundles/" + this.name;
+                    let path = process.cwd() + "/data/bundles/" + this.name;
                     try {
                         if (fs.existsSync(path + "/render/" + uuid + ".png")) {
                             fs.unlinkSync(path + "/render/" + uuid + ".png");
@@ -201,7 +201,7 @@ export default class bundleClass {
             if (slide.uuid === uuid) {
                 slideData = {
                     settings: slide,
-                    render: fs.readFileSync("./data/bundles/" + this.name + "/slides/" + slide.uuid + ".png")
+                    render: fs.readFileSync(process.cwd() + "/data/bundles/" + this.name + "/slides/" + slide.uuid + ".png")
                 };
                 return slide;
             }
@@ -211,8 +211,8 @@ export default class bundleClass {
     save() {
         this.sync();
         try {
-            fs.writeFileSync("./data/bundles/" + this.name + "/slides.json", JSON.stringify(this.allSlides, null, "\t"));
-            fs.writeFileSync("./data/bundles/" + this.name + "/bundle.json", JSON.stringify(this.bundleData, null, "\t"));
+            fs.writeFileSync(process.cwd() + "/data/bundles/" + this.name + "/slides.json", JSON.stringify(this.allSlides, null, "\t"));
+            fs.writeFileSync(process.cwd() + "/data/bundles/" + this.name + "/bundle.json", JSON.stringify(this.bundleData, null, "\t"));
         } catch (e) {
             cli.error("error while saving file:", e);
         }

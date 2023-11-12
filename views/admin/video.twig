@@ -1,7 +1,7 @@
 {% extends 'layout/edit.twig' %}
 
 {% block header %}
-    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.0/socket.io.min.js"></script>
     <script>
         let bundle = "{{ bundle }}";
         let file = "{{ file }}";
@@ -34,7 +34,7 @@
             </div>
             <div class="field">
                 <div id="mute" class="ui toggle checkbox">
-                    <input type="checkbox"/>
+                    <input type="checkbox" checked="1" disabled="1"/>
                     <label>{{ t("admin.addVideo.mute") }}</label>
                 </div>
             </div>

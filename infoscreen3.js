@@ -3,10 +3,9 @@
 /**
  * Module dependencies.
  */
-import cli from '../modules/cli.js';
 import chalk from 'chalk';
-import config from '../config.js';
-import { app, server } from "../app.js";
+import config from './config.js';
+import { app, server } from "./app.js";
 
 
 /**
@@ -19,7 +18,6 @@ app.set('port', port);
 /**
  * Create HTTP server.
  */
-
 
 /**
  * Listen on provided port, on all network interfaces.
@@ -85,8 +83,7 @@ function onListening() {
     let addr = server.address();
     let bind = typeof addr === 'string'
         ? 'pipe ' + addr
-        : 'port ' + addr.port;
-
-    cli.info('Infoscreen is now accessible at ' + chalk.bold.white(config.serverUrl));
+        : 'port ' + addr.port;        
+    console.log('Infoscreen is now accessible at ' + chalk.bold.white(config.serverUrl));
     console.log(chalk.green(">>") + chalk.white("Start complete.") + chalk.green("<<"));
 }

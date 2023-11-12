@@ -1,3 +1,4 @@
+import 'dotenv/config'
 
 const host = "127.0.0.1"  // ip of the infoscreen interface, use external address if not develoment
 const port = 8000;        // port for infoscreen
@@ -10,17 +11,17 @@ export default {
     "serverListenPort": process.env.PORT || port,
     "serverHost": process.env.HOST || host,
     "serverUrl": hostUrl,
-    "sessionKey": "generateRandomStringForSecret", // used for encrypting cookies
-    "streamKey": 'INFOSCREEN3',  // stream key for rtmp end point
+    "sessionKey": process.env.SESSIONKEY || "generateSecret", // used for encrypting cookies
+    "streamKey":  process.env.STREAMKEY  || 'INFOSCREEN3',  // stream key for rtmp end point
     "useLocalAssets": false,    // used to load javascript libraries locally from /public/assets
-    "mediaServer": false,       // local streaming server for rtmp, see docs how to use
-    "defaultLocale": "en",      // currently supported values are: "en","fi"
+    "mediaServer": (process.env.MEDIASERVER == "true") ? true : false,       // local streaming server for rtmp, see docs how to use
+    "defaultLocale": process.env.LOCALE || "en",      // currently supported values are: "en","fi"
 
     /*
      * Plugins
      */
     "plugins": [
-        "profiler", // display memory statistics at console.
+		// "profiler", // display memory statistics at console.
     ],
 
     /*

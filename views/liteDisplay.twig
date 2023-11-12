@@ -5,11 +5,11 @@
         {% if config.useLocalAssets %}
             <script src="/assets/flv.min.js"></script>
         {% else %}
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/flv.js/1.5.0/flv.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/flv.js/1.6.2/flv.min.js"></script>
         {% endif %}
     {% endif %}
 
-    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.0/socket.io.min.js"></script>
     <title>InfoScreen3 - {{ display.name }}</title>
 {% endblock %}
 
@@ -27,6 +27,8 @@
 
     <div id="networkstatus" class="noselect animated"><i class="spinner loading icon"></i></div>
 
+    <video id="stream" class="fsimage" poster=""></video>
+
     <div id="helperLayer" class="gpu animated"></div>
 
     <iframe id="webLayer0" scrolling="no" class="web fsimage animated"></iframe>
@@ -42,6 +44,7 @@
     <div id="bg">
         <img id="bgimg" class="fsimage" src=""/>
     </div>
+
     <video muted loop id="bgvid" class="gpu" poster="">
         <source src="" type="video/mp4">
     </video>

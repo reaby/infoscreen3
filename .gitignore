@@ -63,7 +63,6 @@ typings/
 # own additions
 .idea
 .vscode
-config.js
 tmp/*.png
 public/assets/
 data/sessions.db
@@ -75,3 +74,5 @@ data/template.json
 data/video/*.mp4
 trash/*
 !trash/.gitkeep
+webpack
+dist

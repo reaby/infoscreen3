@@ -67,7 +67,9 @@ $(function () {
         serverOptions = data.serverOptions;
         bundleData = data.bundleData;
         checkBlackout();
-        nextSlide(data);
+        if (checkStream(serverOptions) === false) {
+            nextSlide(data);
+        }
     });
 
 
@@ -75,8 +77,10 @@ $(function () {
     socket.on('callback.update', function (data) {
         serverOptions = data.serverOptions;
         bundleData = data.bundleData;
-        checkBlackout();
-        nextSlide(data);
+        checkBlackout();        
+        if (checkStream(serverOptions) === false) {
+            nextSlide(data);
+        }
     });
 
     socket.on('callback.reload', function () {
@@ -85,7 +89,9 @@ $(function () {
 
     socket.on('callback.announce', function (data) {
         checkBlackout();
-        nextSlide(data);
+        if (checkStream(serverOptions) === false) {
+            nextSlide(data);
+        }
     });
 
     socket.on('callback.forceSlide', function (data) {
@@ -127,15 +133,15 @@ function getLayer(offset) {
  * Displays the local time for bottom of screen
  * hh:mm
  **/
- function displayTime() {
+function displayTime() {
     let date = new Date();
     let min = date.getMinutes();
-    let month = date.getMonth()+1;
+    let month = date.getMonth() + 1;
     let day = date.getDate();
     if (min < 10) min = "0" + min;
     if (month < 10) month = "0" + month;
     if (day < 10) day = "0" + day;
-    $('#time').html(date.getHours() + ":" + min + "<div style='font-size: 3vh;'>"+ date.toLocaleDateString() + "</div>");
+    $('#time').html(date.getHours() + ":" + min + "<div style='font-size: 3vh;'>" + date.toLocaleDateString() + "</div>");
 }
 /** resize canvas to max width keeping aspect ratio 16:9**/
 function fixImageSizes() {
@@ -205,6 +211,16 @@ function nextSlide(data) {
             }
             displayWebPage(serverOptions.announceMeta.webUrl);
         }
+
+        if (serverOptions.announceMeta.type === "video") {
+            if (serverOptions.announceMeta.displayTime) {
+                $('#time').removeClass('flipOutX').addClass("flipInX");
+            } else {
+                $('#time').addClass('flipOutX').removeClass("flipInX");
+            }
+            displayVideo(serverOptions.announceMeta.url, serverOptions.announceMeta.loop, serverOptions.announceMeta.mute);
+        }
+
         if (serverOptions.announceMeta.type === "image") {
             $(elem).show();
             $("#" + getWebLayer()).addClass("fadeOut").removeClass("fadeIn");
@@ -230,15 +246,24 @@ function nextSlide(data) {
                 $("#" + getWebLayer()).addClass("fadeIn").removeClass("fadeOut");
                 displayWebPage(serverOptions.currentMeta.webUrl);
                 break;
+            case "video":
+                displayVideo(serverOptions.currentMeta.url, serverOptions.currentMeta.loop, serverOptions.currentMeta.mute);
+                setTimeout(function () {
+                    clearIFrame(getWebLayer());
+                    clearIFrame(getWebLayer(1));
+                }, 2500);
+                break;
             default:
+                elem.src = "/render/" + serverOptions.currentBundle + "/" + serverOptions.currentFile + ".png";    
                 $(elem).show();
                 $("#" + getWebLayer()).addClass("fadeOut").removeClass("fadeIn");
                 $("#" + getWebLayer(1)).addClass("fadeOut").removeClass("fadeIn");
+                $("#stream").hide();
                 setTimeout(function () {
                     clearIFrame(getLayer());
                     clearIFrame(getLayer(1));
                 }, 1000);
-                elem.src = "/render/" + serverOptions.currentBundle + "/" + serverOptions.currentFile + ".png";
+                
                 break;
         }
 
@@ -285,6 +310,17 @@ function setBackground(background) {
     }
 }
 
+function displayVideo(url, loop, mute) {
+    if (serverOptions.isStreaming) return;
+    $("#stream").show();
+    let video = document.getElementById("stream");
+    video.src = url;
+    video.loop = loop;
+    video.volume = mute ? 0.0 : 1.0;
+    video.load();
+    video.play();
+}
+
 function parseUrl(url) {
     return '/background' + url.split('background')[1]
 }
@@ -295,29 +331,28 @@ function showBackgroundOnly() {
 }
 
 function checkStream(serverOptions) {
-
-    if (serverOptions.isStreaming && streamStarted === false) {
+    if (serverOptions.isStreaming) {
         if (flvjs.isSupported()) {
-            var videoElement = document.getElementById('bgvid');
-            flvPlayer = flvjs.createPlayer(
+            $("#stream").show();
+            var videoElement = document.getElementById('stream');
+            flvPlayer = flvjs.createPlayer({
+                type: 'flv',
+                url: serverOptions.streamSource
+            },
                 {
-                    type: 'flv',
-                    url: serverOptions.streamSource
-                },
-                {
-                    enableStashBuffer: false,   // enable for much longer buffer, note, video may stall if network jitter
-                    isLive: true
-                }
-            );
+                    enableStashBuffer: false,   // enable for much longer buffer, note: video may stall if network jitter
+                    isLive: true,
+                    cors: true,
+                });
             try {
                 flvPlayer.attachMediaElement(videoElement);
-                flvPlayer.volume = videoVolume;
+                flvPlayer.muted = true;
                 flvPlayer.load();
                 flvPlayer.play();
-                showBackgroundOnly();
                 streamStarted = true;
                 return true;
             } catch (err) {
+                $('#stream').hide();
                 console.log(err);
                 streamStarted = false;
                 return false;
@@ -333,10 +368,12 @@ function checkStream(serverOptions) {
                 flvPlayer = null;
                 streamStarted = false;
             }
+            return false;
         }
+        $("#stream").hide();
         return false;
     }
-    return false;
+    return true;
 }
 
 function updateTimeout() {

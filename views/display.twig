@@ -4,10 +4,10 @@
         {% if config.useLocalAssets %}
             <script src="/assets/flv.min.js"></script>
         {% else %}
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/flv.js/1.5.0/flv.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/flv.js/1.6.2/flv.min.js"></script>
         {% endif %}
     {% endif %}
-    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.0/socket.io.min.js"></script>
     <script src="/js/flux.js" type="text/javascript" charset="utf-8"></script>
     <title>InfoScreen3 - {{ display.name }}</title>
 {% endblock %}

@@ -28,7 +28,7 @@ export default function (pluginManager, io, dispatcher) {
     cli.log("Checking for write permissions...");
 
     try {
-        fs.accessSync("./data", fs.W_OK);
+        fs.accessSync(process.cwd() + "/data", fs.W_OK);
         cli.success("data directory (./data) is writable");
     } catch (err) {
         cli.error("data directory (./data) is not writable", err);
@@ -36,7 +36,7 @@ export default function (pluginManager, io, dispatcher) {
     }
 
     try {
-        fs.accessSync("./trash", fs.W_OK);
+        fs.accessSync(process.cwd() + "/trash", fs.W_OK);
         cli.success("trash directory (./trash) is writable");
     } catch (err) {
         cli.error("trash directory (./trash) is not writable", err);
@@ -44,15 +44,15 @@ export default function (pluginManager, io, dispatcher) {
     }
 
     try {
-        fs.accessSync("./tmp", fs.W_OK);
+        fs.accessSync(process.cwd() + "/tmp", fs.W_OK);
         cli.success("temp directory (./tmp) is writable ");
-        let tempFiles = fs.readdirSync("./tmp/", {
+        let tempFiles = fs.readdirSync(process.cwd() + "/tmp/", {
             dotfiles: false
         });
         cli.info("removing temp-files...");
         for (let file of tempFiles) {
             if (file !== ".gitkeep") {
-                fs.unlinkSync("./tmp/" + file);
+                fs.unlinkSync(process.cwd() + "/tmp/" + file);
             }
         }
         cli.info("done.");
@@ -81,14 +81,14 @@ export default function (pluginManager, io, dispatcher) {
     let adminLobby1 = new adminLobby(io, dispatcher, screenView, adminView, bundleManager);
     // create lobby
     io.of("/lobby").on("connection", function (socket) {
-        cli.info("WS/" + socket.conn.remoteAddress + " connect");
+       // cli.info("WS/" + socket.conn.remoteAddress + " connect");
 
         socket.on('error', function (error) {
             cli.error(error, "WS/ error");
         });
 
         socket.on('disconnect', function (reason) {
-            cli.info("WS/ " + reason + " " + socket.conn.remoteAddress);
+           // cli.info("WS/ " + reason + " " + socket.conn.remoteAddress);
         });
 
         socket.on('displays', function () {

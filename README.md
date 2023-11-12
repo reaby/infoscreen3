@@ -23,24 +23,17 @@ When you need to display same content to multiple locations or need to remotely 
 
 ## Setup
 1. run `npm install`
-2. copy `config-default.js` to `config.js`
+2. copy `.env.example` to `.env`
 3. run `npm start`
    - optionally you can start as a background task: `npm run-script daemon`, it will output just a pid for the new process and you find new files: `output.log` and `errors.log` at the `data` directory.
 
 ## Configuration
-> The default `config.js` file serves you well only if you wish to run infoscreen at localhost only!
 
-To access the infoscreen server outside from the localhost, like at LAN network, the config must be bind to external IP your server machine has.
+To access the infoscreen server outside from the localhost, like at LAN network, the config must be bind to external IP your server machine has. Configuration is set by environmental variables or by editing `.env` file.
 
-Example:
-```javascript
-module.exports = {
-    "serverListenPort": 8000,
-    "serverHost": "192.168.56.100",
-    // ...config file continues from here...
-```
-If you wish to have live stream support at local network using OBS, set `mediaServer` to `true` and set desired streamKey
-You can run the server listen port as well the default http port `80`, but in that case you have to run the app with privileges at linux systems: `sudo npm start`
+If you wish to have live stream support at local network using OBS, set `MEDIASERVER` to `true` and set desired streamKey
+
+You can run the server listen port as well the default http port `80`, but in that case you have to run the app with privileges with linux systems: `sudo npm start`
 
 ## Plugins
 
@@ -75,6 +68,9 @@ at OBS go to `Settings` -> `Stream`
 | Stream key         | config.streamKey value, defaults to: `INFOSCREEN3` |
 | Use Authentication | *leave un-ticked*                                  |
 
+### Note
+Use only **baseline**-encoding for H.264, other options not works with the embedded javascript player
+
 ## Mediaserver admin panel
 > if you have changed the default port from 8000 to something else, the correct port to access this feature is (config.serverListenPort+1)
 
@@ -82,15 +78,20 @@ Admin interface is located at: http://localhost:8001/admin
 It accepts the same crendetials as configured at the main app.
 
 ## Environment variables
-| ENV         | default   | Usage                                                 |
-| :---------- | :-------- | :---------------------------------------------------- |
-| PORT        | 8000      | Server listen port                                    |
-| HOST        | localhost | Host or ip, where the server is externally accessible |
-| ADMIN_USER  | admin     | Username to access admin interface                    |
-| ADMIN_PASS  | admin     | Password for the admin interface                      |
-| USER        | view      | Username to access viewer                             |
-| PASS        | view      | Password to access viewer                             |
-| FRONT_PROXY | false     | Tell software that it's behind a front proxy          |
+| ENV         | default     | Usage                                                 |
+| :---------- | :--------   | :---------------------------------------------------- |
+| PORT        | 8000        | Server listen port                                    |
+| HOST        | localhost   | Host or ip, where the server is externally accessible |
+| ADMIN_USER  | admin       | Username to access admin interface                    |
+| ADMIN_PASS  | admin       | Password for the admin interface                      |
+| USER        | view        | Username to access viewer                             |
+| PASS        | view        | Password to access viewer                             |
+| FRONT_PROXY | false       | Tell software that it's behind a front proxy          |
+| DEBUG       | false       | whatever to debug... or not                           |
+| SESSIONKEY  | predefined  | used to encrypt cookies                               |
+| STREAMKEY   | INFOSCREEN3 | streamkey used at OBS                                 |
+| MEDIASERVER | false       | use streaming feature                                 |
+| LOCALE      | en          | available locales: en, fi                             |
 
 ## Dockerfile
 

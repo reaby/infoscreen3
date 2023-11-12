@@ -1,7 +1,7 @@
 {% extends 'layout/admin.twig' %}
 
 {% block header %}
-    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.0/socket.io.min.js"></script>
     <script src="/js/sharedScript.js"></script>
     {% if config.useLocalAssets %}
         <script src="/assets/jquery.jeditable.min.js"></script>
@@ -96,15 +96,6 @@
             </div>
 
             <div class="center aligned six wide column">
-
-               <!--  <div class="row">
-                    <div id="previewContainer" class="ui inverted segment">
-                        <h2 class="ui inverted nopadded header"> {{ t("admin.dashboard.preview") }}</h2>
-                        <iframe style="overflow-scrolling: unset; overflow: unset;" class="nopadded" id="preview"
-                                src="/admin/preview?uid={{ uid }}"></iframe>
-                    </div>
-                </div>
- -->
                 <div class="row">
                     <div id="programContainer" class="ui nopadded basic segment">
                         <h2 class="ui inverted nopadded header currentDisplay"> {{ t("admin.dashboard.program") }} </h2>

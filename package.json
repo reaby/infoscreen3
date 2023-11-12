@@ -1,17 +1,25 @@
 {
   "name": "infoscreen3",
-  "version": "1.6.3",
+  "version": "1.6.4",
   "private": true,
   "type": "module",
-  "exports": "./bin/infoscreen3.js",
+  "main": "./infoscreen3.js",  
   "scripts": {
-    "start": "node --expose-gc ./bin/infoscreen3.js",
-    "daemon": "node --expose-gc ./bin/daemon.js"
+    "compile": "pkg package.json --compress GZip",
+    "build": "webpack && node compile.js && pkg package.json --compress GZip",    
+    "start": "node --expose-gc ./infoscreen3.js",
+    "daemon": "node --expose-gc ./daemon.js"
+  },
+  "bin": "./webpack/bundle.js",
+  "pkg": {
+    "scripts": ["./webpack/*.bundle.js"],             
+    "targets": [ "node18-windows-x64", "node18-linux-x64"],
+    "outputPath": "dist"
   },
   "dependencies": {
     "basic-auth": "2.0.1",
     "bufferutil": "4.0.7",
-    "chalk": "5.1.2",
+    "chalk": "4.1.2",
     "connect-busboy": "1.0.0",
     "connect-ensure-login": "0.1.1",
     "connect-sqlite3": "0.9.13",
@@ -19,18 +27,18 @@
     "cors": "2.8.5",
     "daemon": "1.1.0",
     "debug": "4.3.4",
+    "dotenv": "^16.3.1",
     "express": "4.18.2",
     "express-session": "1.17.3",
     "fs-extra": "10.1.0",
     "http-errors": "2.0.0",
-    "i18next": "22.0.6",
+    "i18next": "23.7.3",
+    "i18next-fs-backend": "2.3.0",
     "i18next-http-middleware": "3.2.1",
-    "i18next-node-fs-backend": "2.1.3",
-    "less-middleware": "3.1.0",
     "lodash": "4.17.21",
-    "minimist": "1.2.7",
+    "minimist": "1.2.8",
     "morgan": "1.10.0",
-    "node-media-server": "2.4.9",
+    "node-media-server": "2.6.2",
     "node.extend": "2.0.2",
     "passport": "0.6.0",
     "passport-local": "1.0.0",
@@ -41,5 +49,18 @@
     "twig": "1.15.4",
     "utf-8-validate": "5.0.10",
     "xmlhttprequest-ssl": "2.0.0"
+  },
+  "devDependencies": {
+    "@babel/plugin-transform-modules-commonjs": "^7.23.3",
+    "@babel/preset-env": "^7.23.3",
+    "babel-core": "^4.7.16",
+    "babel-loader": "9.1.3",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-es2015": "6.24.1",
+    "json-loader": "^0.5.7",
+    "node-loader": "^2.0.0",
+    "webpack": "5.89.0",
+    "webpack-cli": "5.1.4",
+    "webpack-node-externals": "^3.0.0"
   }
 }
