@@ -1,6 +1,5 @@
 # Info screen<sup>3</sup>
-
-[Discord](https://discord.gg/Ru59wMVDyd)
+![Discord](https://img.shields.io/discord/1173060772956479488)
 
 When you need to display same content to multiple locations or need to remotely control a slide show.
 
