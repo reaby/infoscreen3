@@ -1,5 +1,7 @@
 # Info screen<sup>3</sup>
 
+[Discord](https://discord.gg/Ru59wMVDyd)
+
 When you need to display same content to multiple locations or need to remotely control a slide show.
 
 ## Features
