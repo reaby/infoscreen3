@@ -76,3 +76,4 @@ trash/*
 !trash/.gitkeep
 webpack
 dist
+*.zip
