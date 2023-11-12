@@ -1,5 +1,5 @@
 # Info screen<sup>3</sup>
-<a href="https://discord.gg/evoesports"><img alt="Discord" src="https://img.shields.io/discord/1173060772956479488?label=Discord&logo=discord&logoColor=fff"></a>&nbsp;
+<a href="https://discord.gg/Ru59wMVDyd"><img alt="Discord" src="https://img.shields.io/discord/1173060772956479488?label=Discord&logo=discord&logoColor=fff"></a>&nbsp;
  ![GitHub Release Date - Published_At](https://img.shields.io/github/release-date/reaby/infoscreen3) &nbsp; ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/reaby/infoscreen3/master)&nbsp;
  ![GitHub](https://img.shields.io/github/license/reaby/infoscreen3)
 
