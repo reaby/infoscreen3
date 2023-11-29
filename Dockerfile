@@ -14,7 +14,7 @@ RUN apk add --no-cache --virtual .gyp python3 make g++ \
 
 # Bundle app source
 COPY . .
-COPY config-default.js config.js
+COPY config.js config.js
 
 # Port will be 8000 by default unless run wih ex. -e PORT=8080
 EXPOSE 8000 8001 1935
