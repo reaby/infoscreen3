@@ -5,29 +5,28 @@ const port = 8000;        // port for infoscreen
 
 
 let hostUrl = "http://" + (process.env.HOST || host) + ":" + (process.env.PORT || port);
-if (process.env.FRONT_PROXY || false) hostUrl = "https://" + (process.env.HOST || host);
+if (process.env.FRONT_PROXY == "true") hostUrl = "https://" + (process.env.HOST || host);
 
 export default {
     "serverListenPort": process.env.PORT || port,
     "serverHost": process.env.HOST || host,
     "serverUrl": hostUrl,
     "sessionKey": process.env.SESSIONKEY || "generateSecret", // used for encrypting cookies
-    "streamKey":  process.env.STREAMKEY  || 'INFOSCREEN3',  // stream key for rtmp end point
+    "streamKey": process.env.STREAMKEY || 'INFOSCREEN3',  // stream key for rtmp end point
     "useLocalAssets": false,    // used to load javascript libraries locally from /public/assets
     "mediaServer": (process.env.MEDIASERVER == "true") ? true : false,       // local streaming server for rtmp, see docs how to use
     "defaultLocale": process.env.LOCALE || "en",      // currently supported values are: "en","fi"
-
+    "accesskey": process.env.ACCESSKEY || false,
     /*
      * Plugins
      */
     "plugins": [
-		// "profiler", // display memory statistics at console.
+        // "profiler", // display memory statistics at console.
     ],
 
     /*
      * Administrators
      */
-
     "admins": [
         {
             "id": 1,

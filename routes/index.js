@@ -1,7 +1,6 @@
 import express from 'express';
 const router = express.Router();
 import config from '../config.js';
-
 import cli from '../modules/cli.js';
 import { RateLimiterMemory } from 'rate-limiter-flexible';
 
@@ -24,15 +23,26 @@ const rateLimit = (req, res, next) => {
 
 function ensureIsAdmin(req, res, next) {
     let test = req.url.match(/^\/(login|logout|empty)\//);
+
+    if (config.accesskey) {
+        if (req.query.accesskey && req.query.accesskey == config.accesskey) {
+            req.session.accesskey = config.accesskey;
+            return next();
+        }
+        if (req.session.accesskey && req.session.accesskey == config.accesskey) {
+            return next();
+        }
+    }
+
     if (test) {
-        next();
+        return next();
     } else {
         if (!req.isAuthenticated || !req.isAuthenticated()) {
             req.session.location = req.originalUrl;
             return res.redirect("/login");
         }
     }
-    next();
+    return next();
 }
 const availableDisplays = config.displays;
 
@@ -41,7 +51,6 @@ export default function (pluginManager, websocket, dispatcher) {
     router.use(rateLimit);
 
     router.get('/', function (req, res, next) {
-        res.header('Access-Control-Allow-Origin', '*');
         res.render('index', {
             config: config
         });
@@ -52,11 +61,10 @@ export default function (pluginManager, websocket, dispatcher) {
     });
 
     router.get('/display/:id/lite', function (req, res, next) {
-        res.header('Access-Control-Allow-Origin', '*');
         let idx = parseInt(req.params.id);
         let volume = req.query['videoVolume'] || 1.;
         let extra = pluginManager.getDisplayAdditions();
-        res.render('liteDisplay', {
+        return res.render('liteDisplay', {
             config: config,
             display: availableDisplays[idx],
             displayId: idx,
@@ -65,9 +73,7 @@ export default function (pluginManager, websocket, dispatcher) {
         });
     });
 
-
     router.get('/display/:id/css', function (req, res, next) {
-        res.header('Access-Control-Allow-Origin', '*');
         let idx = parseInt(req.params.id);
         let preview = parseInt(req.query['isPreview']) || 0;
         let volume = parseFloat(req.query['videoVolume']) || 1.;
@@ -83,7 +89,6 @@ export default function (pluginManager, websocket, dispatcher) {
     });
 
     router.get('/display/:id', function (req, res, next) {
-        res.header('Access-Control-Allow-Origin', '*');
         let idx = parseInt(req.params.id);
         let preview = parseInt(req.query['isPreview']) || 0;
         let volume = parseFloat(req.query['videoVolume']) || 1.;

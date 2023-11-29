@@ -95,6 +95,11 @@ It accepts the same crendetials as configured at the main app.
 | STREAMKEY   | INFOSCREEN3 | streamkey used at OBS                                 |
 | MEDIASERVER | false       | use streaming feature                                 |
 | LOCALE      | en          | available locales: en, fi                             |
+| ACCESSKEY   | &lt;not set&gt;   | use accesskey to access views                         |
+
+To use access key edit the environment variable `ACCESSKEY=yourkey` to `.env`-file.
+After you have set the access key you can use it like this:
+http://127.0.0.1/display/0/lite?accesskey=yourkey<br>
 
 ## Dockerfile
 
