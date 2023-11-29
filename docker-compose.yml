@@ -1,0 +1,10 @@
+version: '2'
+services:
+  infoscreen3:
+    build: ./
+    ports:
+      - "8000:8000"
+      - "8001:8001"
+    volumes:
+      - ./data:/usr/src/infoscreen/data
+    env_file: .env
