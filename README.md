@@ -103,11 +103,11 @@ http://127.0.0.1/display/0/lite?accesskey=yourkey<br>
 
 ## Dockerfile
 
-Dockerfile is provided for building a docker container. Docker container accepts the same ENV variables as the standard setup (see them above).
+Dockerfile is provided for building a docker container. <br>
+Docker container accepts the same ENV variables from `.env`-file.
 
 ```bash
-docker build -t reaby/infoscreen .
-docker run -p 8000:8000 -e HOST=infoscreen.lan -e PORT=8000 -e ADMIN_USER=admin -e ADMIN_PASS=secret --name infoscreen reaby/infoscreen
+docker compose up -d --build
 ```
 
 ## Linux service
