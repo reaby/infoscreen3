@@ -536,8 +536,27 @@ function drawGrid() {
             opacity: 0.5,
             selectable: false,
             zIndex: -1
-        }))
+        }));
     }
+
+    // Add 4:3 grid highlight to assist on projectors which are "square"
+    canvas.add(new fabric.Line([240, 0, 240, 1080], {
+        stroke: '#ccc',
+        strokeDashArray: [w, w],
+        strokeWidth: 4,
+        opacity: 0.5,
+        selectable: false,
+        zIndex: -1
+    }));
+    canvas.add(new fabric.Line([1680 ,0, 1680, 1080], {
+        stroke: '#ccc',
+        strokeDashArray: [w, w],
+        strokeWidth: 4,
+        opacity: 0.5,
+        selectable: false,
+        zIndex: -1
+    }));
+
     canvas.renderAll();
 }
 
