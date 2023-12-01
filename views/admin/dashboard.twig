@@ -107,18 +107,12 @@
                     </div>
 
                 <div class="row">
-                    <div class="ui inverted segment">
-                         <h4>YouTube</h4>
-                        <div class="ui fluid left icon inverted action input">
-                        <i class="ui red youtube icon"></i>
-                        <input style="background: #444;" id="youtubeId" value="" placeholder="Youtube Url" />
-                        <div class="ui small green button" onclick="playYoutubeVideo();">{{ t("actions.play") }}</div>
-                        </div>
-
+                    <div class="ui inverted segment">                    
                         <h4> {{ t("admin.dashboard.statusMessage") }}</h4>
                         <div class="ui fluid grey inverted action input">
-                        <input style="background: #444;" id="statusMessageAdmin" value="" placeholder="{{ t("admin.dashboard.statusMessage") }}" />
-                        <div class="ui small green button" onclick="setStatusMessage();">{{ t("actions.set") }}</div>
+                        <textarea style="width: 100%;" id="statusMessageAdmin" placeholder="{{ t("admin.dashboard.statusMessage") }}" data-max="2"></textarea>
+                        <button class="ui small green button" onclick="setStatusMessage();">{{ t("actions.set") }}</button>
+                        <button class="ui small red button" onclick="clearStatusMessage();">{{ t("actions.clear") }}</button>
                     </div>
                 </div>
             </div>
