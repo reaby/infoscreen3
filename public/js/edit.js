@@ -9,6 +9,7 @@ let slideName = "untitled";
 let undoData = [];
 let undoActive = false;
 let templates = {};
+let guardRails = []
 
 
 bundleData = {
@@ -346,6 +347,7 @@ socket.on('callback.edit.updateFileList', function (data) {
 
 socket.on('callback.edit', function (data) {
     bundleData = data.bundleData;
+    guardRails = data.guardRails;
     slideData = data.slideData;
     templates = data.templates;
     canvas.clear();
@@ -539,24 +541,17 @@ function drawGrid() {
         }));
     }
 
-    // Add 4:3 grid highlight to assist on projectors which are "square"
-    canvas.add(new fabric.Line([240, 0, 240, 1080], {
-        stroke: '#ccc',
-        strokeDashArray: [w, w],
-        strokeWidth: 4,
-        opacity: 0.5,
-        selectable: false,
-        zIndex: -1
-    }));
-    canvas.add(new fabric.Line([1680 ,0, 1680, 1080], {
-        stroke: '#ccc',
-        strokeDashArray: [w, w],
-        strokeWidth: 4,
-        opacity: 0.5,
-        selectable: false,
-        zIndex: -1
-    }));
-
+    // Add configured guardrails for the grid to assist on other resoltions
+    guardRails.forEach((guardRail) => {
+        canvas.add(new fabric.Line(guardRail.line, {
+            stroke: guardRail.stroke || '#ccc',
+            strokeDashArray: [w, w],
+            strokeWidth: guardRail.strokeWidth || 4,
+            opacity: guardRail.opacity || 0.5,
+            selectable: false,
+            zIndex: -1
+        }));
+    })
     canvas.renderAll();
 }
 
