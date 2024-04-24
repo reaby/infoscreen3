@@ -95,7 +95,8 @@ It accepts the same crendetials as configured at the main app.
 | STREAMKEY   | INFOSCREEN3 | streamkey used at OBS                                 |
 | MEDIASERVER | false       | use streaming feature                                 |
 | LOCALE      | en          | available locales: en, fi                             |
-| ACCESSKEY   | &lt;not set&gt;   | use accesskey to access views                         |
+| ACCESSKEY   | &lt;not set&gt;   | use accesskey to access views                   |
+| GUARDRAILS  | '[{"line": [240, 0, 240, 1080]}, {"line": [1680, 0, 1680, 1080]}]'  | Adds additional guardrails into the grid editor. The defaults are for a 4:3 ratio allowing slides to be created for older projectors. In addition to the `line` property the provided json also takes optional input of the `stroke` color, `strokeWidth` width and `opacity` opacity of the guardrails |
 
 To use access key edit the environment variable `ACCESSKEY=yourkey` to `.env`-file.
 After you have set the access key you can use it like this:
