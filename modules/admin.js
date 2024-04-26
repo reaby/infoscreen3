@@ -57,6 +57,7 @@ export default class admin {
             io.emit("callback.dashboard.updateBundles", {
                 "bundleDirs": bundleManager.getBundleInfos()
             });
+            self.syncDashboard(io);
         });
 
         io.on("connection", function (socket) {
@@ -99,8 +100,10 @@ export default class admin {
             socket.on('controls.time.toggle', function () {
                 let view = self.getView();
                 let bool = !view.serverOptions.displayTime;
-
-                view.getBundle().bundleData.displayTime = bool;
+                let bundle = view.getBundle();
+                if (bundle) {
+                    bundle.bundleData.displayTime = bool;
+                }
                 view.serverOptions.displayTime = bool;
 
                 view.io.emit("callback.time", bool);
@@ -156,15 +159,15 @@ export default class admin {
                 let bundle = self.bundleManager.getBundle(data.bundle);
                 let json = "{}";
                 if (data.fileName) {
-                    json = bundle.getSlideJsonFile(data.fileName);
+                    json = bundle?.getSlideJsonFile(data.fileName);
                 }
 
                 try {
                     self.getPreview(socket).preview.emit("callback.preview",
                         {
-                            bundleData: bundle.getBundleData(),
+                            bundleData: bundle?.getBundleData(),
                             json: json,
-                            slide: bundle.findSlideByUuid(data.fileName),
+                            slide: bundle?.findSlideByUuid(data.fileName),
                             displayId: data.displayId
                         }
                     );
@@ -176,24 +179,28 @@ export default class admin {
 
             socket.on("controls.skipTo", function (data) {
                 let bundleSettings = self.screenView.getBundle();
-                let slides = bundleSettings.enabledSlides;
+                if (bundleSettings) {
+                    let slides = bundleSettings.enabledSlides;
 
-                let idx = slides.indexOf(data.fileName);
-                if (idx >= 0) {
-                    self.getServerOptions().loopIndex = idx;
+                    let idx = slides.indexOf(data.fileName);
+                    if (idx >= 0) {
+                        self.getServerOptions().loopIndex = idx;
+                    }
+                    self.screenView.mainLoop();
                 }
-                self.screenView.mainLoop();
             });
 
             socket.on('controls.toggle', function (data) {
                 let fileName = data.fileName;
                 let bundleSettings = self.screenView.getBundle();
-                let idx = bundleSettings.disabledSlides.indexOf(fileName);
+                if (bundleSettings) {
+                    let idx = bundleSettings.disabledSlides.indexOf(fileName);
 
-                if (idx > -1) {
-                    bundleSettings.setSlideStatus(fileName, true);
-                } else {
-                    bundleSettings.setSlideStatus(fileName, false);
+                    if (idx > -1) {
+                        bundleSettings.setSlideStatus(fileName, true);
+                    } else {
+                        bundleSettings.setSlideStatus(fileName, false);
+                    }
                 }
                 self.updateDashboard(socket);
                 bundleSettings = null;
@@ -265,7 +272,7 @@ export default class admin {
             socket.on('admin.removeSlide', function (data) {
                 try {
                     let bundle = bundleManager.getBundle(data.bundleName);
-                    bundle.removeUuid(data.uuid);
+                    bundle?.removeUuid(data.uuid);
                     self.updateSlides();
                     self.announce(null, "callback.removeSlide", data);
                 } catch (err) {
@@ -307,13 +314,15 @@ export default class admin {
 
             /** edit web links **/
             socket.on('admin.editLink', function (data) {
-                let bundle = self.bundleManager.getBundle(data.bundleName);
-                let bundleData = bundle.getBundleData();
-                let json = "{}";
-                if (data.fileName) {
-                    json = bundle.findSlideByUuid(data.fileName);
+                let bundle = self?.bundleManager?.getBundle(data.bundleName);
+                if (bundle) {
+                    let bundleData = bundle.getBundleData();
+                    let json = "{}";
+                    if (data.fileName) {
+                        json = bundle.findSlideByUuid(data.fileName);
+                    }
+                    socket.emit("callback.webpage", {bundleData: bundleData, json: json});
                 }
-                socket.emit("callback.webpage", {bundleData: bundleData, json: json});
             });
 
 
@@ -330,7 +339,9 @@ export default class admin {
 
                 try {
                     let bundle = self.bundleManager.getBundle(data.bundleName);
-
+                    if (!bundle) {
+                        throw "no active bundle";
+                    }
                     let template = {
                         uuid: filename,
                         name: data.name,
@@ -376,12 +387,14 @@ export default class admin {
 
             socket.on('admin.editVideo', function (data) {
                 let bundle = self.bundleManager.getBundle(data.bundleName);
-                let bundleData = bundle.getBundleData();
-                let json = "{}";
-                if (data.fileName) {
-                    json = bundle.findSlideByUuid(data.fileName);
+                if (bundle) {
+                    let bundleData = bundle.getBundleData();
+                    let json = "{}";
+                    if (data.fileName) {
+                        json = bundle.findSlideByUuid(data.fileName);
+                    }
+                    socket.emit("callback.video", {bundleData: bundleData, json: json});
                 }
-                socket.emit("callback.video", {bundleData: bundleData, json: json});
             });
 
 
@@ -399,7 +412,9 @@ export default class admin {
 
                 try {
                     let bundle = self.bundleManager.getBundle(data.bundleName);
-
+                    if (!bundle) {
+                        throw "no active bundle";
+                    }
                     let template = {
                         uuid: filename,
                         name: data.name,
@@ -446,25 +461,30 @@ export default class admin {
 
             /** edit **/
             socket.on('admin.editSlide', function (data) {
-                let bundle = self.bundleManager.getBundle(data.bundleName);
-                let bundleData = bundle.getBundleData();
-                let templateData = {};
-                let json = "{}";
-                if (fs.existsSync("./data/template.json")) {
-                    templateData = JSON.parse(fs.readFileSync("./data/template.json").toString());
+                let bundle = self?.bundleManager?.getBundle(data.bundleName);
+                if (bundle) {
+                    let bundleData = bundle.getBundleData();
+                    let templateData = {};
+                    let json = "{}";
+                    if (fs.existsSync("./data/template.json")) {
+                        templateData = JSON.parse(fs.readFileSync("./data/template.json").toString());
+                    }
+                    let slide = { displayTime: null };
+                    if (data.fileName) {
+                        json = bundle.getSlideJsonFile(data.fileName);
+                        slide = bundle.findSlideByUuid(data.fileName);
+                    }
+                    socket.emit("callback.edit", {bundleData: bundleData, slideData: slide, json: json, templates: templateData, guardRails: config.guardRails});
                 }
-                let slide = { displayTime: null };
-                if (data.fileName) {
-                    json = bundle.getSlideJsonFile(data.fileName);
-                    slide = bundle.findSlideByUuid(data.fileName);
-                }
-                socket.emit("callback.edit", {bundleData: bundleData, slideData: slide, json: json, templates: templateData, guardRails: config.guardRails});
             });
 
             /** rename **/
             socket.on('admin.renameSlide', function (data) {
                 try {
                     let bundle = bundleManager.getBundle(data.bundleName);
+                    if (!bundle) {
+                        throw "no active bundle";
+                    }
                     bundle.setName(data.uuid, data.name);
                     self.updateSlides();
                 } catch (err) {
@@ -533,10 +553,12 @@ export default class admin {
 
 
                 try {
+                    let bundle = self.bundleManager.getBundle(data.bundleName);
+                    if (!bundle) {
+                        throw "no active bundle";
+                    }
                     fs.writeFileSync("./data/bundles/" + data.bundleName + "/render/" + filename + ".png", data.png.replace(/^data:image\/png;base64,/, ""), "base64");
                     fs.writeFileSync("./data/bundles/" + data.bundleName + "/slides/" + filename, JSON.stringify(data.json));
-
-                    let bundle = self.bundleManager.getBundle(data.bundleName);
 
 
                     let template = {
@@ -625,7 +647,7 @@ export default class admin {
 
         socket.emit("callback.dashboard.update", {
             bundleSettings: bundleSettings,
-            allSlides: bundleSettings.allSlides,
+            allSlides: bundleSettings?.allSlides,
             serverOptions: this.screenView.serverOptions,
             displayId: this.displayId
         });
