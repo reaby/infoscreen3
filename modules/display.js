@@ -78,7 +78,7 @@ export default class display {
 
         dispatcher.on("display.recalcBundleData", function (bundleName) {
             if (self.serverOptions.currentBundle === bundleName) {
-                for (let slide of self.getBundle().allSlides) {
+                for (let slide of self.getBundle()?.allSlides) {
                     // calculate new index for next slide;
                     if (slide.uuid === self.serverOptions.currentFile) {
                         self.serverOptions.loopIndex = slide.index + 1;
@@ -143,21 +143,23 @@ export default class display {
     changeBundle(bundleName) {
         this.serverOptions.currentBundle = bundleName;
         let bundle = this.getBundle();
-        this.serverOptions.loopIndex = 0;
-        this.serverOptions.currentFile = bundle.enabledSlides[0] || "";
-        this.serverOptions.currentMeta = bundle.findSlideByUuid(bundle.enabledSlides[0]);
-        this.serverOptions.slideDuration = bundle.getBundleData().duration;
-        this.serverOptions.currentId = bundle.enabledSlides.indexOf(this.serverOptions.currentFile);
-        this.serverOptions.transition = bundle.getBundleData().transition;
-        this.serverOptions.loop = true;
-        this.io.emit("callback.load", this.getSlideData());
+        if (bundle) {
+            this.serverOptions.loopIndex = 0;
+            this.serverOptions.currentFile = bundle.enabledSlides[0] || "";
+            this.serverOptions.currentMeta = bundle.findSlideByUuid(bundle.enabledSlides[0]);
+            this.serverOptions.slideDuration = bundle.getBundleData().duration;
+            this.serverOptions.currentId = bundle.enabledSlides.indexOf(this.serverOptions.currentFile);
+            this.serverOptions.transition = bundle.getBundleData().transition;
+            this.serverOptions.loop = true;
+            this.io.emit("callback.load", this.getSlideData());
+        }
         bundle = null;
         this.mainLoop();
     }
 
     getSlideData() {
         let bundle = this.getBundle();
-        return { bundleData: bundle.getBundleData(), slides: bundle.allSlides, serverOptions: this.serverOptions };
+        return { bundleData: bundle?.getBundleData(), slides: bundle?.allSlides, serverOptions: this.serverOptions };
     }
 
     /**
@@ -171,7 +173,7 @@ export default class display {
      * @return {bundle}
      */
     getBundle() {
-        return this.bundleManager.getBundle(this.serverOptions.currentBundle);
+        return this.bundleManager?.getBundle(this.serverOptions.currentBundle);
     }
 
     toggleBlackout() {
@@ -205,6 +207,9 @@ export default class display {
         this.serverOptions.announceMeta = {};
 
         let bundle = this.getBundle();
+        if (!bundle) {
+            return
+        }
         let slides = bundle.getEnabledSlides();
 
         if (slides.length >= 0) {

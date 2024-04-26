@@ -50,10 +50,11 @@ export default class bundleManager {
     }
 
     moveSlide(fromBundle, toBundle, uuid, position) {
-        let slideData = this.getBundle(fromBundle).moveTo(toBundle, uuid);
+        let fromBundleObj = this.getBundle(fromBundle);
+        let slideData = fromBundleObj?.moveTo(toBundle, uuid);
         let bundle = this.getBundle(toBundle);
-        slideData.index = position;
-        if (slideData) {
+        if (slideData && bundle) {
+            slideData.index = position;
             bundle.allSlides.push(slideData);
             bundle.save();
         }
@@ -64,10 +65,10 @@ export default class bundleManager {
         let bundle = this.getBundle(bundleName);
         let i = 0;
         for (let uuid of sortedIDs) {
-            bundle.setIndex(uuid, i);
+            bundle?.setIndex(uuid, i);
             i += 1;
         }
-        bundle.save();
+        bundle?.save();
     }
 
     /**
