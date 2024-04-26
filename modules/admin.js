@@ -458,7 +458,7 @@ export default class admin {
                     json = bundle.getSlideJsonFile(data.fileName);
                     slide = bundle.findSlideByUuid(data.fileName);
                 }
-                socket.emit("callback.edit", {bundleData: bundleData, slideData: slide, json: json, templates: templateData});
+                socket.emit("callback.edit", {bundleData: bundleData, slideData: slide, json: json, templates: templateData, guardRails: config.guardRails});
             });
 
             /** rename **/

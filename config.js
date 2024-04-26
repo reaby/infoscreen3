@@ -7,6 +7,25 @@ const port = 8000;        // port for infoscreen
 let hostUrl = "http://" + (process.env.HOST || host) + ":" + (process.env.PORT || port);
 if (process.env.FRONT_PROXY == "true") hostUrl = "https://" + (process.env.HOST || host);
 
+// By default add 4:3 guardrails to have a backward compatible behavior
+// Allow any kind of other line to be configured in a json representation
+// of this array in the .env file
+let guardRails = [{
+    line: [240, 0, 240, 1080],
+    stroke: "#ccc",
+    strokeWidth: 4,
+    opacity: 0.5
+},
+{
+    line: [1680, 0, 1680, 1080],
+    stroke: "#ccc",
+    strokeWidth: 4,
+    opacity: 0.5
+}]
+if (process.env.GUARDRAILS) {
+    guardRails = JSON.parse(process.env.GUARDRAILS)
+}
+
 export default {
     "serverListenPort": process.env.PORT || port,
     "serverHost": process.env.HOST || host,
@@ -17,6 +36,7 @@ export default {
     "mediaServer": (process.env.MEDIASERVER == "true") ? true : false,       // local streaming server for rtmp, see docs how to use
     "defaultLocale": process.env.LOCALE || "en",      // currently supported values are: "en","fi"
     "accesskey": process.env.ACCESSKEY || false,
+    "guardRails": guardRails,
     /*
      * Plugins
      */
