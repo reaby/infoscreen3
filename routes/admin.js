@@ -166,7 +166,15 @@ export default function (pluginManager, websocket, dispatcher) {
             if (fields.hasOwnProperty("sDelete")) {
                 let dir = `./data/bundles/${fields.bundle}/`;
                 if (fs.existsSync(dir)) {
-                    fse.moveSync(dir, `./trash/${fields.bundle}/`);
+                    let trashDir = `./trash/${fields.bundle}/`;
+                    if (fs.existsSync(trashDir)) {
+                        let i = 0;
+                        while(fs.existsSync(trashDir)) {
+                            i++;
+                            trashDir = `./trash/${fields.bundle}_${i}`;
+                        }
+                    }
+                    fse.moveSync(dir, trashDir);
                     bundleManager.syncBundles();
                     cli.success(dir, "Bundle removed");
                 } else {
