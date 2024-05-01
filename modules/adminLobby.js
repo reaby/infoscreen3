@@ -105,13 +105,18 @@ export default class adminLobby {
             socket.on('controls.pause', function (data) {
                 getAdminView(data.displayId).controls("pause");
             });
-
-            dispatcher.on("dashboard.update", function (data) {
+            
+            cli.info('admin lobby adding dispatcher on dashboard.update count:' + dispatcher.rawListeners("dashboard.update").length);
+            let dashboardUpdateHandler = function (data) {
                 socket.emit("callback.serverOptions", [data]);
-            });
+            };
+            dispatcher.on("dashboard.update", dashboardUpdateHandler);
 
+            socket.on("disconnect", function (s) {
+                dispatcher.removeListener('dashboard.update', dashboardUpdateHandler);
+                cli.info("admin lobby socket disconnect");
+            })
         });
-
         function updateSlides(bundleName, bundleData) {
             for (let aView of adminView) {
                 aView.updateSlides();
