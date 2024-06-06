@@ -7,8 +7,12 @@
             <script src="https://cdnjs.cloudflare.com/ajax/libs/flv.js/1.6.2/flv.min.js"></script>
         {% endif %}
     {% endif %}
+    {% if config.useLocalAssets %}
+        <script src="/assets/socket.io.min.js"></script>
+    {% else %}
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.0/socket.io.min.js"></script>
+    {% endif %}
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.0/socket.io.min.js"></script>
     <script src="/js/three.js" type="text/javascript" charset="utf-8"></script>
     <script src="/js/gl-transitions.js" type="text/javascript" charset="utf-8"></script>
     <script src="/js/tween.js" type="text/javascript" charset="utf-8"></script>

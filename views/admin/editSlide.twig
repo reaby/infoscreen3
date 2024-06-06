@@ -2,7 +2,11 @@
 
 {% block header %}
 <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.0/socket.io.min.js"></script>
+{% if config.useLocalAssets %}
+	<script src="/assets/socket.io.min.js"></script>
+{% else %}
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.0/socket.io.min.js"></script>
+{% endif %}
 <script src="/js/sharedScript.js"></script>
 <script>
     var bundle = "{{ bundle }}";
