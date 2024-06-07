@@ -7,7 +7,11 @@
             <script src="https://cdnjs.cloudflare.com/ajax/libs/flv.js/1.6.2/flv.min.js"></script>
         {% endif %}
     {% endif %}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.0/socket.io.min.js"></script>
+    {% if config.useLocalAssets %}
+        <script src="/assets/socket.io.min.js"></script>
+    {% else %}
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.0/socket.io.min.js"></script>
+    {% endif %}
     <script src="/js/flux.js" type="text/javascript" charset="utf-8"></script>
     <title>InfoScreen3 - {{ display.name }}</title>
 {% endblock %}

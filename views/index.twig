@@ -1,7 +1,11 @@
 {% extends 'layout/view.twig' %}
 
 {% block header %}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.0/socket.io.min.js"></script>
+    {% if config.useLocalAssets %}
+        <script src="/assets/socket.io.min.js"></script>
+    {% else %}
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.0/socket.io.min.js"></script>
+    {% endif %}
 {% endblock %}
 
 {% block body %}
