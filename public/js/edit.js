@@ -144,12 +144,28 @@ $(document).bind("contextmenu", function (event) {
     var objects = canvas.getActiveObjects();
 
     if (objects.length > 0) {
-        // Show contextmenu
+        // Show contextmenu and hide size info to avoid laggy oppening
+        const sizeInfo = $('[data-action="sizeInfo"]')
+        sizeInfo.hide()
         $("#contextmenu").finish().toggle(100).// In the right position (the mouse)
             css({
                 top: event.pageY + "px",
                 left: event.pageX + "px"
             });
+        // only show the size info in case a single object is selected
+        if (objects.length === 1) {
+            const prevText = sizeInfo.text()
+            const labelPart = prevText.split(':')[0]
+            let sizePart = ""
+            if (objects[0].type === "image") {
+                sizePart = Math.round(objects[0].width*objects[0].scaleX) 
+                sizePart += ' x ' + Math.round(objects[0].height*objects[0].scaleY)
+            } else if (objects[0].type === "i-text") {                
+                sizePart = objects[0].fontSize
+            }
+            sizeInfo.text(labelPart+ ': ' + sizePart)
+            sizeInfo.show()
+        }
     }
 
 });

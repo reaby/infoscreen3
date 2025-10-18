@@ -31,7 +31,8 @@
     "addVideo": "Video hinzufügen",
     "addWebPage": "Webseite hinzufügen",
     "announce": "Sofort anzeigen",
-    "announceAll": "Global sofort anzeigen"
+    "announceAll": "Global sofort anzeigen",
+    "sizeInfo": "Größe"
   },
   "navs": {
     "bundle": "Pakete",
