@@ -261,6 +261,7 @@ export default function (pluginManager, websocket, dispatcher) {
 
     router.get('/ajax/imagelist', function (req, res, next) {
         let bundle = req.query['bundle'];
+        let replaceMode = req.query['replacemode'];
         let bundleRoot = path.normalize("./data/bundles/" + bundle);
         let bundleImages = fs.readdirSync(bundleRoot + "/images", {
             dotfiles: false
@@ -277,7 +278,8 @@ export default function (pluginManager, websocket, dispatcher) {
         }
 
         res.render('ajax/bundleImageList', {
-            bundleImages: output
+            bundleImages: output,
+            replaceMode: replaceMode
         });
     });
 

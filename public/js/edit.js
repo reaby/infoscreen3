@@ -736,6 +736,22 @@ function addImage(imageUrl, isFullSized) {
     $("#imageLayer").modal("hide");
 
 }
+function replaceImage(imageUrl) {
+    const obj = canvas.getActiveObject();
+    // make exact replacement by scaling new image to the old size
+    const oldWidth = obj.width;
+    const oldHeight = obj.height;
+    const oldScaleX = obj.scaleX;
+    const oldScaleY = obj.scaleY;
+    fabric.Image.fromURL(imageUrl, (newImg) => {
+        obj.setElement(newImg.getElement());
+        obj.scaleX = (oldWidth * oldScaleX) / obj.width;
+        obj.scaleY = (oldHeight * oldScaleY) / obj.height;
+        canvas.requestRenderAll() 
+        $("#imageLayer").modal("hide");
+    })
+
+}
 
 function addHeader(content) {
     addText(content, true);
@@ -1070,7 +1086,15 @@ function closest(list, x) {
 }
 
 function openImageBrowser() {
-    $("#imageList").load("/admin/ajax/imagelist?bundle=" + bundle + "&nocache=" + uuidv4(), null, function () {
+    const baseUrl = "/admin/ajax/imagelist"
+    const bundlePart = "bundle=" + bundle
+    const noCachePart = "nocache=" + uuidv4()
+    // If currently selected item is an image, we also add a replace button
+    const obj = canvas.getActiveObject();
+    const replaceModePart = "replacemode=" + (obj?.type === "image" ? "1" : "0")
+    const finalUrl = baseUrl+"?"+[bundlePart,noCachePart, replaceModePart].join("&")
+
+    $("#imageList").load(finalUrl, null, function () {
         addImagesFromUploadQueue();
         $('#imageLayer').modal('show');
     });

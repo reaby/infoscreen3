@@ -7,6 +7,12 @@
             <div class="center aligned header">{{ image.name }}</div>
         </div>
         <div class="extra content">
+        {% if replaceMode == 1 %}
+            <div class="ui tiny basic button"
+                onclick="replaceImage('{{ image.url }}', false);">
+                {{ t("actions.replaceImage") }}
+            </div>
+        {% endif %}
             <div class="ui tiny basic button"
                  onclick="addImage('{{ image.url }}', false);">
                 {{ t("actions.insert") }}
