@@ -32,7 +32,8 @@
     "addVideo": "Lisää Video",
     "addWebPage": "Lisää Web-sivu",
     "announce": "Ilmoita",
-    "announceAll": "Ilmoita Kaikille"
+    "announceAll": "Ilmoita Kaikille",
+    "sizeInfo": "Koko"
   },
   "navs": {
     "bundle": "DiaPaketti",

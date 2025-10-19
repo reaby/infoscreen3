@@ -32,7 +32,8 @@
     "addVideo": "Add Video",
     "addWebPage": "Add Web page",
     "announce": "Fast Announce",
-    "announceAll": "Global Announce"
+    "announceAll": "Global Announce",
+    "sizeInfo": "Size"
   },
   "navs": {
     "bundle": "bundle",
