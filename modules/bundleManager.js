@@ -1,6 +1,7 @@
 import fs from 'fs';
-import cli from './cli.js';
 import bundle from './bundle.js';
+import cli from './cli.js';
+import { checkAndSanitizeFilePathName } from './utils.js';
 
 /**
  * @module infoscreen3/bundleManager
@@ -37,6 +38,7 @@ export default class bundleManager {
             return this.bundles[name];
         } else {
             try {
+                name = checkAndSanitizeFilePathName(name)
                 cli.info(name + " not in bundles, trying to load from fs...");
                 let data = getJson("./data/bundles/" + name + "/bundle.json");
                 let slides = getJson("./data/bundles/" + name + "/slides.json");
