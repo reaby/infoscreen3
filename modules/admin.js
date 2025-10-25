@@ -634,17 +634,6 @@ export default class admin {
                     socket.emit("callback.edit.updateFileList", {error: err});
                 }
             });
-            socket.on('edit.deleteImage', function (data) {
-                try {
-                    data.name = checkAndSanitizeFilePathName(data.name);
-                    fs.unlinkSync("./data/backgrounds/" + data.name);
-                    cli.success("delete " + data.name);
-                    socket.emit("callback.edit.updateFileList", {});
-                } catch (err) {
-                    cli.error(err, "delete image");
-                    socket.emit("callback.edit.updateFileList", {error: err});
-                }
-            });
         }); // io
     }
 
