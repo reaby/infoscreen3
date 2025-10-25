@@ -1,5 +1,6 @@
 import fs from 'fs';
 import cli from './cli.js';
+import { checkAndSanitizeFilePathName, uuidv4 } from './utils.js';
 
 /**
  * @module infoscreen3/bundle
@@ -7,7 +8,7 @@ import cli from './cli.js';
 export default class bundleClass {
 
     constructor(name, data, slides) {
-        this.name = name;
+        this.name = checkAndSanitizeFilePathName(name);
         this.bundleData = data;
         this.bundleData['bundleName'] = this.name;
         this.allSlides = slides;
@@ -28,6 +29,7 @@ export default class bundleClass {
 
     getSlideJsonFile(fileName) {
         try {
+            fileName = checkAndSanitizeFilePathName(fileName)
             return fs.readFileSync(process.cwd() + "/data/bundles/" + this.name + "/slides/" + fileName).toString();
         } catch (err) {
             return "{}";
@@ -49,6 +51,7 @@ export default class bundleClass {
                 let newId = uuidv4();
                 let path = process.cwd() + "/data/bundles/" + this.name;
                 try {
+                    uuid = checkAndSanitizeFilePathName(uuid)
                     // duplicate at filesystem
                     if (fs.existsSync(path + "/render/" + uuid + ".png")) {
                         fs.copyFileSync(path + "/render/" + uuid + ".png", path + "/render/" + newId + ".png");
@@ -62,6 +65,7 @@ export default class bundleClass {
                     newSlide.uuid = newId;
                     this.allSlides.push(newSlide);
                     this.save();
+                    return;
                 } catch (err) {
                     cli.error("error while duplicating file:" + uuid, err);
                 }
@@ -70,11 +74,13 @@ export default class bundleClass {
     }
 
     moveTo(bundleDir, uuid) {
-        let toPath = process.cwd() +"/data/bundles/" + bundleDir;
-        let path = process.cwd() + "/data/bundles/" + this.name;
-        for (let slide of this.allSlides) {
-            if (slide.uuid === uuid) {
-                try {
+        try {
+            bundleDir = checkAndSanitizeFilePathName(bundleDir)
+            uuid = checkAndSanitizeFilePathName(uuid)
+            let toPath = process.cwd() +"/data/bundles/" + bundleDir;
+            let path = process.cwd() + "/data/bundles/" + this.name;
+            for (let slide of this.allSlides) {
+                if (slide.uuid === uuid) {
                     // duplicate at filesystem
                     if (fs.existsSync(path + "/render/" + uuid + ".png")) {
                         fs.renameSync(path + "/render/" + uuid + ".png", toPath + "/render/" + uuid + ".png");
@@ -86,11 +92,11 @@ export default class bundleClass {
                     let slideData = clone(slide);
                     this.removeUuid(uuid);
                     return slideData;
-                } catch (err) {
-                    cli.error("error while moving file:" + uuid, err);
-                    return null;
                 }
             }
+        } catch (err) {
+            cli.error("error while moving file:" + uuid, err);
+            return null;
         }
     }
 
@@ -109,6 +115,7 @@ export default class bundleClass {
                 if (slide.type === "slide") {
                     let path = process.cwd() + "/data/bundles/" + this.name;
                     try {
+                        uuid = checkAndSanitizeFilePathName(uuid)
                         if (fs.existsSync(path + "/render/" + uuid + ".png")) {
                             fs.unlinkSync(path + "/render/" + uuid + ".png");
                             cli.success("removing file:" + path + "/render/" + uuid + ".png");
@@ -193,19 +200,6 @@ export default class bundleClass {
         }
     }
 
-    getSlideData(uuid) {
-        let slideData = {};
-        for (let slide of this.allSlides) {
-            if (slide.uuid === uuid) {
-                slideData = {
-                    settings: slide,
-                    render: fs.readFileSync(process.cwd() + "/data/bundles/" + this.name + "/slides/" + slide.uuid + ".png")
-                };
-                return slide;
-            }
-        }
-    }
-
     save() {
         this.sync();
         try {
@@ -243,12 +237,3 @@ function sortByProperty(property) {
     }
 }
 
-/** Generate an uuid
- * @url https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript#2117523 **/
-function uuidv4() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-        let r = Math.random() * 16 | 0,
-            v = c === 'x' ? r : (r & 0x3 | 0x8);
-        return v.toString(16);
-    });
-}

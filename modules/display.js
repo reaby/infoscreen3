@@ -1,5 +1,6 @@
 import fs from 'fs';
 import cli from './cli.js';
+import { checkAndSanitizeFilePathName } from './utils.js';
 
 /**
  * handles one display instance
@@ -253,6 +254,7 @@ export default class display {
         this.serverOptions.loop = false;
         this.serverOptions.isAnnounce = true;
         this.serverOptions.announceMeta = json;
+        this.serverOptions.displayId = checkAndSanitizeFilePathName(this.serverOptions.displayId)
         // save temporarily png data...
         if (json.type === "image") {
             fs.writeFileSync("./tmp/display_" + this.serverOptions.displayId + ".png", pngData.replace(/^data:image\/png;base64,/, ""), "base64");

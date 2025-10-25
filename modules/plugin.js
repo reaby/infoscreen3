@@ -1,6 +1,7 @@
 import express from 'express';
-import Twig from 'twig';
 import fs from 'fs';
+import Twig from 'twig';
+import { checkAndSanitizeFilePathName } from './utils.js';
 
 /**
  * Base plugin class
@@ -15,7 +16,7 @@ import fs from 'fs';
 export default class plugin {
 
     constructor(pluginName, app, io, dispatcher) {
-        this.pluginName = pluginName;
+        this.pluginName = checkAndSanitizeFilePathName(pluginName);
         this.subApp = express();
         this.subApp.set('views', "plugins/" + pluginName + "/views");
         this.subApp.set('view engine', 'twig');
@@ -32,6 +33,7 @@ export default class plugin {
     }
 
     renderPluginView(template, data) {
+        template = checkAndSanitizeFilePathName(template)
         return Twig.twig({ data: fs.readFileSync("plugins/" + this.pluginName + "/views/" + template + ".twig").toString() }).render(data);
     }
 
