@@ -1,11 +1,12 @@
+import busboy from 'connect-busboy';
 import express from 'express';
-const router = express.Router();
-import cli from '../modules/cli.js';
 import fs from 'fs';
+import fse from 'fs-extra';
 import path from 'path';
 import config from '../config.js';
-import busboy from 'connect-busboy'
-import fse from 'fs-extra';
+import cli from '../modules/cli.js';
+import { checkAndSanitizeFilePathName } from '../modules/utils.js';
+const router = express.Router();
 
 
 function getFiles(path) {
@@ -93,6 +94,7 @@ export default function (pluginManager, websocket, dispatcher) {
         req.busboy.on('file', function (fieldname, file, details) {
             if (fieldname === "newBackground")
                 if (details.filename && details.filename.length > 0 && (details.mimeType === "image/jpeg" || details.mimeType === "video/mp4" || details.mimeType === "image/png")) {
+                    details.filename  = checkAndSanitizeFilePathName(details.filename)
                     let fstream = fs.createWriteStream('./data/backgrounds/' + details.filename);
                     file.pipe(fstream);
                 } else {
@@ -164,6 +166,7 @@ export default function (pluginManager, websocket, dispatcher) {
 
         req.busboy.on('finish', function () {
             if (fields.hasOwnProperty("sDelete")) {
+                fields.bundle = checkAndSanitizeFilePathName(fields.bundle)
                 let dir = `./data/bundles/${fields.bundle}/`;
                 if (fs.existsSync(dir)) {
                     let trashDir = `./trash/${fields.bundle}/`;
@@ -260,7 +263,7 @@ export default function (pluginManager, websocket, dispatcher) {
     });
 
     router.get('/ajax/imagelist', function (req, res, next) {
-        let bundle = req.query['bundle'];
+        let bundle = checkAndSanitizeFilePathName(req.query['bundle']);
         let replaceMode = req.query['replacemode'];
         let bundleRoot = path.normalize("./data/bundles/" + bundle);
         let bundleImages = fs.readdirSync(bundleRoot + "/images", {
