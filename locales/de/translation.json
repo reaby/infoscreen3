@@ -68,6 +68,8 @@
       "backgroundfile": "Datei auswählen",
       "msgupload": "Hier können Sie einen neuen Hintergrund (.jpg oder .mp4) hochladen.",
       "background": "Hintergrund",
+      "backgroundDelete": "Hintergrund löschen",
+      "backgroundDeleteAsk": "Sind Sie sicher, dass sie die folgende Hintergrundsdatei permanent aus allen Paketen löschen wollen: ",
       "transition": "Standardübergang (wird beim Neustart angewendet)",
       "time": "Zeit / Datum anzeigen",
       "duration": "Anzeigedauer",

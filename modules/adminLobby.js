@@ -1,4 +1,6 @@
-import cli from './cli.js'
+import fs from 'fs';
+import cli from './cli.js';
+import { checkAndSanitizeFilePathName } from './utils.js';
 
 export default class adminLobby {
 
@@ -89,6 +91,17 @@ export default class adminLobby {
                 }
             });
 
+            socket.on('admin.deleteBackground', function (data) {
+                try {
+                    data.name = checkAndSanitizeFilePathName(data.name);
+                    fs.unlinkSync("./data/backgrounds/" + data.name);
+                    cli.success("delete " + data.name);
+                    socket.emit("callback.admin.reload", {});
+                } catch (err) {
+                    cli.error(err, "delete background");
+                    socket.emit("callback.admin.reload", {error: err});
+                }
+            });
 
             socket.on('controls.previous', function (data) {
                 getAdminView(data.displayId).controls("previous");

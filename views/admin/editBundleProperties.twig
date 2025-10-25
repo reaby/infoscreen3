@@ -1,7 +1,11 @@
 {% extends 'layout/admin.twig' %}
 
 {% block header %}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.0/socket.io.min.js"></script>
+    {% if config.useLocalAssets %}
+        <script src="/assets/socket.io.min.js"></script>
+    {% else %}
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.0/socket.io.min.js"></script>
+    {% endif %}
     <script src="/js/sharedScript.js"></script>
 {% endblock %}
 
@@ -23,11 +27,14 @@
             </div>
             <div class="field">
                 <label>{{ t("admin.editBundleProperties.background") }}</label>
-                <select name="background">
-                    {% for image in backgroundImages %}
-                        <option value="{{ image }}" {% if image == bundleData.background %} selected {% endif %}>{{ image }}</option>
-                    {% endfor %}
-                </select>
+                <div class="ui action input">
+                    <select name="background">
+                        {% for image in backgroundImages %}
+                            <option value="{{ image }}" {% if image == bundleData.background %} selected {% endif %}>{{ image }}</option>
+                        {% endfor %}
+                    </select>
+                    <button class="ui red button" name="dUpload" type="button" onclick="deleteBackground()">{{ t("admin.editBundleProperties.backgroundDelete") }}</button>
+                </div>
             </div>
             <div class="field">
                 <div class="ui action input">
@@ -166,6 +173,7 @@
 
     <script>
 
+        var socket = io("{{ config.serverUrl }}/admin");
         $(function () {
 
             var transitionArray = [];
@@ -204,6 +212,21 @@
         function previewColor(element) {
             $(element).css("background", $(element).val());
         }
+
+        function deleteBackground(element) {
+            console.log(element);
+            const bgName = document.querySelector('[name="background"]').selectedOptions[0].value;
+            let confirmed = confirm('{{ t("admin.editBundleProperties.backgroundDeleteAsk") }}' + bgName +'?');
+            if (confirmed) {
+                socket.emit("admin.deleteBackground", {
+                    name: bgName
+                });
+            }
+        }
+
+        socket.on("callback.admin.reload", function() {
+             document.location.reload(true);
+        });
 
     </script>
 {% endblock %}
