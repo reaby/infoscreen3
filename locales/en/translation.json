@@ -68,6 +68,8 @@
       "backgroundfile": "Select a file",
       "msgupload": "You can upload a new background (.jpg or .mp4) here.",
       "background": "Background",
+      "backgroundDelete": "Delete Background",
+      "backgroundDeleteAsk": "Are you sure you want to permanently delete the following background file from all bundles: ",
       "transition": "Default transition (applied on restart)",
       "time": "Display time",
       "duration": "Default duration",

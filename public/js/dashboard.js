@@ -382,7 +382,7 @@ function updateSlides(slides) {
     
 }
 function editBundleProperties(bundle) {
-    window.open("/admin/edit/bundleProperties?bundle=" + bundle, '_blank', 'width=400,height=800,scrollbars=yes,status=no,location=no');
+    window.open("/admin/edit/bundleProperties?bundle=" + bundle, '_blank', 'width=450,height=800,scrollbars=yes,status=no,location=no');
 }
 
 function editBundleSlides(name) {
