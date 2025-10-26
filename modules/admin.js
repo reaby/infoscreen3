@@ -306,8 +306,10 @@ export default class admin {
                 }
             });
 
-            socket.on("admin.setStatusMessage", function (message) {
-                self.getView().serverOptions.statusMessage = message;
+            socket.on("admin.setStatusMessage", function (data) {
+                self.getView().serverOptions.statusMessage = data.msg;
+                self.getView().serverOptions.statusMessageScrolling = data.scrolling;
+                self.getView().serverOptions.statusMessageScrollingDuration = data.scrollingDuration;
                 self.getView().updateUI();
             });
 

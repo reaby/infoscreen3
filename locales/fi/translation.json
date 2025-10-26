@@ -53,6 +53,8 @@
       "preview": "Esikatselu",
       "program": "Ohjelma",
       "statusMessage": "Tilaviesti",
+      "statusMessageScrolling": "Ota vieritys käyttöön",
+      "statusMessageScrollingDuration": "Vierityksen kesto (s)",
       "askChangeBundle": "Vaihda diapaketti?"
     },
     "editBundleSlides": {

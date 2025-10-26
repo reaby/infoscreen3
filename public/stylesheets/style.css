@@ -226,6 +226,27 @@ canvas {
     overflow-block: clip;
 }
 
+#statusMessage {
+    overflow: hidden;
+    width: 100%;
+}
+
+#statusMessageScrolling {
+    white-space: nowrap;
+    will-change: transform;
+    animation: marquee 15s linear infinite;
+} 
+
+/* Animation keyframes for the scroll */
+@keyframes marquee {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
 #time {
     position: absolute;
     z-index: 12;

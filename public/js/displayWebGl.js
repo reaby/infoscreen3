@@ -212,8 +212,16 @@ function checkBlackout() {
 
 function updateStatusMessage() {
     if (serverOptions.statusMessage !== "") {
-        $('#statusMessageOuter').fadeIn();
-        $('#statusMessage').html(serverOptions.statusMessage);
+        //only update on a real change
+        let msg = serverOptions.statusMessage;
+        if (serverOptions.statusMessageScrolling) {
+            const dur = serverOptions.statusMessageScrollingDuration || 15
+            msg = '<div id="statusMessageScrolling" style="animation-duration: ' + dur + 's">' + msg + '</div>'
+        }
+        if ($('#statusMessage').html() !== msg) {
+            $('#statusMessageOuter').fadeIn();
+            $('#statusMessage').html(msg);
+        }
     } else {
         $('#statusMessageOuter').fadeOut();
         $('#statusMessage').text("");

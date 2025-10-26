@@ -115,6 +115,33 @@
                         <button class="ui small green button" onclick="setStatusMessage();">{{ t("actions.set") }}</button>
                         <button class="ui small red button" onclick="clearStatusMessage();">{{ t("actions.clear") }}</button>
                     </div>
+
+                    <div class="ui form">
+                        <div class="inline fields" style="gap: 1rem;">
+                            <!-- Toggle checkbox for scrolling -->
+                            <div class="field">
+                            <div class="ui mini toggle checkbox">
+                                <input type="checkbox" name="statusMessageScrolling" id="statusMessageScrolling">
+                                <label for="statusMessageScrolling" style="color: var(--label-color) !important;">
+                                {{ t("admin.dashboard.statusMessageScrolling") }}
+                                </label>
+                            </div>
+                            </div>
+                            <!-- Number inpu for scroll duration -->
+                            <div class="field">
+                            <label for="statusMessageScrollingDuration"
+                                style="color: var(--label-color) !important; line-height:3em; font-weight:normal; font-size:14px ">
+                                {{ t("admin.dashboard.statusMessageScrollingDuration") }}
+                            </label>
+                            <div class="ui mini input">
+                                <input type="number" 
+                                    id="statusMessageScrollingDuration" 
+                                    name="statusMessageScrollingDuration" 
+                                    min="1" max="99" value="15">
+                            </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
