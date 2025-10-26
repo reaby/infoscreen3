@@ -235,7 +235,10 @@ function editSlide(name, type) {
 }
 
 function setStatusMessage() {
-    emit("admin.setStatusMessage", $('#statusMessageAdmin').val().replace("\n", "<br>"));
+    const msgText = $('#statusMessageAdmin').val().replace("\n", "<br>");
+    const msgScrolling = $('#statusMessageScrolling')[0].checked
+    const msgScrollingDuration = $('#statusMessageScrollingDuration').val()
+    emit("admin.setStatusMessage", { msg: msgText, scrolling: msgScrolling, scrollingDuration: msgScrollingDuration});
 }
 
 function clearStatusMessage() {
