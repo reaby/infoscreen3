@@ -49,7 +49,7 @@ export default class display {
             displayTime: true,
             statusMessage: "",
             statusMessageScrolling: false,
-            statusMessageScrollingDuration: "15s"
+            statusMessageScrollingDuration: 15
         };
 
         /** @property {Array} timeoutId - holds setTimeout id's for mainLoop */

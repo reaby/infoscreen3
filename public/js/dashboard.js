@@ -49,6 +49,8 @@ socket.on("callback.dashboard.sync", function (data) {
     }).dropdown("set selected", { bundle: serverOptions.currentBundle });
     $('#currentBundle').text(serverOptions.currentBundle);
     $('#statusMessageAdmin').val(serverOptions.statusMessage.replace("<br>", "\n"));
+    $('#statusMessageScrolling')[0].checked = serverOptions.statusMessageScrolling;
+    $('#statusMessageScrollingDuration').val(serverOptions.statusMessageScrollingDuration);
     // update dropdown at menu with bundles
     valueArray = [];
     let x = 0;
