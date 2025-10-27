@@ -66,6 +66,8 @@
       "msg1": "Suurin osa asetuksista otetaan käyttöön seuraavan dian vaihtuessa.",
       "name": "Nimi",
       "background": "Tausta",
+      "backgroundDelete": "Poista Tausta",
+      "backgroundDeleteAsk": "Haluatko varmasti poistaa seuraavan taustatiedoston pysyvästi kaikista diapaketeista: ",
       "transition": "Oletussiirtymä",
       "backgroundfile": "Valitse tiedosto",
       "msgupload": "Voit ladata uuden taustakuvan  (.jpg or .mp4) alta.",
