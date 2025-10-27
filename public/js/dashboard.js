@@ -49,6 +49,8 @@ socket.on("callback.dashboard.sync", function (data) {
     }).dropdown("set selected", { bundle: serverOptions.currentBundle });
     $('#currentBundle').text(serverOptions.currentBundle);
     $('#statusMessageAdmin').val(serverOptions.statusMessage.replace("<br>", "\n"));
+    $('#statusMessageScrolling')[0].checked = serverOptions.statusMessageScrolling;
+    $('#statusMessageScrollingDuration').val(serverOptions.statusMessageScrollingDuration);
     // update dropdown at menu with bundles
     valueArray = [];
     let x = 0;
@@ -235,7 +237,10 @@ function editSlide(name, type) {
 }
 
 function setStatusMessage() {
-    emit("admin.setStatusMessage", $('#statusMessageAdmin').val().replace("\n", "<br>"));
+    const msgText = $('#statusMessageAdmin').val().replace("\n", "<br>");
+    const msgScrolling = $('#statusMessageScrolling')[0].checked
+    const msgScrollingDuration = $('#statusMessageScrollingDuration').val()
+    emit("admin.setStatusMessage", { msg: msgText, scrolling: msgScrolling, scrollingDuration: msgScrollingDuration});
 }
 
 function clearStatusMessage() {

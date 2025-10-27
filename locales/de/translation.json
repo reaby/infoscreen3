@@ -53,6 +53,8 @@
       "preview": "Vorschau",
       "program": "Programm",
       "statusMessage": "Statusmeldung",
+      "statusMessageScrolling": "Scrollen Aktivieren",
+      "statusMessageScrollingDuration": "Scroll Dauer (s)",
       "askChangeBundle": "Paket wirklich ändern?"
     },
     "editBundleSlides": {
