@@ -43,8 +43,9 @@ socket.on("callback.dashboard.sync", function (data) {
         action: function (_label, _value) {
             $('#bundles')
             .dropdown("hide");
-            
-            emit("admin.setBundle", { bundle: _value });
+            if (confirm(askMessage) == true) {
+                emit("admin.setBundle", { bundle: _value });
+            }
         }
     }).dropdown("set selected", { bundle: serverOptions.currentBundle });
     $('#currentBundle').text(serverOptions.currentBundle);
