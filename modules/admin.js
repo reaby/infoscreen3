@@ -442,6 +442,9 @@ export default class admin {
                     }
 
                     bundle.save();
+                    // Adds empty slide render for smooth transitions
+                    // Could be enhanced with the actual last video frame
+                    fs.copyFileSync("./templates/bundle/render/empty.png","./data/bundles/" + data.bundleName + "/render/" + filename + ".png")
 
                     cli.success("save video link");
                     socket.emit("callback.saveVideo", {});

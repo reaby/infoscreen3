@@ -300,6 +300,7 @@ function nextSlide(data) {
                 displayWebPage(serverOptions.currentMeta.webUrl);
                 break;
             case "video":
+                sketch.showSlide(serverOptions.currentFile, serverOptions.transition);    
                 displayVideo(serverOptions.currentMeta.url, serverOptions.currentMeta.loop, serverOptions.currentMeta.mute);
                 setTimeout(function () {
                     clearIFrame(getWebLayer());
@@ -446,7 +447,7 @@ async function preloadImages(data) {
 
     for (let i in allSlides) {
         try {
-            if (allSlides[i].type === "slide") {
+            if (allSlides[i].type === "slide" || allSlides[i].type === "video") {
                 await sketch.loadImage("/render/" + serverOptions.currentBundle + "/" + allSlides[i].uuid + ".png", allSlides[i].uuid);
             }
         } catch (err) {

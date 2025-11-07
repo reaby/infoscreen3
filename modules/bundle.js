@@ -115,7 +115,7 @@ export default class bundleClass {
                 x++;
             }
             if (slide.uuid === uuid) {
-                if (slide.type === "slide") {
+                if (slide.type === "slide" || slide.type === "video") {
                     let path = process.cwd() + "/data/bundles/" + this.name;
                     try {
                         uuid = checkAndSanitizeFilePathName(uuid)
