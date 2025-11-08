@@ -367,6 +367,9 @@ export default class admin {
                     }
 
                     bundle.save();
+                    // Adds empty slide render for smooth transitions
+                    fs.copyFileSync("./templates/bundle/render/empty.png","./data/bundles/" + data.bundleName + "/render/" + filename + ".png")
+
 
                     cli.success("save web link");
                     socket.emit("callback.saveLink", {});
