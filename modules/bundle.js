@@ -68,6 +68,7 @@ export default class bundleClass {
                     return;
                 } catch (err) {
                     cli.error("error while duplicating file:" + uuid, err);
+                    return;
                 }
             }
         }
