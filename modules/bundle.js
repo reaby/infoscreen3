@@ -46,26 +46,24 @@ export default class bundleClass {
     duplicateUuid(uuid) {
         for (let slide of this.allSlides) {
             if (slide.uuid === uuid) {
-                if (slide.type === "slide") {
-                    let newId = uuidv4();
-                    let path = process.cwd() + "/data/bundles/" + this.name;
-                    try {
-                        // duplicate at filesystem
-                        if (fs.existsSync(path + "/render/" + uuid + ".png")) {
-                            fs.copyFileSync(path + "/render/" + uuid + ".png", path + "/render/" + newId + ".png");
-                        }
-                        if (fs.existsSync(path + "/slides/" + uuid)) {
-                            fs.copyFileSync(path + "/slides/" + uuid, path + "/slides/" + newId);
-                        }
-
-                        // duplicate at json
-                        let newSlide = clone(slide);
-                        newSlide.uuid = newId;
-                        this.allSlides.push(newSlide);
-                        this.save();
-                    } catch (err) {
-                        cli.error("error while duplicating file:" + uuid, err);
+                let newId = uuidv4();
+                let path = process.cwd() + "/data/bundles/" + this.name;
+                try {
+                    // duplicate at filesystem
+                    if (fs.existsSync(path + "/render/" + uuid + ".png")) {
+                        fs.copyFileSync(path + "/render/" + uuid + ".png", path + "/render/" + newId + ".png");
                     }
+                    if (fs.existsSync(path + "/slides/" + uuid)) {
+                        fs.copyFileSync(path + "/slides/" + uuid, path + "/slides/" + newId);
+                    }
+
+                    // duplicate at json
+                    let newSlide = clone(slide);
+                    newSlide.uuid = newId;
+                    this.allSlides.push(newSlide);
+                    this.save();
+                } catch (err) {
+                    cli.error("error while duplicating file:" + uuid, err);
                 }
             }
         }
