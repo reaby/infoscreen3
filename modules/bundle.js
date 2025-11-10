@@ -115,21 +115,19 @@ export default class bundleClass {
                 x++;
             }
             if (slide.uuid === uuid) {
-                if (slide.type === "slide") {
-                    let path = process.cwd() + "/data/bundles/" + this.name;
-                    try {
-                        uuid = checkAndSanitizeFilePathName(uuid)
-                        if (fs.existsSync(path + "/render/" + uuid + ".png")) {
-                            fs.unlinkSync(path + "/render/" + uuid + ".png");
-                            cli.success("removing file:" + path + "/render/" + uuid + ".png");
-                        }
-                        if (fs.existsSync(path + "/slides/" + uuid)) {
-                            fs.unlinkSync(path + "/slides/" + uuid);
-                            cli.success("removing file:" + path + "/slides/" + uuid);
-                        }
-                    } catch (err) {
-                        cli.error("error while deleting file:" + uuid, err);
+                let path = process.cwd() + "/data/bundles/" + this.name;
+                try {
+                    uuid = checkAndSanitizeFilePathName(uuid)
+                    if (fs.existsSync(path + "/render/" + uuid + ".png")) {
+                        fs.unlinkSync(path + "/render/" + uuid + ".png");
+                        cli.success("removing file:" + path + "/render/" + uuid + ".png");
                     }
+                    if (fs.existsSync(path + "/slides/" + uuid)) {
+                        fs.unlinkSync(path + "/slides/" + uuid);
+                        cli.success("removing file:" + path + "/slides/" + uuid);
+                    }
+                } catch (err) {
+                    cli.error("error while deleting file:" + uuid, err);
                 }
             }
         }
