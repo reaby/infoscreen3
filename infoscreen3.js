@@ -3,7 +3,6 @@
 /**
  * Module dependencies.
  */
-import chalk from 'chalk';
 import config from './config.js';
 import { app, server } from "./app.js";
 
@@ -83,7 +82,7 @@ function onListening() {
     let addr = server.address();
     let bind = typeof addr === 'string'
         ? 'pipe ' + addr
-        : 'port ' + addr.port;        
-    console.log('Infoscreen is now accessible at ' + chalk.bold.white(config.serverUrl));
-    console.log(chalk.green(">>") + chalk.white("Start complete.") + chalk.green("<<"));
+        : 'port ' + addr.port;
+    console.log('Infoscreen is now accessible at ' + config.serverUrl);
+    console.log('>> Start complete. <<');
 }

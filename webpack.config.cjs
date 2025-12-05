@@ -23,8 +23,8 @@ module.exports = [
         target: "node",
         output: {
             path: __dirname + '/webpack',
-            filename: "bundle.js",
-            library: 'commonjs'
+            filename: "bundle.cjs",
+            libraryTarget: 'commonjs2'
         },
         externals: nodeModules,
         module: {

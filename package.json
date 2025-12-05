@@ -1,33 +1,25 @@
 {
   "name": "infoscreen3",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "private": true,
   "type": "module",
   "main": "./infoscreen3.js",
   "scripts": {
-    "compile": "pkg package.json --compress GZip",
-    "build": "webpack && node compile.js && pkg package.json --compress GZip",
+    "build:nexe": "node build-nexe.js",
+    "build:nexe:windows": "webpack && nexe ./webpack/bundle.cjs -t windows-x64-20.18.1 -o dist/win32-x64/infoscreen3.exe --build",
+    "build:nexe:linux": "webpack && nexe ./webpack/bundle.cjs -t linux-x64-20.18.1 -o dist/linux-x64/infoscreen3 --build",
+    "rebuild:node20": "node rebuild-native-node20.js",
     "start": "node --expose-gc ./infoscreen3.js",
     "daemon": "node --expose-gc ./daemon.js"
   },
-  "bin": "./webpack/bundle.js",
-  "pkg": {
-    "scripts": [
-      "./webpack/*.bundle.js"
-    ],
-    "targets": [
-      "node18-windows-x64",
-      "node18-linux-x64"
-    ],
-    "outputPath": "dist"
-  },
+  "bin": "./webpack/bundle.cjs",
   "dependencies": {
     "basic-auth": "^2.0.1",
+    "better-express-store": "^1.0.5",
+    "better-sqlite3": "^12.5.0",
     "bufferutil": "4.0.7",
-    "chalk": "4.1.2",
     "connect-busboy": "^1.0.0",
     "connect-ensure-login": "^0.1.1",
-    "connect-sqlite3": "^0.9.16",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "daemon": "1.1.0",
@@ -51,7 +43,6 @@
     "rate-limiter-flexible": "2.4.1",
     "sanitize-filename": "^1.6.3",
     "socket.io": "^4.8.1",
-    "sqlite3": "^5.1.7",
     "twig": "^1.17.1",
     "utf-8-validate": "5.0.10",
     "xmlhttprequest-ssl": "^4.0.0"

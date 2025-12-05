@@ -34,8 +34,7 @@ import passport from 'passport';
 import passportlocal from 'passport-local';
 import NodeMediaServer from 'node-media-server';
 import expressSession from 'express-session';
-import sqlite3 from 'connect-sqlite3';
-const SQLiteStore = sqlite3(expressSession);
+import BetterExpressStore from 'better-express-store';
 const cookieParser = CookieParser(config.sessionKey);
 
 
@@ -156,16 +155,10 @@ app.use(cookieParser);
 app.use(express.static(path.join(__dirname, 'public')));
 app.use("/video/", express.static(path.join(__dirname, 'data', 'video')));
 
-const sessionStore = new SQLiteStore({
-    dir: "./data",
-    db: "sessions.db"
-
-});
-
 app.use(expressSession({
     key: 'express.sid',
     secret: config.sessionKey,
-    store: sessionStore,
+    store: BetterExpressStore({ dbPath: "./data/sessions.db" }),
     resave: true,
     saveUninitialized: true,
     cookie: {

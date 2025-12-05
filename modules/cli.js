@@ -1,5 +1,4 @@
 import 'dotenv/config'
-import chalk from 'chalk';
 let lastStamp = "";
 
 export default {
@@ -7,20 +6,20 @@ export default {
         if (title == null) {
             title = "";
         }
-        this.log(chalk.bold.red("[Error]" + title) + " " + error);
+        this.log("[Error]" + title + " " + error);
     },
 
     info: function (string, category) {
 
-        this.log(chalk.cyan("[" + (category || "Info") + "] ") + string);
+        this.log("[" + (category || "Info") + "] " + string);
     },
 
     debug: function (string) {
-        console.log(chalk.bold.black("[Debug] " + string));
+        console.log("[Debug] " + string);
     },
 
     success: function (string) {
-        this.log(string + chalk.green(" [Success]"));
+        this.log(string + " [Success]");
     },
 
     log: function (string) {

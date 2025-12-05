@@ -5,7 +5,6 @@ import admin from './admin.js';
 import adminLobby from './adminLobby.js';
 import cli from './cli.js';
 import _bundleManager from './bundleManager.js';
-import chalk from 'chalk';
 import fs from 'fs';
 
 /**
@@ -24,7 +23,7 @@ export default function (pluginManager, io, dispatcher) {
     /** @type {admin[]} */
     let adminView = [];
 
-    console.log(chalk.green(">> ") + "InfoScreen3" + chalk.green("<<"));
+    console.log(">> InfoScreen3 <<");
     cli.log("Checking for write permissions...");
 
     try {
