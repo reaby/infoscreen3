@@ -5,7 +5,6 @@ const eventDispatcher = new Dispatcher();
 import config from './config.js';
 import express from 'express';
 import createError from 'http-errors';
-import logger from 'morgan';
 import path from 'path';
 import PluginManager from './modules/pluginManager.js';
 const app = express();
@@ -89,11 +88,10 @@ if (config.mediaServer) {
             gop_cache: true,
             ping: 60,
             ping_timeout: 30,
-            
         },
         http: {
             port: (parseInt(config.serverListenPort) + 1),
-            allow_origin: '*',            
+            allow_origin: '*',
         },
         auth: {
             api: true,
@@ -156,7 +154,7 @@ app.use(express.urlencoded({
 
 app.use(cookieParser);
 app.use(express.static(path.join(__dirname, 'public')));
-app.use("/video/",express.static(path.join(__dirname, 'data','video')));
+app.use("/video/", express.static(path.join(__dirname, 'data', 'video')));
 
 const sessionStore = new SQLiteStore({
     dir: "./data",

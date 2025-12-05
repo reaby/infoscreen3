@@ -28,7 +28,7 @@ export default function (pluginManager, io, dispatcher) {
     cli.log("Checking for write permissions...");
 
     try {
-        fs.accessSync(process.cwd() + "/data", fs.W_OK);
+        fs.accessSync(process.cwd() + "/data", fs.constants.W_OK);
         cli.success("data directory (./data) is writable");
     } catch (err) {
         cli.error("data directory (./data) is not writable", err);
@@ -36,7 +36,7 @@ export default function (pluginManager, io, dispatcher) {
     }
 
     try {
-        fs.accessSync(process.cwd() + "/trash", fs.W_OK);
+        fs.accessSync(process.cwd() + "/trash", fs.constants.W_OK);
         cli.success("trash directory (./trash) is writable");
     } catch (err) {
         cli.error("trash directory (./trash) is not writable", err);
@@ -44,7 +44,7 @@ export default function (pluginManager, io, dispatcher) {
     }
 
     try {
-        fs.accessSync(process.cwd() + "/tmp", fs.W_OK);
+        fs.accessSync(process.cwd() + "/tmp", fs.constants.W_OK);
         cli.success("temp directory (./tmp) is writable ");
         let tempFiles = fs.readdirSync(process.cwd() + "/tmp/", {
             dotfiles: false
