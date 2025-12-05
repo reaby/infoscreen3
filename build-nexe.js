@@ -31,8 +31,8 @@ try {
     process.exit(1);
 }
 
-// Copy common files
-console.log("\n📋 Copying common files...");
+// Copy common files to dist directory (shared by all platforms)
+console.log("\n📋 Copying shared files to dist directory...");
 for (const dir of toCopy) {
     if (fs.existsSync(`./${dir}`)) {
         console.log(`  ✓ Copying ${dir}...`);
@@ -45,45 +45,55 @@ if (fs.existsSync("./.env.example")) {
     fs.cpSync("./.env.example", "./dist/.env");
 }
 
+// Rebuild native modules for Node.js 20.18.1 BEFORE copying
+console.log("\n⚙️  Rebuilding native modules for Node.js 20.18.1...");
+try {
+    const nodeVersion = "20.18.1";
+    const modules = ["better-sqlite3", "bufferutil", "utf-8-validate"];
+
+    for (const module of modules) {
+        console.log(`  📦 Rebuilding ${module}...`);
+        const rebuildCmd = `npm rebuild ${module} --build-from-source --target=${nodeVersion} --target_arch=x64 --dist-url=https://nodejs.org/download/release`;
+        execSync(rebuildCmd, { stdio: "inherit" });
+    }
+
+    // Verify and create versioned binding path for better-sqlite3
+    const bindingPath = path.join("node_modules", "better-sqlite3", "build", "Release", "better_sqlite3.node");
+    if (fs.existsSync(bindingPath)) {
+        const versionedDir = path.join("node_modules", "better-sqlite3", "lib", "binding", "node-v115-win32-x64");
+        fs.mkdirSync(versionedDir, { recursive: true });
+        fs.copyFileSync(bindingPath, path.join(versionedDir, "better_sqlite3.node"));
+        console.log(`  ✅ better-sqlite3 versioned binding created`);
+    }
+
+    console.log("  ✅ All native modules rebuilt successfully");
+} catch (error) {
+    console.error(`  ❌ Failed to rebuild native modules: ${error.message}`);
+    console.error("     Executables may not work correctly!");
+}
+
+// Copy native modules to dist (shared by all platforms)
+console.log("\n📦 Copying native modules to dist...");
+const nativeModules = [
+    "node_modules/better-sqlite3",
+    "node_modules/bufferutil",
+    "node_modules/utf-8-validate"
+];
+
+for (const modulePath of nativeModules) {
+    if (fs.existsSync(modulePath)) {
+        const targetPath = path.join("./dist", modulePath);
+        fs.mkdirSync(path.dirname(targetPath), { recursive: true });
+        fs.cpSync(modulePath, targetPath, { recursive: true });
+        console.log(`  ✓ Copied ${modulePath}`);
+    }
+}
+
 // Build for each platform
 for (const { target, platform, arch, ext } of platforms) {
     console.log(`\n🔨 Building for ${target}...`);
 
-    const platformDir = `./dist/${platform}-${arch}`;
-    fs.mkdirSync(platformDir, { recursive: true });
-
-    const outputFile = path.join(platformDir, `infoscreen3${ext}`);
-
-    // Prepare sqlite3 native bindings for the target platform
-    console.log(`  ⚙️  Preparing native modules for ${platform}...`);
-
-    const isCurrentPlatform =
-        (platform === "win32" && process.platform === "win32") ||
-        (platform === "linux" && process.platform === "linux");
-
-    if (!isCurrentPlatform) {
-        console.log(`  ⚠️  Warning: Cross-compiling from ${process.platform} to ${platform}`);
-        console.log(`     Native bindings will need to be rebuilt on target platform or provided manually`);
-    } else {
-        // Rebuild native modules for Node.js 20.18.0 specifically
-        console.log(`  ⚙️  Rebuilding native modules for Node.js 20.18.1...`);
-        try {
-            const nodeVersion = "20.18.1";
-            const rebuildCmd = `npm rebuild better-sqlite3 --build-from-source --target=${nodeVersion} --target_arch=x64 --dist-url=https://nodejs.org/download/release`;
-            execSync(rebuildCmd, { stdio: "inherit" });
-
-            // Verify and create versioned binding path for better-sqlite3
-            const bindingPath = path.join("node_modules", "better-sqlite3", "build", "Release", "better_sqlite3.node");
-            if (fs.existsSync(bindingPath)) {
-                const versionedDir = path.join("node_modules", "better-sqlite3", "lib", "binding", "node-v115-win32-x64");
-                fs.mkdirSync(versionedDir, { recursive: true });
-                fs.copyFileSync(bindingPath, path.join(versionedDir, "better_sqlite3.node"));
-                console.log(`  ✅ better-sqlite3 rebuilt and versioned binding created`);
-            }
-        } catch (error) {
-            console.warn(`  ⚠️  Could not rebuild better-sqlite3: ${error.message}`);
-        }
-    }
+    const outputFile = path.join("./dist", `infoscreen3-${platform}-${arch}${ext}`);
 
     // Build with nexe
     console.log(`  📦 Running nexe for ${target}...`);
@@ -97,75 +107,54 @@ for (const { target, platform, arch, ext } of platforms) {
         console.error(`  ❌ Failed to build ${target}:`, error.message);
         continue;
     }
+}
 
-    // Copy runtime files to platform directory
-    console.log(`  📂 Copying runtime files to ${platformDir}...`);
-    for (const dir of toCopy) {
-        if (fs.existsSync(`./${dir}`)) {
-            fs.cpSync(`./${dir}`, `${platformDir}/${dir}`, { recursive: true });
-        }
-    }
-
-    if (fs.existsSync("./.env.example")) {
-        fs.cpSync("./.env.example", `${platformDir}/.env`);
-    }
-
-    // Copy native modules directory structure
-    const nativeModules = [
-        "node_modules/better-sqlite3",
-        "node_modules/bufferutil",
-        "node_modules/utf-8-validate"
-    ];
-
-    for (const modulePath of nativeModules) {
-        if (fs.existsSync(modulePath)) {
-            const targetPath = path.join(platformDir, modulePath);
-            fs.mkdirSync(path.dirname(targetPath), { recursive: true });
-            fs.cpSync(modulePath, targetPath, { recursive: true });
-            console.log(`  ✓ Copied ${modulePath}`);
-        }
-    }
-
-    // Create platform-specific README
-    const readmeContent = `# Infoscreen3 - ${platform} ${arch}
+// Create README
+console.log("\n📝 Creating README...");
+const readmeContent = `# Infoscreen3
 
 ## Installation
 
 1. Extract this archive to your desired location
 2. Edit the .env file with your configuration
-3. Run the executable:
-   ${platform === "win32" ? "   .\\infoscreen3.exe" : "   ./infoscreen3"}
+3. Run the appropriate executable for your platform:
+   - Windows: .\\infoscreen3-win32-x64.exe
+   - Linux: ./infoscreen3-linux-x64
+
+## Directory Structure
+
+- data/ - All application data will be stored here
+- tmp/ - Temporary files
+- trash/ - Deleted items
+- locales/ - Translation files
+- templates/ - Template files
+- node_modules/ - Native modules (better-sqlite3, bufferutil, utf-8-validate)
 
 ## Notes
 
-- All data will be stored in the 'data' directory
-- Logs and temporary files are in 'tmp' and 'trash' directories
-- Translations are in the 'locales' directory
-- Templates are in the 'templates' directory
-- Native modules (better-sqlite3, etc.) are included in node_modules/
-
-## Native Modules
-
-This build includes native modules. If you encounter issues:
-1. The native modules were compiled for ${platform}-${arch}
-2. You may need to rebuild them on the target system if cross-compiled
-3. Run: npm rebuild better-sqlite3 bufferutil utf-8-validate --build-from-source
+- All executables share the same data directories
+- The .env file contains configuration settings
+- Native modules are included and should work on their respective platforms
+- If you encounter issues with native modules, rebuild them:
+  npm rebuild better-sqlite3 bufferutil utf-8-validate --build-from-source
 
 For more information, visit: https://github.com/reaby/infoscreen3
 `;
 
-    fs.writeFileSync(`${platformDir}/README.txt`, readmeContent);
-
-    console.log(`  ✅ Platform package complete: ${platformDir}`);
-}
+fs.writeFileSync("./dist/README.txt", readmeContent);
 
 console.log("\n🎉 Nexe cross-platform build completed successfully!");
-console.log("\n📦 Build outputs:");
-platforms.forEach(({ platform, arch }) => {
-    const dir = `./dist/${platform}-${arch}`;
-    if (fs.existsSync(dir)) {
-        const files = fs.readdirSync(dir);
-        const exe = files.find(f => f.startsWith("infoscreen3"));
-        console.log(`  ✓ ${dir}${exe ? ` (${exe})` : ""}`);
+console.log("\n📦 Build outputs in ./dist:");
+const distFiles = fs.readdirSync("./dist");
+const executables = distFiles.filter(f => f.startsWith("infoscreen3"));
+executables.forEach(exe => {
+    const stats = fs.statSync(path.join("./dist", exe));
+    const sizeMB = (stats.size / 1024 / 1024).toFixed(2);
+    console.log(`  ✓ ${exe} (${sizeMB} MB)`);
+});
+console.log("\n📂 Shared directories:");
+toCopy.forEach(dir => {
+    if (fs.existsSync(`./dist/${dir}`)) {
+        console.log(`  ✓ ${dir}/`);
     }
 });

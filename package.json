@@ -6,8 +6,8 @@
   "main": "./infoscreen3.js",
   "scripts": {
     "build:nexe": "node build-nexe.js",
-    "build:nexe:windows": "webpack && nexe ./webpack/bundle.cjs -t windows-x64-20.18.1 -o dist/win32-x64/infoscreen3.exe --build",
-    "build:nexe:linux": "webpack && nexe ./webpack/bundle.cjs -t linux-x64-20.18.1 -o dist/linux-x64/infoscreen3 --build",
+    "build:nexe:windows": "webpack && nexe ./webpack/bundle.cjs -t windows-x64-20.18.1 -o dist/infoscreen3-win32-x64.exe --build",
+    "build:nexe:linux": "webpack && nexe ./webpack/bundle.cjs -t linux-x64-20.18.1 -o dist/infoscreen3-linux-x64 --build",
     "rebuild:node20": "node rebuild-native-node20.js",
     "start": "node --expose-gc ./infoscreen3.js",
     "daemon": "node --expose-gc ./daemon.js"
