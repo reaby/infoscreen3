@@ -43,7 +43,7 @@
     "rate-limiter-flexible": "2.4.1",
     "sanitize-filename": "^1.6.3",
     "socket.io": "^4.8.1",
-    "twig": "^1.17.1",
+    "twig": "^2.0.0",
     "utf-8-validate": "5.0.10",
     "xmlhttprequest-ssl": "^4.0.0"
   },
