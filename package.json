@@ -32,7 +32,7 @@
     "i18next": "^25.7.1",
     "i18next-fs-backend": "^2.6.1",
     "i18next-http-middleware": "^3.8.2",
-    "lodash": "^4.17.21",
+    "lodash": "^4.17.23",
     "minimist": "^1.2.8",
     "morgan": "^1.10.1",
     "node-media-server": "^2.7.4",
