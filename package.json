@@ -30,7 +30,7 @@
     "fs-extra": "^11.3.2",
     "http-errors": "^2.0.1",
     "i18next": "^25.7.1",
-    "i18next-fs-backend": "^2.6.1",
+    "i18next-fs-backend": "^2.6.4",
     "i18next-http-middleware": "^3.8.2",
     "lodash": "^4.17.23",
     "minimist": "^1.2.8",
