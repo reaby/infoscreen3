@@ -5,6 +5,9 @@
 
 When you need to display same content to multiple locations or need to remotely control a slide show.
 
+## Note that Infoscreen 4 is avaiable now
+Link to the new repo: https://github.com/reaby/infoscreen4
+
 ## Features
 * Displays slide show in browser
 * Uses Full HD 1920x1080 resolution internally
